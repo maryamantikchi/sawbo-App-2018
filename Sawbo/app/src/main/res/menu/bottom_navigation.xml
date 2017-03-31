@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <item android:id="@+id/menu_home"
+            android:title=""
+            android:icon="@drawable/home" />
+
+        <item android:id="@+id/menu_video_library"
+              android:title=""
+              android:icon="@drawable/video_library" />
+
+        <item android:id="@+id/menu_my_video"
+            android:title=""
+            android:icon="@drawable/play" />
+        <item android:id="@+id/menu_share"
+            android:title=""
+            android:icon="@drawable/share" />
+
+
+        <item android:id="@+id/menu_info"
+            android:title=""
+            android:icon="@drawable/info" />
+
+
+
+
+
+</menu>

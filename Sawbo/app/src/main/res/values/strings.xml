@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sawbo</string>
+    <string name="video_library">VIDEO LIBRARY</string>
+    <string name="my_videos">MY VIDEO</string>
+    <string name="share_sawbo_apps">SHARE SAWBO APPS</string>
+    <string name="donate">DONATE</string>
+</resources>

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Sawbo</string>
+    <!-- UT Items-->
+    <string name="video_library">VIDEO LIBRARY</string>
+    <string name="my_videos">MY VIDEO</string>
+    <string name="share_sawbo_apps">SHARE SAWBO APPS</string>
+    <string name="donate">DONATE</string>
+    <!--URLS-->
+    <string name="donate_url">http://www.sawbo-animations.org/donate</string>
+    <!--video library-->
+    <string name="topics">TOPICS</string>
+    <string name="video_url">http://www.sawbo-illinois.org/mobile_app/sources_test/</string>
+
+</resources>

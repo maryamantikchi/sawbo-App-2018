@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="sawbodeployer.entm.illinois.edu.sawbo.MainActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/search"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_search"
+            android:tint="@color/gray"
+            android:background="@color/colorPrimary"
+            android:layout_gravity="left"/>
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/setting"
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_setting"
+            android:background="@color/colorPrimary"
+            android:tint="@color/gray"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/navigation_layout"
+        android:id="@+id/main_container">
+
+    </FrameLayout>
+
+
+   <!-- <android.support.design.widget.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:menu="@menu/bottom_navigation"
+        android:layout_alignParentBottom="true"
+        app:itemIconTint="@color/gray">
+
+
+    </android.support.design.widget.BottomNavigationView>-->
+    <com.rey.material.widget.LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center_vertical"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/navigation_layout"
+        android:orientation="horizontal">
+
+        <com.rey.material.widget.ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_home"
+        android:layout_weight="0.01"
+            android:id="@+id/btn_home"
+            android:background="@color/transparent"/>
+        <android.support.v4.widget.Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_weight="0.01"/>
+
+        <com.rey.material.widget.ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_video_library"
+            android:layout_weight="0.01"
+            android:id="@+id/btn_video_library"
+            android:background="@color/transparent"/>
+
+        <com.rey.material.widget.ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_play_menu"
+            android:layout_weight="0.01"
+            android:id="@+id/btn_my_video"
+            android:background="@color/transparent"/>
+
+        <com.rey.material.widget.ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_share"
+            android:layout_weight="0.01"
+            android:id="@+id/btn_share"
+            android:background="@color/transparent"/>
+        <com.rey.material.widget.ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_info"
+            android:layout_weight="0.01"
+            android:id="@+id/btn_info"
+            android:background="@color/transparent"/>
+
+
+    </com.rey.material.widget.LinearLayout>
+
+
+</RelativeLayout>

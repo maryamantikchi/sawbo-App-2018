@@ -1,0 +1,116 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:id="@+id/extention_sawbo_image"
+        >
+        <com.rey.material.widget.ImageView
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:padding="18dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:src="@drawable/ic_sawbo_main"
+            android:background="#F4F6F8"
+            />
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView_extention_main"
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/extention_sawbo_image">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:orientation="vertical">
+            <com.rey.material.widget.Button
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/video_library"
+                android:textColor="@color/colorPrimary"
+                android:padding="21dp"
+                android:textSize="10.2pt"
+                android:drawableRight="@drawable/ic_play_menu"
+                android:drawableTint="@color/colorPrimary"
+                android:textAlignment="textStart"
+                android:id="@+id/btn_video_library_home"
+                android:background="@color/blue_dark"
+                tools:ignore="RtlCompat"/>
+
+            <com.rey.material.widget.Button
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/my_videos"
+                android:textColor="@color/colorPrimary"
+                android:padding="21dp"
+                android:textSize="10.2pt"
+                android:drawableRight="@drawable/ic_play_menu"
+                android:drawableTint="@color/colorPrimary"
+                android:textAlignment="textStart"
+                android:background="@color/blue"
+                tools:ignore="RtlCompat"
+                android:id="@+id/btn_my_video_home"/>
+
+
+            <com.rey.material.widget.Button
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/share_sawbo_apps"
+                android:textColor="@color/colorPrimary"
+                android:padding="21dp"
+                android:textSize="10.2pt"
+                android:drawableRight="@drawable/ic_play_menu"
+                android:drawableTint="@color/colorPrimary"
+                android:textAlignment="textStart"
+                android:background="@color/blue_light"
+                tools:ignore="RtlCompat"
+                android:id="@+id/btn_share_home"/>
+
+
+            <com.rey.material.widget.Button
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="8dp"
+                android:id="@+id/btn_donate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/donate"
+                android:textColor="@color/colorPrimary"
+                android:padding="21dp"
+                android:textSize="10.2pt"
+                android:drawableRight="@drawable/ic_play_menu"
+                android:drawableTint="@color/colorPrimary"
+                android:textAlignment="textStart"
+                android:background="@color/green"
+                tools:ignore="RtlCompat" />
+        </LinearLayout>
+    </ScrollView>
+
+    </RelativeLayout>
+</FrameLayout>

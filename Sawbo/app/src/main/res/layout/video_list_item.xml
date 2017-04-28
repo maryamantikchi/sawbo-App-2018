@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.rey.material.widget.RelativeLayout
+<RelativeLayout
     android:layout_width="match_parent"
     android:padding="10dp"
     android:id="@+id/view_video_item"
@@ -19,7 +19,8 @@
             android:textColor="#7F7E7A"
             android:textSize="8.3pt"
             android:layout_marginLeft="5dp"
-            android:singleLine="false"
+            android:layout_toRightOf="@+id/image_video_item"
+            android:layout_toLeftOf="@+id/play_video_item"
             android:layout_centerInParent="true" />
         <com.rey.material.widget.ImageButton
             android:layout_width="wrap_content"
@@ -28,8 +29,6 @@
             android:background="@color/colorPrimary"
             android:src="@drawable/ic_play_menu"
             android:tint="#C8CBCF"
+            android:id="@+id/play_video_item"
             android:layout_alignParentRight="true"/>
-
-
-
-    </com.rey.material.widget.RelativeLayout>
+</RelativeLayout>

@@ -1,6 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
     android:layout_width="match_parent"
     android:background="@color/colorPrimary"
@@ -17,7 +16,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:id="@+id/extention_video_detail">
-            <com.rey.material.widget.TextView
+            <TextView
                 android:layout_width="wrap_content"
                 android:text="@string/video_library"
                 android:padding="10dp"
@@ -62,6 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title_video_name"
                 android:padding="6dp"
+                android:text="dfghjklfghjkl;ghjkl;"
                 android:textColor="@color/black"
                 android:id="@+id/title_religion_video_detail"
                 android:textSize="7.2pt"/>
@@ -111,6 +111,7 @@
                         android:layout_height="match_parent"
                         android:text="SHARE"
                         android:textSize="7.3pt"
+                        android:id="@+id/share_video"
                         android:layout_marginLeft="7dp"
                         android:background="@color/green"
                         android:textColor="@color/white"
@@ -126,18 +127,18 @@
                 android:layout_margin="10dp"
                 >
                 <at.blogc.android.views.ExpandableTextView
+                    android:maxLines="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/expandable_txt_video_detail"
                     android:layout_weight="0.3"
-                    android:maxLines="3"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:text=""
-                    android:ellipsize="end"
+                    android:textSize="8.3pt"
                     android:layout_marginRight="15dp"
-                    app:animation_duration="1000"/>
+                    app:animation_duration="1000"
+                    android:ellipsize="end"/>
                 <ImageButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -149,45 +150,6 @@
                     android:background="@color/transparent"/>
 
             </LinearLayout>
-
-           <!-- <at.blogc.android.views.ExpandableTextView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/expandable_txt_video_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_video_detail_btns"
-                android:maxLines="3"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="Copyright 2016 Cliff Ophalvens (Blogc.at)
-
-Licensed under the Apache License, Version 2.0 (the );
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an  BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License."
-                android:ellipsize="end"
-                android:layout_marginRight="15dp"
-                app:animation_duration="1000"
-                />
-
-
-            <ImageButton
-                android:layout_below="@+id/layout_video_detail_btns"
-                android:id="@+id/button_toggle_video_detail"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@color/transparent"
-                android:layout_alignParentRight="true"
-                android:layout_toRightOf="@+id/expandable_txt_video_detail"
-                android:layout_margin="10dp"
-                android:src="@drawable/ic_expand"/>-->
 
 
      </RelativeLayout>

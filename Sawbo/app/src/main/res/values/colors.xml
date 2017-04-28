@@ -4,10 +4,13 @@
     <color name="colorPrimaryDark">#636769</color>
     <color name="colorAccent">#FF4081</color>
     <color name="gray">#636769</color>
+    <color name="gray_text">#8A8883</color>
     <color name="blue_dark">#408BC6</color>
     <color name="blue">#76A3D2</color>
     <color name="blue_light">#93B1C5</color>
     <color name="green">#41A62A</color>
+    <color name="green_dark">#46844C</color>
+    <color name="green_light">#FF41A62A</color>
     <color name="transparent">#20ffffff</color>
     <color name="black">#1A171B</color>
     <color name="white">#FFFFFF</color>

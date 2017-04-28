@@ -1,21 +1,26 @@
 package sawbodeployer.entm.illinois.edu.sawbo;
 
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
 
 import com.rey.material.widget.ImageButton;
 
+import sawbodeployer.entm.illinois.edu.sawbo.AboutContact.InfoFragment;
 import sawbodeployer.entm.illinois.edu.sawbo.VideoLibrary.VideoLibraryFragment;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Fragment fragment;
     private FragmentManager fragmentManager;
     private ImageButton home,video_library,my_videos,share,info;
+    private AppCompatImageButton setting,search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +42,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         info = (ImageButton)findViewById(R.id.btn_info);
         info.setOnClickListener(this);
 
+        setting = (AppCompatImageButton)findViewById(R.id.setting_btn);
+
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Fragment newFragment = new SettingFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_container, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
 
         fragmentManager = getSupportFragmentManager();
         fragment = new HomeFragment();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.main_container, fragment).commit();
 
+        //WriteLog wl = new WriteLog();
+      //  wl.writeNow(MainActivity.this, "locale", "en", "");
 
     }
 
@@ -69,4 +90,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.main_container, fragment).commit();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+    }
+
 }

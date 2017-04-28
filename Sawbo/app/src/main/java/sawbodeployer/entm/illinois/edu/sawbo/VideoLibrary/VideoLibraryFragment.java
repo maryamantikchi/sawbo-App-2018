@@ -13,14 +13,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit.Call;
+import retrofit.Callback;
 import retrofit.GsonConverterFactory;
+import retrofit.Response;
 import retrofit.Retrofit;
 import sawbodeployer.entm.illinois.edu.sawbo.R;
-import sawbodeployer.entm.illinois.edu.sawbo.VideoDetailFragment;
+import sawbodeployer.entm.illinois.edu.sawbo.VideoDetail.VideoDetailFragment;
 
 /**
  * Created by Mahsa on 4/1/2017.
@@ -67,7 +73,7 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
                     public void onItemClick(View view, int position) {
                         // TODO Handle item click
                        //Toast.makeText(getContext(),position+"+++",Toast.LENGTH_SHORT).show();
-                     /*   VideoDetailFragment fragment = new VideoDetailFragment();
+                       /* VideoDetailFragment fragment = new VideoDetailFragment();
                         fragment.videoDetail = videoModel.getAll().get(position);
                         FragmentManager fragmentManager = getFragmentManager();
                         fragmentManager.beginTransaction()
@@ -75,17 +81,7 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
 
                         VideoDetailFragment fragment = new VideoDetailFragment();
                         fragment.videoDetail = videoModel.getAll().get(position);
-                        for (int i=0;i<videoModel.getAll().size();i++){
-                            if (videoModel.getAll().get(i).getFilename().contains(videoModel.getAll().get(position).getFilename()
-                                    .replace(".3gp",""))&&(videoModel.getAll().get(i).getFilename()
-                                    .contains("Light")||videoModel.getAll().get(i).getFilename()
-                                    .contains("LIGHT")||videoModel.getAll().get(i).getFilename()
-                                    .contains("_l.3gp"))){
-                                fragment.light_url = videoModel.getAll().get(i).getFilename();
-                                break;
 
-                            }
-                        }
                         FragmentManager fragmentManager = getFragmentManager();
                         fragmentManager.beginTransaction().hide(VideoLibraryFragment.this)
                                 .add(R.id.main_container, fragment)
@@ -96,32 +92,30 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
                     }
                 })
         );
+
+        getRetrofitObject();
         getData = new getData().execute();
 
         return view;
     }
 
    public void getRetrofitObject() {
-
-
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.sawbo-illinois.org/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+
         ServiceAPI service = retrofit.create(ServiceAPI.class);
-
-       Call<Video> call = service.getVideoDetails();
-
-       try {
+        final Call<Video> call = service.getVideoDetails();
+        try {
            videoModel = call.execute().body();
-           adapter = new VideoListAdapter(videoModel);
-       } catch (IOException e) {
+           adapter = new VideoListAdapter(videoModel,getContext());
+        } catch (Exception e) {
            e.printStackTrace();
-       }
+        }
 
-    }
+   }
 
     private class getData extends AsyncTask<Void, Void, Void> {
 
@@ -133,7 +127,6 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            adapter = new VideoListAdapter(videoModel);
             videoList.setAdapter(adapter);
             videoList.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
@@ -146,4 +139,6 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
             return null;
         }
     }
+
+
 }

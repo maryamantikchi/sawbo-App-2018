@@ -1,14 +1,15 @@
 package sawbodeployer.entm.illinois.edu.sawbo.VideoLibrary;
 
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.rey.material.widget.RelativeLayout;
+import com.bumptech.glide.Glide;
 
 import sawbodeployer.entm.illinois.edu.sawbo.R;
 
@@ -19,8 +20,7 @@ import sawbodeployer.entm.illinois.edu.sawbo.R;
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.viewHolder> {
 
     Video object = new Video();
-
-    Bitmap thumbnail;
+    Context context;
     public class viewHolder extends RecyclerView.ViewHolder {
 
         public ImageView videoImage;
@@ -36,15 +36,9 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.view
     }
 
 
-    public VideoListAdapter(Video object){
+    public VideoListAdapter(Video object, Context context) {
         this.object = object;
-        for (int i=0;i<this.object.getAll().size();i++){
-            System.err.println(this.object.getAll().get(i).getFilename());
-            if (this.object.getAll().get(i).getFilename().contains("Light")||this.object.getAll().get(i).getFilename().contains("LIGHT")){
-                this.object.getAll().remove(this.object.getAll().get(i));
-                }
-        }
-
+        this.context = context;
     }
 
     @Override
@@ -57,15 +51,16 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.view
 
     @Override
     public void onBindViewHolder(final viewHolder holder, int position) {
-        final Video.all video = object.getAll().get(position);
-        holder.videoTitle.setText(video.getVideo());
-        holder.videoImage.setImageBitmap(thumbnail);
+        final all video = object.getAll().get(position);
+        holder.videoTitle.setText(video.getTitle());
+        Glide.with(context)
+                .load("http://sawbo-illinois.org/images/videoThumbnails/"+video.getImage())
+                .into(holder.videoImage);
     }
 
     @Override
     public int getItemCount() {
         return object.getAll().size();
     }
-
 
 }

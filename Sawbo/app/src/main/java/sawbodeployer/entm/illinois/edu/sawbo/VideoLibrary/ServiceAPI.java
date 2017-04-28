@@ -1,17 +1,18 @@
 package sawbodeployer.entm.illinois.edu.sawbo.VideoLibrary;
 
+import java.util.List;
+
 import retrofit.Call;
 import retrofit.http.GET;
+import retrofit.http.Headers;
+import retrofit.http.Url;
 
 /**
  * Created by navneet on 4/6/16.
  */
 public interface ServiceAPI {
 
-    /*
-     * Retrofit get annotation with our URL
-     * And our method that will return us details of student.
-    */
-    @GET("mobile_app/totallist_sources_test.php")
+
+    @GET("mobileApp.php")
     Call<Video> getVideoDetails();
 }

@@ -70,7 +70,7 @@
                 android:textAlignment="textStart"
                 android:background="@color/blue"
                 tools:ignore="RtlCompat"
-                android:id="@+id/btn_my_video_home"/>
+                android:id="@+id/btn_my_video_home" />
 
 
             <com.rey.material.widget.Button

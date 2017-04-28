@@ -1,7 +1,5 @@
 package sawbodeployer.entm.illinois.edu.sawbo.VideoLibrary;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 /**
@@ -9,12 +7,12 @@ import java.util.List;
  */
 
 public class Video {
-    public List<all> all;
+    public List<sawbodeployer.entm.illinois.edu.sawbo.VideoLibrary.all> all;
     public List<String>Language;
     public List<String>Country;
     public List<String>Topic;
 
-    public List<all> getAll() {
+    public List<sawbodeployer.entm.illinois.edu.sawbo.VideoLibrary.all> getAll() {
         return all;
     }
 

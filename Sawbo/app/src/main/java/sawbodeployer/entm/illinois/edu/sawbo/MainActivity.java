@@ -1,11 +1,11 @@
 package sawbodeployer.entm.illinois.edu.sawbo;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
 
@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.main_container, fragment).commit();
 
-        //WriteLog wl = new WriteLog();
-      //  wl.writeNow(MainActivity.this, "locale", "en", "");
+        WriteLog wl = new WriteLog();
+        wl.writeNow(MainActivity.this, "locale", "en", "");
 
     }
 

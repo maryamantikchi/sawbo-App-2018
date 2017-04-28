@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_info:
                 fragment = new InfoFragment();
                 break;
+            //handle multiple view click events
         }
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.main_container, fragment).commit();

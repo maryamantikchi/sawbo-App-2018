@@ -13,6 +13,9 @@
     <string name="gps">GPS</string>
     <string name="data">DATA</string>
 
+    <!--about-->
+    <string name="sawbo_about">Scientific Animations Without Borders (SAWBO) is a Michigan State University based program. SAWBO transforms extension information on relevant topics such as agriculture, disease and women's empowerment, into 2D, 2.5D and 3D animations, which are then voice overlaid into a diversity of languages from around the world.</string>
+
 
     <!--URLS-->
     <string name="donate_url">http://www.sawbo-animations.org/donate</string>

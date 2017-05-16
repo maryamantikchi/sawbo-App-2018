@@ -1,35 +1,29 @@
 package edu.illinois.entm.sawbodeployer.VideoDetail;
 
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
-
 import at.blogc.android.views.ExpandableTextView;
 import edu.illinois.entm.sawbodeployer.R;
+import edu.illinois.entm.sawbodeployer.ShareVideoFragment;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import uk.co.jakelee.vidsta.VidstaPlayer;
 import uk.co.jakelee.vidsta.listeners.FullScreenClickListener;
 import uk.co.jakelee.vidsta.listeners.VideoStateListeners;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by Mahsa on 4/4/2017.
@@ -38,6 +32,7 @@ import static android.content.ContentValues.TAG;
 public class VideoDetailFragment extends android.support.v4.app.Fragment {
     Typeface title_font,title_video_font,title_religion_font;
     public all videoDetail;
+    public Video video;
     TextView title,videoName,religion;
     String videoPath;
     View view;
@@ -94,9 +89,17 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
             }
         });
 
+        select_language = (Button)view.findViewById(R.id.select_video_language);
+        select_language.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShowAlertDialogWithListview();
+            }
+        });
+
 
         final VidstaPlayer player = (VidstaPlayer)view.findViewById(R.id.player);
-        player.setVideoSource(getContext().getResources().getString(R.string.video_url)+videoDetail.getVideo());
+        player.setVideoSource(videoPath);
         player.setAutoLoop(false);
         player.setAutoPlay(false);
 
@@ -158,8 +161,17 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent tweetIntent = new Intent(Intent.ACTION_SEND);
-                tweetIntent.putExtra(Intent.EXTRA_TEXT, "This is a Test.");
+
+                ShareVideoFragment fragment = new ShareVideoFragment();
+                fragment.videoPath = videoPath;
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().add(R.id.main_container, fragment)
+                        .addToBackStack(null)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .commit();
+
+             /*   Intent tweetIntent = new Intent(Intent.ACTION_SEND);
+                tweetIntent.putExtra(Intent.EXTRA_TEXT, videoPath);
                 tweetIntent.setType("text/plain");
 
                 PackageManager packManager = getActivity().getPackageManager();
@@ -183,20 +195,75 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
                     i.setAction(Intent.ACTION_VIEW);
                     i.setData(Uri.parse("https://twitter.com/intent/tweet?text="+urlEncode("This is a Test.")));
                     startActivity(i);
-                }
+                }*/
 
 
             }
         });
 
     }
-    private String urlEncode(String s) {
+  /*  private String urlEncode(String s) {
         try {
             return URLEncoder.encode(s, "UTF-8");
         }catch (UnsupportedEncodingException e) {
             Log.wtf(TAG, "UTF-8 should always be supported", e);
             return "";
         }
+    }*/
+
+    private void ShowAlertDialogWithListview() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(getContext());
+
+        builderSingle.setTitle("Select Language");
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.select_dialog_singlechoice,video.getLanguage());
+
+        builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String language = arrayAdapter.getItem(which);
+                all selected_video = null;
+
+                for (int i=0;i<video.getAll().size();i++){
+                    if ((videoDetail.getTopic().equals(video.getAll().get(i).getTopic()))
+                            && (video.getAll().get(i).getLanguage().equals(language))){
+                      selected_video = video.getAll().get(i);
+                        break;
+                    }
+                }
+
+                if (selected_video!=null){
+                    VideoDetailFragment fragment = new VideoDetailFragment();
+                    fragment.videoDetail = selected_video;
+                    fragment.video = video;
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.detach(fragment).attach(fragment).commit();
+                }else {
+                    AlertDialog.Builder builderInner = new AlertDialog.Builder(getContext());
+                    builderInner.setMessage("Not found "+videoDetail.getTopic()+" in "+language);
+                    builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builderInner.show();
+                }
+
+
+
+            }
+        });
+        builderSingle.show();
+
     }
 
 }

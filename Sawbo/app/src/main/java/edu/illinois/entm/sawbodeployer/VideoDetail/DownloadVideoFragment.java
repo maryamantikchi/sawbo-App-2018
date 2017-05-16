@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -37,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -44,6 +47,7 @@ import java.net.URLEncoder;
 import edu.illinois.entm.sawbodeployer.R;
 import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
+import edu.illinois.entm.sawbodeployer.WriteLog;
 
 /**
  * Created by Mahsa on 4/9/2017.
@@ -55,11 +59,12 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
     Button liteFile,standardFile;
     public all video;
     View view;
-    String fullTitle;
 
     boolean stopDownload = false;
     long downloadID;
     BroadcastReceiver onComplete;
+
+    WriteLog wl = new WriteLog();
 
     public DownloadVideoFragment(){
     }
@@ -125,6 +130,9 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
         liteFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //addDataBase(true);
+
+
                 download_video(liteFile,video.getVideolight(),true);
             }
         });
@@ -132,11 +140,14 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
         standardFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               // addDataBase(true);
                 download_video(standardFile,video.getVideo(),false);
             }
 
 
         });
+
+
 
 }
     public void copy(File src, File dst) throws IOException {
@@ -174,7 +185,6 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
     private void addDataBase(Boolean isLight){
         dataSource = new MyVideoDataSource(getContext());
         dataSource.open();
-        // save the new comment to the database
         all newVideo = new all();
         newVideo = video;
         if (isLight)
@@ -185,12 +195,17 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
         dataSource.close();
     }
 
+    private void removeFromDB(){
+            dataSource = new MyVideoDataSource(getContext());
+            dataSource.open();
 
-    private void download_video(final Button btn, final String urlType, final Boolean isLight){
+            dataSource.deleteVideo(video);
+            dataSource.close();
 
-        String[] title = urlType.split("_");
-        fullTitle = title[1];
+    }
 
+
+    private void download_video(final Button btn, final String urlType, Boolean isLight){
 
         if (stopDownload) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -198,9 +213,12 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                     .setCancelable(false)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+
+                            removeFromDB();
                             DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
                             getActivity().unregisterReceiver(onComplete);
                             manager.remove(downloadID);
+                           // manager.remove(downloadIDImg);
                             btn.setText("Download");
                             stopDownload = false;
                             btn.invalidate();
@@ -223,12 +241,11 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                 try {
                     String urlvideo = URLEncoder.encode(urlType, "UTF-8").replace("+", "%20");
                     Log.v("encode url", urlvideo);
-
-                    URL url = new URL(getResources().getString(R.string.video_url) + urlvideo);
+                    final URL url = new URL(getResources().getString(R.string.video_url) + urlvideo);
 
                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url.toString()));
                     request.setDescription("SAWBO video file");
-                    request.setTitle(fullTitle);
+                    request.setTitle(video.getTitle());
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                         request.allowScanningByMediaScanner();
                         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
@@ -239,22 +256,31 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                     }
                     request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, urlType);
 
-                    DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+                    final DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
 
                     downloadID = manager.enqueue(request);
+
+                    try {
+                        String urlImage = URLEncoder.encode(video.getImage(), "UTF-8").replace("+", "%20");
+                        final URL url_image = new URL(getResources().getString(R.string.thumbnail_url)+urlImage);
+                        saveToInternalStorage(downloadImage(url_image),video.getImage());
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
 
                     onComplete = new BroadcastReceiver() {
                         @Override
                         public void onReceive(Context context, Intent intent) {
-
-                            addDataBase(isLight);
+                            try {
 
                             String path = context.getFilesDir() + "/";
                             File src = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + urlType);
                             File dst = new File(path + urlType);
-                            Log.d("filepath", src.toString());
-                            try {
+
                                 copy(src, dst);
+
                             } catch (IOException e) {
 
                             }
@@ -300,7 +326,21 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                 stopDownload = false;
             }
 
+
+            String videoFilename = "";
+            if (isLight) videoFilename = video.getVideolight();
+            else videoFilename = video.getVideo();
+//            wl.writeNow(getActivity(), "download", videoFilename, "");
+  //          wl.sendLog(getActivity());
+
+            addDataBase(isLight);
+
+
+
+
         }
+
+
         }
 
     private void checkFileExist(String url,Button btn){
@@ -310,4 +350,58 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
             btn.setEnabled(false);
         }
     }
+
+
+    public static Bitmap downloadImage(URL encodedUrl) {
+        try {
+            HttpURLConnection connection = (HttpURLConnection) encodedUrl.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream is = connection.getInputStream();
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = 1;
+            Bitmap bitmap = BitmapFactory.decodeStream(is,null, options);
+            is.close();
+            return bitmap;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    public static void saveToInternalStorage(Bitmap bitmapImage, String icon){
+        File root = Environment.getExternalStorageDirectory();
+        File Dir=null;
+
+
+            Dir = new File(root.getAbsolutePath() +"/.Sawbo/Images");
+
+
+        File file = new File(Dir, icon);
+
+
+        if (!file.exists()) {
+            if (bitmapImage != null) {
+                file.getParentFile().mkdirs();
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(file);
+                    bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+
+
 }

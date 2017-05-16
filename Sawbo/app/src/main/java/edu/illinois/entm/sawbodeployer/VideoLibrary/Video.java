@@ -1,5 +1,6 @@
 package edu.illinois.entm.sawbodeployer.VideoLibrary;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,12 +8,12 @@ import java.util.List;
  */
 
 public class Video {
-    public List<edu.illinois.entm.sawbodeployer.VideoLibrary.all> all;
+    public List<all> all = new ArrayList<>();
     public List<String>Language;
     public List<String>Country;
     public List<String>Topic;
 
-    public List<edu.illinois.entm.sawbodeployer.VideoLibrary.all> getAll() {
+    public List<all> getAll() {
         return all;
     }
 
@@ -28,7 +29,9 @@ public class Video {
         return Topic;
     }
 
-
+    public void setLanguage(List<String> language) {
+        Language = language;
+    }
 }
 
 

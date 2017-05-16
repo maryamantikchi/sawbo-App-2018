@@ -38,7 +38,7 @@
 
         </RelativeLayout>
 
-        <edu.illinois.entm.sawbodeployer.sawbo.AboutContact.VerticalViewPager
+        <edu.illinois.entm.sawbodeployer.AboutContact.VerticalViewPager
             android:layout_below="@+id/extention_info"
             android:layout_width="match_parent"
             android:id="@+id/viewPager"

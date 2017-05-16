@@ -30,7 +30,7 @@ public class MyVideoTable {
             COLUMN_IMAGE
     };
     public static final String TABLE_VIDEO_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
-            COLUMN_ID + " TEXT " +
+            COLUMN_ID + " TEXT , " +
             COLUMN_COUNTRY + " TEXT ," +
             COLUMN_LANGUAGE + " TEXT ," +
             COLUMN_TOPIC + " TEXT ," +

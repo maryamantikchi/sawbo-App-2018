@@ -25,10 +25,13 @@ public class MyVideoDataSource  {
 
     public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
+        System.err.println("open db");
     }
 
     public void close() {
         dbHelper.close();
+        System.err.println("close db");
+
     }
 
     public all createVideo(all video) {
@@ -44,6 +47,7 @@ public class MyVideoDataSource  {
         values.put(MyVideoTable.COLUMN_IMAGE, video.getImage());
         database.insert(MyVideoTable.TABLE_NAME, null,
                 values);
+
         return video;
     }
 
@@ -81,7 +85,22 @@ public class MyVideoDataSource  {
         video.setVideo(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_VIDEO)));
         video.setVideolight(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_VIDEO_LIGHT)));
         video.setDescription(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_DESCRIPTION)));
+        video.setImage(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_IMAGE)));
         return video;
+    }
+
+
+    public List<all> findDownloadVideos(String selected) {
+        Cursor c = database.rawQuery("SELECT distinct * FROM tbl_my_video WHERE Video Like '" + selected + "' OR Videolight Like '" + selected+"' GROUP BY id", null);
+        List<all> videos = new ArrayList<>();
+        c.moveToFirst();
+        while (!c.isAfterLast()) {
+            all video = cursorToVideo(c);
+            videos.add(video);
+            c.moveToNext();
+        }
+        c.close();
+        return videos;
     }
 
 }

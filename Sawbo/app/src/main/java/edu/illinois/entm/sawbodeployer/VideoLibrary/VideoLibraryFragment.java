@@ -17,8 +17,8 @@ import android.widget.ProgressBar;
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
-import edu.illinois.entm.sawbodeployer.sawbo.R;
-import edu.illinois.entm.sawbodeployer.sawbo.VideoDetail.VideoDetailFragment;
+import edu.illinois.entm.sawbodeployer.R;
+import edu.illinois.entm.sawbodeployer.VideoDetail.VideoDetailFragment;
 
 /**
  * Created by Mahsa on 4/1/2017.

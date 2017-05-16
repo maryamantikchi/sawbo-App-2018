@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class VideodbHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "myvideo.db";
+    private static final String DATABASE_NAME = "myvideo";
     private static final int DATABASE_VERSION = 1;
 
     public VideodbHelper(Context context) {

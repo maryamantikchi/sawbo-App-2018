@@ -7,12 +7,12 @@ import java.util.List;
  */
 
 public class Video {
-    public List<edu.illinois.entm.sawbodeployer.sawbo.VideoLibrary.all> all;
+    public List<edu.illinois.entm.sawbodeployer.VideoLibrary.all> all;
     public List<String>Language;
     public List<String>Country;
     public List<String>Topic;
 
-    public List<edu.illinois.entm.sawbodeployer.sawbo.VideoLibrary.all> getAll() {
+    public List<edu.illinois.entm.sawbodeployer.VideoLibrary.all> getAll() {
         return all;
     }
 

@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import edu.illinois.entm.sawbodeployer.sawbo.R;
+import edu.illinois.entm.sawbodeployer.R;
 
 /**
  * Created by Mahsa on 4/4/2017.

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:id="@+id/view_my_video_item"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/select_item"
+        android:background="@color/colorPrimary"
+        android:id="@+id/select_my_video_item"/>
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/select_my_video_item"
+        android:id="@+id/image_my_video_item"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/title_my_video_item"
+        android:textColor="#7F7E7A"
+        android:textSize="8.3pt"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/image_my_video_item"
+        android:layout_toLeftOf="@+id/play_my_video_item"
+        android:layout_centerInParent="true" />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@color/colorPrimary"
+        android:src="@drawable/ic_play_menu"
+        android:tint="#C8CBCF"
+        android:id="@+id/play_my_video_item"
+        android:layout_alignParentRight="true"/>
+</RelativeLayout>

@@ -1,0 +1,103 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
+    android:layout_width="match_parent"
+    android:background="@color/colorPrimary"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorPrimary"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:id="@+id/extention_my_video"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/video_library"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="16.2pt"
+                android:textColor="@color/gray_text"
+                android:id="@+id/title_my_video_library"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/my_videos"
+                android:paddingRight="10dp"
+                android:animateLayoutChanges="true"
+                android:paddingLeft="10dp"
+                android:textColor="@android:color/black"
+                android:textSize="16.2pt"
+                android:layout_below="@+id/title_my_video_library"
+                android:id="@+id/title_my_video"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/select_item"
+                android:layout_marginTop="9dp"
+                android:paddingLeft="15dp"
+                android:id="@+id/btn_select_all"
+                android:background="@color/colorPrimary"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="9dp"
+                android:text="Select All"
+                android:textColor="@color/gray_text"
+                android:id="@+id/select_my_vide"
+                android:textSize="7.2pt"/>
+
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/gray_text"></View>
+
+
+        <ProgressBar
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/progress_bar_my_video"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/novideo_str"
+            android:id="@+id/my_no_video"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:padding="10dp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_my_vide"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:background="@color/colorPrimary"
+            android:layout_margin="10dp"
+            android:visibility="invisible"></android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+</FrameLayout>

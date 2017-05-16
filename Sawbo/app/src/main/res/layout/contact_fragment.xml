@@ -4,47 +4,83 @@
     android:layout_width="match_parent"
     android:background="@color/colorPrimary"
     android:layout_height="match_parent">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:background="@color/colorPrimary"
-        android:layout_height="match_parent">
-
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:id="@+id/extention_about"
-            >
-            <TextView
+            android:layout_height="match_parent">
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:text="@string/info_about"
-                android:paddingLeft="10dp"
-                android:textColor="@color/gray_text"
-                android:layout_marginTop="5dp"
-                android:textSize="16.2pt"
-                android:id="@+id/title_video_setting"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:orientation="vertical"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="60dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/contact_sawbo"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/sawbo"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:text="@string/settings"
-                android:paddingLeft="10dp"
-                android:layout_below="@+id/title_video_setting"
-                android:textColor="@android:color/black"
-                android:textSize="16.2pt"
-                android:layout_marginBottom="5dp"
-                android:id="@+id/title_setting"
-                android:layout_height="wrap_content"/>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/contact_email"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/mail"/>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/facebook"
+                        android:id="@+id/contact_facebook"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center|left"
+                    android:orientation="horizontal">
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:id="@+id/contact_twitter"
+                        android:background="@drawable/twitter"/>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:id="@+id/contact_instagram"
+                        android:background="@drawable/instagram"/>
+
+                </LinearLayout>
+
+                <Button
+                    android:layout_gravity="center"
+                    android:layout_width="150dp"
+                    android:text="RATE US"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/green_dark"
+                    android:textColor="@color/white"
+                    android:id="@+id/rate_google_play"
+                    android:textSize="10.2pt"
+                    android:layout_height="45dp" />
+            </LinearLayout>
+
 
         </RelativeLayout>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="texttexttexttexttexttexttext
-               texttexttexttexttexttexttext
-               texttexttexttext"
-            android:layout_below="@+id/extention_about"/>
-    </RelativeLayout>
 </FrameLayout>

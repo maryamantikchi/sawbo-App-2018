@@ -3,6 +3,8 @@
 
     <!-- UT Items-->
     <string name="video_library">VIDEO LIBRARY</string>
+    <string name="video_library_filter">SEARCH/FILTER</string>
+    <string name="video_my_video">MY VIDEOS</string>
     <string name="info_about">ABOUT</string>
     <string name="settings">Settings</string>
     <string name="my_videos">MY VIDEO</string>
@@ -22,6 +24,7 @@
     <!--video library-->
     <string name="topics">TOPICS</string>
     <string name="video_url">http://www.sawbo-illinois.org/mobile_app/sources_test/</string>
+    <string name="thumbnail_url">http://sawbo-illinois.org/images/videoThumbnails/</string>
 
     <!--download video-->
 
@@ -29,8 +32,14 @@
     <string name="avoffline_str">Available offline</string>
 
     <!--Contact sawbo-->
+    <string name="contact_mail">contact@sawbo-animations.org</string>
+    <string name="contact_facebook">https://www.facebook.com/SAWBOsm</string>
+    <string name="contact_twitter">https://twitter.com/sawbosm</string>
+    <string name="contact_instagram"></string>
+    <string name="contact_sawbo">http://sawbo-animations.org/home/</string>
 
     <!--My Videos-->
+    <string name="novideo_str">You don\'t have any downloads at the moment.  To download a video, connect to the internet go to the video library, find your video of choice, then click to download it.</string>
 
 
 </resources>

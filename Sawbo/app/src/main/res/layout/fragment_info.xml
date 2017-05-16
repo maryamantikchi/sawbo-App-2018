@@ -5,7 +5,7 @@
     android:background="@color/colorPrimary"
     android:layout_height="match_parent">
 
-    <edu.illionois.entm.sawbodeployer.sawbo.AboutContact.VerticalViewPager
+    <edu.illinois.entm.sawbodeployer.sawbo.AboutContact.VerticalViewPager
         android:layout_width="match_parent"
         android:id="@+id/viewPager"
         android:layout_height="match_parent"/>

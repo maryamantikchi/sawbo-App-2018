@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.rey.material.widget.Button;
 
+import edu.illinois.entm.sawbodeployer.MyVideos.MyVideoFragment;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.VideoLibraryFragment;
 
 /**
@@ -61,6 +62,17 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
         Button my_video_btn = (Button)view.findViewById(R.id.btn_my_video_home);
         my_video_btn.setTypeface(btn_font);
+
+        my_video_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                fragment = new MyVideoFragment();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.main_container, fragment).commit();
+
+            }
+        });
 
         Button share_btn = (Button)view.findViewById(R.id.btn_share_home);
         share_btn.setTypeface(btn_font);

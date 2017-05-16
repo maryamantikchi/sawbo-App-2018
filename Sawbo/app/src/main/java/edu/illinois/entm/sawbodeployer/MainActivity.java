@@ -1,17 +1,18 @@
 package edu.illinois.entm.sawbodeployer;
 
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
 
 import com.rey.material.widget.ImageButton;
 
 import edu.illinois.entm.sawbodeployer.AboutContact.InfoFragment;
+import edu.illinois.entm.sawbodeployer.MyVideos.MyVideoFragment;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.VideoLibraryFragment;
 
 
@@ -62,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.main_container, fragment).commit();
 
-        WriteLog wl = new WriteLog();
-        wl.writeNow(MainActivity.this, "locale", "en", "");
+       // WriteLog wl = new WriteLog();
+       // wl.writeNow(MainActivity.this, "locale", "en", "");
 
     }
 

@@ -195,17 +195,20 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
         dataSource.close();
     }
 
-    private void removeFromDB(){
+    private void removeFromDB(Boolean isLight){
             dataSource = new MyVideoDataSource(getContext());
             dataSource.open();
-
-            dataSource.deleteVideo(video);
+            if (isLight){
+                dataSource.deleteVideoLight(video);
+            }else {
+                dataSource.deleteVideoStandard(video);
+            }
             dataSource.close();
 
     }
 
 
-    private void download_video(final Button btn, final String urlType, Boolean isLight){
+    private void download_video(final Button btn, final String urlType, final Boolean isLight){
 
         if (stopDownload) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -214,7 +217,7 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
 
-                            removeFromDB();
+                            removeFromDB(isLight);
                             DownloadManager manager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
                             getActivity().unregisterReceiver(onComplete);
                             manager.remove(downloadID);
@@ -263,7 +266,7 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                     try {
                         String urlImage = URLEncoder.encode(video.getImage(), "UTF-8").replace("+", "%20");
                         final URL url_image = new URL(getResources().getString(R.string.thumbnail_url)+urlImage);
-                        saveToInternalStorage(downloadImage(url_image),video.getImage());
+                        saveToInternalStorage(downloadImage(url_image),video.getImage(),isLight);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     } catch (MalformedURLException e) {
@@ -371,14 +374,11 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
         }
     }
 
-    public static void saveToInternalStorage(Bitmap bitmapImage, String icon){
+    public static void saveToInternalStorage(Bitmap bitmapImage, String icon,Boolean isLight){
         File root = Environment.getExternalStorageDirectory();
         File Dir=null;
-
-
             Dir = new File(root.getAbsolutePath() +"/.Sawbo/Images");
-
-
+        if (isLight) icon += "_light";
         File file = new File(Dir, icon);
 
 

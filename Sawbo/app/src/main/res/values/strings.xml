@@ -14,8 +14,35 @@
     <string name="gps">GPS</string>
     <string name="data">DATA</string>
 
+
+    <string name="wd_title_with_count">Wifi-Direct(%s)</string>
+    <string name="nsd_title_with_count">NSD (%s)</string>
+
+
     <!--Info-->
     <string name="sawbo_about">Scientific Animations Without Borders (SAWBO) is a Michigan State University based program. SAWBO transforms extension information on relevant topics such as agriculture, disease and women\'s empowerment, into 2D, 2.5D and 3D animations, which are then voice overlaid into a diversity of languages from around the world.</string>
+
+    <!--  DeviceListActivity -->
+    <string name="scanning">Scanning for devices...</string>
+    <string name="select_device">Select a device</string>
+    <string name="none_paired">No devices have been paired. \n Please pair your device from the Bluetooth menu in your phone.</string>
+    <string name="none_found">No devices found</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for devices</string>
+
+    <string name="cannotcon_str">Could not connect to the paired device. Make sure the receiver on the other device has been turned on (press the Bluetooth logo in the Share page).</string>
+    <string name="sending_str">Sending video &#8230;&#8230;&#8230; \n *If no progress bar appears on the receiver\'s phone, make sure that the receiver on the other phone has been turned on (press the Bluetooth logo on the Share page) then restart the process again.</string>
+    <string name="stopsending_str">Are you sure you want to stop sending?</string>
+    <string name="sent_str">The video was sent successfully</string>
+    <string name="sendfail_str">The video was sent, but didn\'t go through correctly</string>
+    <string name="connecting_str">Connecting &#8230;&#8230;&#8230;</string>
+
+    <string name="wifi_not_enabled_error">Please enable Wi-Fi to continue</string>
+    <string name="chat_request_title">Chat Request from %s</string>
+
+
+
 
 
     <!--URLS-->
@@ -40,6 +67,31 @@
 
     <!--My Videos-->
     <string name="novideo_str">You don\'t have any downloads at the moment.  To download a video, connect to the internet go to the video library, find your video of choice, then click to download it.</string>
+
+
+    <!--ِDirect Wifi-->
+
+    <string name="enable_p2p_button">P2P On/Off</string>
+
+    <string name="discover_peers_button">Discover</string>
+
+    <string name="connect_peer_button">Connect</string>
+
+    <string name="disconnect_peer_button">Disconnect</string>
+
+    <string name="get_file_button">Send Video</string>
+
+    <string name="empty"/>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+    <string name="client_text">This device will act as a client. Click on Gallery button to pick a local(stored) file</string>
+    <string name="empty_message">No devices found. Turn Wifi on and Press Scan to find more devices.</string>
+    <string name="p2p_off_warning">Enable P2P from \'SCAN DEVICES\' button above or settings</string>
+    <string name="group_owner_text">"Am I the Group Owner? "</string>
+    <string name="label_me">MY Device Name:</string>
+    <string name="label_peers">Devices Near Me:</string>
+    <string name="banner_ad_unit_id">ca-app-pub-6910223592682604/3737920779</string>
+    <string name="poster_ad_unit_id">ca-app-pub-6910223592682604/2198005177</string>
 
 
 </resources>

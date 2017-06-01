@@ -10,6 +10,7 @@
 <color name="blue_light">#93B1C5</color>
 <color name="green">#41A62A</color>
 <color name="green_dark">#46844C</color>
+<color name="green_dark_trans">#46864d</color>
 <color name="green_light">#FF41A62A</color>
 <color name="transparent">#20ffffff</color>
 <color name="black">#1A171B</color>

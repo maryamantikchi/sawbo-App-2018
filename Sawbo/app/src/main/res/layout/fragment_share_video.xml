@@ -2,16 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity"
     android:layout_width="match_parent"
-    android:background="@color/green_dark"
+    android:background="@color/green_dark_trans"
     android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/green_dark"
+        android:background="@color/green_dark_trans"
         android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/green_dark"
+            android:background="@color/green_dark_trans"
             android:orientation="vertical"
             android:layout_centerInParent="true"
             android:layout_marginTop="60dp">
@@ -21,27 +21,27 @@
                 android:layout_gravity="center"
                 android:orientation="horizontal">
                 <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:id="@+id/share_sawbo"
                     android:layout_margin="10dp"
-                    android:background="@drawable/sawbo"/>
+                    android:background="@drawable/sawbo_share"/>
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:id="@+id/share_email"
                     android:layout_margin="10dp"
-                    android:background="@drawable/mail"/>
+                    android:background="@drawable/mail_share"/>
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:layout_margin="10dp"
-                    android:background="@drawable/facebook"
+                    android:background="@drawable/facebook_share"
                     android:id="@+id/share_facebook"/>
             </LinearLayout>
 
@@ -52,25 +52,25 @@
                 android:layout_gravity="center|left"
                 android:orientation="horizontal">
                 <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_margin="10dp"
                     android:id="@+id/share_twitter"
-                    android:background="@drawable/twitter"/>
+                    android:background="@drawable/twitter_share"/>
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:id="@+id/share_instagram"
-                    android:background="@drawable/instagram"/>
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_margin="10dp"
                     android:id="@+id/share_general"
-                    android:background="@drawable/instagram"/>
+                    android:background="@drawable/icon_sharee"/>
+
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:id="@+id/share_phone"
+                    android:background="@drawable/phone_share"/>
 
             </LinearLayout>
 
@@ -80,25 +80,14 @@
                 android:layout_centerInParent="true"
                 android:layout_gravity="center|left"
                 android:orientation="horizontal">
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:id="@+id/share_phone"
-                    android:background="@drawable/twitter"/>
+
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_margin="10dp"
                     android:id="@+id/share_bluetooth"
-                    android:background="@drawable/instagram"/>
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:id="@+id/share_others"/>
+                    android:background="@drawable/bluetooth_share"/>
 
             </LinearLayout>
         </LinearLayout>

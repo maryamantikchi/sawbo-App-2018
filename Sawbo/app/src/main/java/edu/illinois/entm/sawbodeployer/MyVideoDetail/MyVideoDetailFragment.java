@@ -1,8 +1,17 @@
 package edu.illinois.entm.sawbodeployer.MyVideoDetail;
 
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +20,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.io.File;
+
 import at.blogc.android.views.ExpandableTextView;
 import edu.illinois.entm.sawbodeployer.R;
+import edu.illinois.entm.sawbodeployer.ShareVideoFragment;
 import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import uk.co.jakelee.vidsta.VidstaPlayer;
@@ -34,7 +46,6 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
     Button select_language;
     MyVideoDataSource dataSource;
 
-
     public MyVideoDetailFragment(){
     }
 
@@ -50,6 +61,8 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
 
         Button deleteBtn = (Button) view.findViewById(R.id.download_video);
         deleteBtn.setText("DELETE");
+
+
 
 
 
@@ -152,27 +165,81 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dataSource = new MyVideoDataSource(getContext());
-                dataSource.open();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Are you sure you want to delete this video?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                deleteVideo();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
 
+        Button share = (Button)view.findViewById(R.id.share_video);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareVideoFragment fragment = new ShareVideoFragment();
+                if (videoDetail.getVideo().length()==0)
+                    fragment.videoPath = videoDetail.getVideolight();
+                else if (videoDetail.getVideolight().length()==0)fragment.videoPath = videoDetail.getVideo();
 
-           /*     File dirFiles = getActivity().getFilesDir();
-                final ArrayList<String> videoFile = new ArrayList<String>();
-
-                for (String strFile : dirFiles.list()){
-                    String extension = strFile.substring(strFile.lastIndexOf(".")+1);
-                    if(extension.equals("3gp") || extension.equals("mp4")){
-                        videoFile.add(strFile);
-                        for (int i=0;i<dataSource.findDownloadVideos(strFile).size();i++){
-                            videos.add(dataSource.findDownloadVideos(strFile).get(i));
-                        }
-                    }*/
-
-                dataSource.deleteVideo(videoDetail);
-                dataSource.close();
-
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().add(R.id.main_container, fragment)
+                        .addToBackStack(null)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .commit();
             }
         });
 
     }
+
+    private void deleteVideo(){
+        dataSource = new MyVideoDataSource(getContext());
+        dataSource.open();
+
+        boolean isLight = false;
+
+        String filename = "";
+        if (videoDetail.getVideo() == null || videoDetail.getVideo().equals("")){
+            isLight = true;
+            filename = videoDetail.getVideolight();
+        }else if(videoDetail.getVideolight() == null || videoDetail.getVideolight().equals("")){
+            isLight = false;
+            filename = videoDetail.getVideo();
+        }
+
+        File file = new File(getActivity().getFilesDir() + "/" + filename);
+        file.delete();
+
+        File root = Environment.getExternalStorageDirectory();
+        File Dir=null;
+        Dir = new File(root.getAbsolutePath() +"/.Sawbo/Images");
+        String icon = videoDetail.getImage();
+        if (isLight) icon += "_light";
+        File fileImg = new File(Dir, icon);
+
+
+        if (!fileImg.exists()) {
+            fileImg.delete();
+        }
+
+        if (isLight){
+            dataSource.deleteVideoLight(videoDetail);
+        }else {
+            dataSource.deleteVideoStandard(videoDetail);
+        }
+
+        dataSource.close();
+    }
+
+
+
 }

@@ -51,10 +51,16 @@ public class MyVideoDataSource  {
         return video;
     }
 
-    public void deleteVideo(all video) {
-        String id = video.getId();
-        database.delete(MyVideoTable.TABLE_NAME, MyVideoTable.COLUMN_ID
-                + " = " + id, null);
+    public void deleteVideoLight(all video) {
+        String videoFile = video.getVideolight();
+        database.delete(MyVideoTable.TABLE_NAME, MyVideoTable.COLUMN_VIDEO_LIGHT
+                + " = '" + videoFile +"'", null);
+    }
+
+    public void deleteVideoStandard(all video) {
+        String videoFile = video.getVideo();
+        database.delete(MyVideoTable.TABLE_NAME, MyVideoTable.COLUMN_VIDEO
+                + " = '" + videoFile+"'", null);
     }
 
     public List<all> getAllVideos() {

@@ -15,7 +15,7 @@ public class CommonMethods {
 	
 	public static String Tag = "AnujWiFiDemo";
 
-	public static String getPath(Uri uri, Context context) {
+/*	public static String getPath(Uri uri, Context context) {
 		if (uri == null) {
 			CommonMethods.e("", "uri is null");
 			return null;
@@ -33,7 +33,7 @@ public class CommonMethods {
 		CommonMethods.e("", "get path method->> after cursor");
 		CommonMethods.e("", "get path method->> " + uri.getPath());
 		return uri.getPath();
-	}
+	}*/
 	
 
 
@@ -92,12 +92,12 @@ public class CommonMethods {
 
     
     
-    public static long AvailableMemory(Context context){
+  /*  public static long AvailableMemory(Context context){
     	StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
     	long bytesAvailable = (long)stat.getBlockSize() * (long)stat.getAvailableBlocks();
     	long megAvailable = bytesAvailable / (1024 );
 		return megAvailable;
-    }
+    }*/
     
     
 	

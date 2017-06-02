@@ -585,8 +585,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 										   OutputStream out, Long length) {
 
 		byte buf[] = new byte[FileTransferService.ByteSize];
-		byte Decryptedbuf[] = new byte[FileTransferService.ByteSize];
-		String Decrypted;
+		//byte Decryptedbuf[] = new byte[FileTransferService.ByteSize];
+		//String Decrypted;
 		int len;
 		long total = 0;
 		int progresspercentage = 0;

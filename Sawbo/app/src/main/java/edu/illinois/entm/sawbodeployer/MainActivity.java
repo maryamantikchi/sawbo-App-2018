@@ -1,6 +1,8 @@
 package edu.illinois.entm.sawbodeployer;
 
 
+import android.content.Context;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -8,8 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
+import android.widget.Toast;
 
 import com.rey.material.widget.ImageButton;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import edu.illinois.entm.sawbodeployer.AboutContact.InfoFragment;
 import edu.illinois.entm.sawbodeployer.MyVideos.MyVideoFragment;
@@ -27,9 +34,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initialize();
 
     }
+
+
+
 
     public void initialize(){
         home = (ImageButton)findViewById(R.id.btn_home);
@@ -50,6 +61,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
 
                 Fragment newFragment = new SettingFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_container, newFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+        search = (AppCompatImageButton)findViewById(R.id.search_compat);
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Fragment newFragment = new SearchFragment();
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.main_container, newFragment);
                 transaction.addToBackStack(null);

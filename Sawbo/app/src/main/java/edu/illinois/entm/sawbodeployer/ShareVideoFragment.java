@@ -24,6 +24,16 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
+import com.facebook.CallbackManager;
+import com.facebook.login.LoginManager;
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareMediaContent;
+import com.facebook.share.model.ShareVideo;
+import com.facebook.share.model.ShareVideoContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,6 +43,7 @@ import java.util.Arrays;
 
 import edu.illinois.cs.bluetoothobexopp.BluetoothOppFileSender;
 import edu.illinois.entm.sawbodeployer.DirectWifi.WiFiDirectActivity;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import edu.illinois.entm.sawbodeployer.btxfr.ClientThread;
 import edu.illinois.entm.sawbodeployer.btxfr.MessageType;
 import edu.illinois.entm.sawbodeployer.btxfr.ProgressData;
@@ -45,10 +56,11 @@ import static android.content.ContentValues.TAG;
 
 public class ShareVideoFragment extends android.support.v4.app.Fragment/* implements View.OnClickListener */{
     View view;
-    RelativeLayout sawbo_share,mail_share,facebook_share,twitter_share,
-            general_share, bluetooth_share,phone_share;
+    RelativeLayout sawbo_share,facebook_share,
+            general_share, bluetooth_share;
     public String videoPath;
     public String dialogVideo, videoFilename, url;
+    public all videoFile;
 
     File OBEXfile;
 
@@ -60,6 +72,8 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
     private final static int REQUEST_DISCOVERABLE_BT = 2;
     private final static int REQUEST_CONNECT_DEVICE_SECURE = 3;
     boolean firstTime=true;
+
+
 
 
     ClientThread ct;
@@ -135,39 +149,6 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                         progressDialog = null;
                         firstTime = false;
                     }
-                    /*progressDialog = new ProgressDialog(getActivity());
-                    progressDialog.setMessage(getResources().getString(R.string.sending_str));
-                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                            builder.setMessage(getActivity().getResources().getString(R.string.stopsending_str))
-                                    .setCancelable(false)
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            ct.cancel();
-                                            if(progressDialog!=null) {
-                                                progressDialog.dismiss();
-                                            }
-                                        }
-                                    })
-                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            if(progressDialog!=null) {
-                                                progressDialog.show();
-                                            }
-                                            return;
-                                        }
-                                    });
-                            AlertDialog alert = builder.create();
-                            alert.show();
-                        }
-                    });
-                    progressDialog.setCanceledOnTouchOutside(true);
-                    if(progressDialog!=null) {
-                        progressDialog.show();
-                    }*/
                     try {
                         progressData = (ProgressData) message.obj;
                         double pctRemaining = 100 - (((double) progressData.remainingSize / progressData.totalSize) * 100);
@@ -261,164 +242,98 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
     private void initialize(){
 
         sawbo_share = (RelativeLayout)view.findViewById(R.id.share_sawbo);
-        sawbo_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            Intent intent = new Intent(getActivity(), WiFiDirectActivity.class);
-                intent.putExtra("url",getActivity().getFilesDir() + "/" + videoPath);
-                startActivity(intent
-                );
-            }
-        });
-        mail_share = (RelativeLayout)view.findViewById(R.id.share_email);
-        //mail_share.setOnClickListener(this);
         facebook_share = (RelativeLayout)view.findViewById(R.id.share_facebook);
-        facebook_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(Intent.EXTRA_TEXT, "http://www.google.com");
-                startActivity(Intent.createChooser(sharingIntent, "Share via"));
-                //shareMedia("com.facebook.katana","com.facebook.katana"+urlEncode());
-            }
-        });
-        twitter_share = (RelativeLayout)view.findViewById(R.id.share_twitter);
-        twitter_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                File file = new File(getActivity().getFilesDir() , videoPath);
-                Uri uri = FileProvider.getUriForFile(getContext(), "edu.illinois.entm.sawbodeployer", file);
-
-                Intent intent = ShareCompat.IntentBuilder.from(getActivity())
-                        .setType("video/3gp")
-                        .setStream(uri)
-                        .setChooserTitle("Choose bar")
-                        .createChooserIntent()
-                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                startActivity(intent);
-                /*Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.setType("video/3gp");
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Video");
-                sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+videoPath+"/" + videoPath));
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Enjoy the Video");
-                startActivity(Intent.createChooser(sendIntent, "Email:"));*/
-             /*   MediaScannerConnection.scanFile(getActivity(), new String[] { path },
-
-                        null, new MediaScannerConnection.OnScanCompletedListener() {
-                            public void onScanCompleted(String path, Uri uri) {
-                                Intent shareIntent = new Intent(
-                                        android.content.Intent.ACTION_SEND);
-                                shareIntent.setType("video*//*");
-                                shareIntent.putExtra(
-                                        android.content.Intent.EXTRA_SUBJECT, title);
-                                shareIntent.putExtra(
-                                        android.content.Intent.EXTRA_TITLE, title);
-                                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                                shareIntent
-                                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                                context.startActivity(Intent.createChooser(shareIntent,
-                                        getString(R.string.str_share_this_video)));
-
-                            }
-                        });*/
-            }
-        });
-        //twitter_share.setOnClickListener(this);
         general_share = (RelativeLayout)view.findViewById(R.id.share_general);
-        //general_share.setOnClickListener(this);
-        phone_share = (RelativeLayout)view.findViewById(R.id.share_phone);
-        //phone_share.setOnClickListener(this);
         bluetooth_share = (RelativeLayout)view.findViewById(R.id.share_bluetooth);
-        bluetooth_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.err.println(videoPath+" bbbbb");
-                shareNormalAtPos(videoPath);
 
-            }
-        });
-    }
+        if (videoFile == null){
+            sawbo_share.setVisibility(View.GONE);
+            bluetooth_share.setVisibility(View.GONE);
+
+            facebook_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentUrl(Uri.parse(videoPath))
+                            .build();
+
+                    ShareDialog shareDialog = new ShareDialog(getActivity());
+                    shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+                }
+            });
+
+            general_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, videoPath);
+                    startActivity(Intent.createChooser(intent, "Share Video"));
+                }
+            });
+
+        }
+        else{
+            sawbo_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(getActivity(), WiFiDirectActivity.class);
+                    intent.putExtra("url",getActivity().getFilesDir() + "/" + videoPath);
+                    intent.putExtra("video",videoFile);
+
+                    startActivity(intent
+                    );
+                }
+            });
+
+            facebook_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    File file =  new File(getActivity().getFilesDir() + "/" + videoPath);
+                    Uri uri = Uri.fromFile(file);
 
 
-  /*  @Override
-    public void onClick(View v) {
+                    ShareVideo shareVideo  = new ShareVideo.Builder()
+                            .setLocalUrl(uri)
+                            .build();
+                    ShareContent shareContent = new ShareMediaContent.Builder()
+                            .addMedium(shareVideo)
+                            .build();
 
-        switch (view.getId())
-        {
-            case R.id.share_sawbo:
+                    ShareDialog shareDialog = new ShareDialog(getActivity());
+                    shareDialog.show(shareContent, ShareDialog.Mode.AUTOMATIC);
+                }
+            });
 
-                break;
-            case R.id.share_email:
-                shareNormalAtPos(videoPath);
+            general_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    File file = new File(getActivity().getFilesDir() , videoPath);
+                    Uri uri = FileProvider.getUriForFile(getContext(), "edu.illinois.entm.sawbodeployer", file);
 
-                break;
-            case R.id.share_facebook:
-                shareMedia("com.facebook.katana","https://twitter.com/intent/tweet?text="+urlEncode());
-                break;
-            case R.id.share_twitter:
+                    Intent intent = ShareCompat.IntentBuilder.from(getActivity())
+                            .setType("video/3gp")
+                            .setStream(uri)
+                            .setChooserTitle("Share via")
+                            .createChooserIntent()
+                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                shareMedia("com.twitter.android","https://twitter.com/intent/tweet?text="+urlEncode());
+                    startActivity(intent);
+                }
+            });
+
+            bluetooth_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    shareNormalAtPos(videoPath);
+                }
+            });
 
 
-                break;
-            case R.id.share_general:
-
-
-                break;
-            case R.id.share_phone:
-                shareNormalAtPos(videoPath);
-
-                break;
-            case R.id.share_bluetooth:
-                shareNormalAtPos(videoPath);
-
-                break;
         }
 
-    }*/
-
-   private void shareMedia(String pacName, String IntentUrl){
-        Intent tweetIntent = new Intent(Intent.ACTION_SEND);
-        tweetIntent.putExtra(Intent.EXTRA_TEXT, videoPath);
-        tweetIntent.setType("text/plain");
-
-/*        PackageManager packManager = getActivity().getPackageManager();
-        List<ResolveInfo> resolvedInfoList = packManager.queryIntentActivities(tweetIntent,  PackageManager.MATCH_DEFAULT_ONLY);
-
-        boolean resolved = false;
-        for(ResolveInfo resolveInfo: resolvedInfoList){
-            if(resolveInfo.activityInfo.packageName.startsWith(pacName)){
-                tweetIntent.setClassName(
-                        resolveInfo.activityInfo.packageName,
-                        resolveInfo.activityInfo.name );
-                resolved = true;
-                break;
-            }
-        }
-        if(resolved){
-            startActivity(tweetIntent);
-        }else*/{
-            Intent i = new Intent();
-            i.putExtra(Intent.EXTRA_TEXT, videoPath);
-            i.setAction(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(IntentUrl));
-            startActivity(i);
-        }
-    }
-
- private String urlEncode() {
-        try {
-            return URLEncoder.encode(videoPath, "UTF-8");
-        }catch (UnsupportedEncodingException e) {
-            Log.wtf(TAG, "UTF-8 should always be supported", e);
-            return "";
-        }
     }
 
 
@@ -427,11 +342,7 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
         System.err.println("click 1");
         // OBEX
         OBEXfile = new File(getActivity().getFilesDir() + "/" + filename);
-        System.err.println(filename+"@@@@");
         System.err.println("click 2"+OBEXfile.getAbsolutePath());
-
-        Log.d("filepath sharing", getActivity().getFilesDir() + "/" + filename);
-        //videoFilename = filename;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             Log.v("Bluetooth", "not available");
@@ -444,7 +355,6 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                 senderBTReady();
             }
         }
-        //senderBTReady();
     }
 
     public void senderBTReady() {
@@ -459,7 +369,6 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
     private void connectDevice(Intent data) {
         String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
         if(viaOBEX){
-            //wl.writeNow(getActivity(), "sharecontentviabluetooth", videoFilename, "", address);
             BluetoothOppFileSender sender = new BluetoothOppFileSender(getActivity(), OBEXfile, address);
             sender.send();
         }else {
@@ -503,13 +412,6 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
             }
             ct = new ClientThread(device, clientHandler);
             ct.start();
-            /*wl.writeNow(getActivity(), "sharecontentviaapp", videoFilename, "", address);
-            //(new SenderThread(device)).start();
-            if (ct != null) {
-                ct.cancel();
-            }
-            ct = new ClientThread(device, clientHandler);
-            ct.start();*/
         }
     }
 

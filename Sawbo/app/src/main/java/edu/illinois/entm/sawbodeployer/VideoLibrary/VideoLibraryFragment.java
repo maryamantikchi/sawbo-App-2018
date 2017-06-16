@@ -17,7 +17,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
@@ -31,7 +34,7 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
     public VideoLibraryFragment(){
     }
 
-    Video videoModel;
+   public Video videoModel;
     ProgressBar progressBar;
     AsyncTask<Void, Void, Void> getData;
     RecyclerView videoList;
@@ -40,11 +43,14 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
     TextView title_list,title_filters,title;
     FragmentManager fragmentManager;
 
+    public ArrayList<String>selected_topic,selected_country,selected_language;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_video_library, container, false);
 
-        videoModel = new Video();
+        //videoModel = new Video();
+
 
         fragmentManager = getFragmentManager();
 
@@ -142,6 +148,8 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
     }
 
    public void getRetrofitObject() {
+
+       videoModel = new Video();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.sawbo-illinois.org/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -177,9 +185,57 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.i("OCRTask","extracting..");
-            getRetrofitObject();
+            Log.i("OCRTask", "extracting..");
+            if (videoModel == null) {
+                getRetrofitObject();
+            } else {
+
+                Set<all> filtered_list=new HashSet<>();
+                if (selected_language.size() > 0 || selected_topic.size() > 0|| selected_country.size() > 0) {
+                    for (int i=0;i<videoModel.getAll().size();i++){
+                        System.err.println(videoModel.getAll().get(i).getLanguage()+"|"+videoModel.getAll().get(i).getCountry()+"|"+
+                                videoModel.getAll().get(i).getTopic());
+                        for (int j=0;j<selected_language.size();j++){
+                            for (int c=0;c<selected_country.size();c++) {
+                                for (int t=0;t<selected_topic.size();t++) {
+                                    if (videoModel.getAll().get(i).getLanguage().equals(selected_language.get(j))
+                                            && videoModel.getAll().get(i).getCountry().equals(selected_country.get(c))
+                                            && videoModel.getAll().get(i).getTopic().equals(selected_topic.get(t))) {
+                                        filtered_list.add(videoModel.getAll().get(i));
+                                    }
+                                }
+                            }
+                        }
+
+                   /*     for (int c=0;c<selected_country.size();c++) {
+
+                            if (videoModel.getAll().get(i).getCountry().equals(selected_country.get(c))) {
+                                filtered_list.add(videoModel.getAll().get(i));
+                            }
+                        }
+                            for (int t=0;t<selected_topic.size();t++){
+
+                                if (videoModel.getAll().get(i).getTopic().equals(selected_topic.get(t))) {
+                                    filtered_list.add(videoModel.getAll().get(i));
+
+                                }
+                        }*/
+
+                }
+                }
+
+                ArrayList<all> alls = new ArrayList<>(filtered_list);
+
+                Video filtered_video = new Video();
+                filtered_video.setAll(alls);
+                filtered_video.setLanguage(selected_language);
+                filtered_video.setCountry(selected_country);
+                filtered_video.setTopic(selected_topic);
+                adapter = new VideoListAdapter(filtered_video, getContext(), fragmentManager, VideoLibraryFragment.this);
+
+            }
             return null;
+
         }
     }
 

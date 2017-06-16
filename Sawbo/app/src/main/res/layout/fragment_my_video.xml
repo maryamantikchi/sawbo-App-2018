@@ -42,30 +42,48 @@
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:orientation="horizontal">
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/select_item"
-                android:layout_marginTop="9dp"
-                android:paddingLeft="15dp"
-                android:id="@+id/btn_select_all"
-                android:background="@color/colorPrimary"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="9dp"
-                android:text="Select All"
-                android:textColor="@color/gray_text"
-                android:id="@+id/select_my_vide"
-                android:textSize="7.2pt"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+
+            android:paddingTop="20dp"
+            android:id="@+id/select_all_item"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:weightSum="1">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/select_all_checkbox"
+                    android:padding="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical|center_horizontal|center"
+                    android:textSize="7.2pt"
+                    android:text="Select All"
+                    android:layout_alignParentLeft="true"
+                    android:button="@drawable/checkbox_selector"/>
+                <LinearLayout
+                    android:layout_marginTop="13dp"
+                    android:textSize="7.2pt"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:orientation="horizontal"
+                    android:layout_marginRight="20dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/delete_video_selected">
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/delete"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:textColor="@color/gray_text"
+                        android:layout_height="wrap_content"
+                        android:text="Delete"/>
 
 
-        </LinearLayout>
+                </LinearLayout>
+        </RelativeLayout>
 
 
         <View

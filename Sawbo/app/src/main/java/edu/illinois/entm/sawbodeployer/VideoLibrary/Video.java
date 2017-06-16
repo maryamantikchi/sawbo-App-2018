@@ -17,6 +17,10 @@ public class Video {
         return all;
     }
 
+    public void setAll(List<edu.illinois.entm.sawbodeployer.VideoLibrary.all> all) {
+        this.all = all;
+    }
+
     public List<String> getLanguage() {
         return Language;
     }
@@ -31,6 +35,14 @@ public class Video {
 
     public void setLanguage(List<String> language) {
         Language = language;
+    }
+
+    public void setTopic(List<String> topic) {
+        Topic = topic;
+    }
+
+    public void setCountry(List<String> country) {
+        Country = country;
     }
 }
 

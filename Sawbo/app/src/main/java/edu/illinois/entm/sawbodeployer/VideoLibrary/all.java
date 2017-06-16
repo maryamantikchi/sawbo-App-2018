@@ -1,10 +1,12 @@
 package edu.illinois.entm.sawbodeployer.VideoLibrary;
 
+import java.io.Serializable;
+
 /**
  * Created by Mahsa on 4/28/2017.
  */
 
-public class all {
+public class all implements Serializable{
 
         public String id;
         public String Country;

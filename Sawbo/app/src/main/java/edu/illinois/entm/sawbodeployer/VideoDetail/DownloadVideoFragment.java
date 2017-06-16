@@ -266,7 +266,7 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                     try {
                         String urlImage = URLEncoder.encode(video.getImage(), "UTF-8").replace("+", "%20");
                         final URL url_image = new URL(getResources().getString(R.string.thumbnail_url)+urlImage);
-                        saveToInternalStorage(downloadImage(url_image),video.getImage(),isLight);
+                        saveToInternalStorage(downloadImage(url_image),video.getImage());
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     } catch (MalformedURLException e) {
@@ -374,11 +374,11 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
         }
     }
 
-    public static void saveToInternalStorage(Bitmap bitmapImage, String icon,Boolean isLight){
+    public static void saveToInternalStorage(Bitmap bitmapImage, String icon){
         File root = Environment.getExternalStorageDirectory();
         File Dir=null;
             Dir = new File(root.getAbsolutePath() +"/.Sawbo/Images");
-        if (isLight) icon += "_light";
+       // if (isLight) icon += "_light";
         File file = new File(Dir, icon);
 
 

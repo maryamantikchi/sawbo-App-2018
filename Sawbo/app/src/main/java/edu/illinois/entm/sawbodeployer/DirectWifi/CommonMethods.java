@@ -46,9 +46,8 @@ public class CommonMethods {
    
     
     public static String getMeNthParamInString(String p_text,
-			String p_seperator, int nThParam) { // / "TOTRPIDS=101=104" returns
-												// "101" If nThParam ==
-												// 2.
+			String p_seperator, int nThParam) {
+
 		String retStrThirdParam = new String("");
 		int index = -1;
 		int prevIdx = 0;

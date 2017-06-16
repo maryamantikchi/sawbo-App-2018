@@ -20,43 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:orientation="horizontal">
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:id="@+id/share_sawbo"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/sawbo_share"/>
 
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:id="@+id/share_email"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/mail_share"/>
-
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/facebook_share"
-                    android:id="@+id/share_facebook"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center|left"
-                android:orientation="horizontal">
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="10dp"
-                    android:id="@+id/share_twitter"
-                    android:background="@drawable/twitter_share"/>
 
                 <RelativeLayout
                     android:layout_width="50dp"
@@ -68,11 +32,13 @@
                 <RelativeLayout
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:layout_weight="1"
                     android:layout_margin="10dp"
-                    android:id="@+id/share_phone"
-                    android:background="@drawable/phone_share"/>
-
+                    android:background="@drawable/facebook_share"
+                    android:id="@+id/share_facebook"/>
             </LinearLayout>
+
+
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -81,6 +47,13 @@
                 android:layout_gravity="center|left"
                 android:orientation="horizontal">
 
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:id="@+id/share_sawbo"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/sawbo_share"/>
 
                 <RelativeLayout
                     android:layout_width="50dp"
@@ -91,7 +64,5 @@
 
             </LinearLayout>
         </LinearLayout>
-
-
     </RelativeLayout>
 </FrameLayout>

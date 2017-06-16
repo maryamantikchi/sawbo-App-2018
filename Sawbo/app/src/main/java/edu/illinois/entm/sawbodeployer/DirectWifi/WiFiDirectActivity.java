@@ -28,6 +28,7 @@ import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -37,7 +38,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.apache.commons.io.FileUtils;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 import edu.illinois.entm.sawbodeployer.R;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 
 /**
  * An activity that uses WiFi Direct APIs to discover and connect with available
@@ -61,6 +75,11 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     Button scan,toggle_wifi;
 
     String video_url;
+    public all videoFile = new all();
+
+    public void setVideoFile(all videoFile) {
+        this.videoFile = videoFile;
+    }
 
     /**
      * @param isWifiP2pEnabled the isWifiP2pEnabled to set
@@ -76,12 +95,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 
         Bundle extras = getIntent().getExtras();
         video_url= extras.getString("url");
-        
-      /*  AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.setAdSize(AdSize.SMART_BANNER);
-        mAdView.loadAd(adRequest);*/
-        // add necessary intent values to be matched.
+        videoFile = (all) extras.getSerializable("video");
+
 
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -127,10 +142,6 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
             public void onClick(View v) {
                 if (manager != null && channel != null) {
 
-                    // Since this is the system wireless settings activity, it's
-                    // not going to send us a result. We will be notified by
-                    // WiFiDeviceBroadcastReceiver instead.
-
                     startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
                 } else {
                     Log.e(TAG, "channel or manager is null");
@@ -140,6 +151,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 
 
     }
+
+
 
     public String getVideoPath() {
         return video_url;
@@ -179,64 +192,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
             fragmentDetails.resetViews();
         }
     }
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_items, menu);
-        return true;
-    }*/
 
-    /*
-     * (non-Javadoc)
-     * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
-     */
-/*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.atn_direct_enable:
-                if (manager != null && channel != null) {
-
-                    // Since this is the system wireless settings activity, it's
-                    // not going to send us a result. We will be notified by
-                    // WiFiDeviceBroadcastReceiver instead.
-
-                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                } else {
-                    Log.e(TAG, "channel or manager is null");
-                }
-                return true;
-
-            case R.id.atn_direct_discover:
-                if (!isWifiP2pEnabled) {
-                    Toast.makeText(WiFiDirectActivity.this, R.string.p2p_off_warning,
-                            Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                final DeviceListFragment fragment = (DeviceListFragment) getFragmentManager()
-                        .findFragmentById(R.id.frag_list);
-                fragment.onInitiateDiscovery();
-                manager.discoverPeers(channel, new ActionListener() {
-
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(WiFiDirectActivity.this, "Discovery Initiated",
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(int reasonCode) {
-                        Toast.makeText(WiFiDirectActivity.this, "Discovery Failed : " + reasonCode,
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-*/
 
     @Override
     public void showDetails(WifiP2pDevice device) {
@@ -337,5 +293,65 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
             }
         }
 
+    }
+
+    public  void gatheringFile(){
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(videoFile);
+
+        File root = new File(Environment.getExternalStorageDirectory(), ".Sawbo");
+       // File dir = new File(root,"temp");
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+      //  generateNoteOnSD(root,"VideoInfo.txt",jsonString);
+
+        File source = new File(video_url);
+        String destinationPath = root.getPath()+File.separator+"temp"+File.separator+source.getName();
+
+        File destination = new File(destinationPath);
+
+        File Imgroot = Environment.getExternalStorageDirectory();
+        File ImgDir = new File(Imgroot.getAbsolutePath() +"/.Sawbo/Images");
+        File Imgfile = new File(ImgDir, videoFile.getImage());
+
+        File destinationImg = new File(root.getPath()+File.separator+"temp"+File.separator+videoFile.getImage());
+
+        try
+        {
+            FileUtils.copyFile(source, destination);
+            FileUtils.copyFile(Imgfile, destinationImg);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public all readFile(){
+        StringBuilder text = new StringBuilder();
+        try {
+            File root = new File(Environment.getExternalStorageDirectory(), "Sawbo");
+            File dir = new File(root,"temp");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File file = new File(dir, "VideoInfo.txt");
+
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close() ;
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        all video = gson.fromJson(String.valueOf(text), all.class);
+        return video;
     }
 }

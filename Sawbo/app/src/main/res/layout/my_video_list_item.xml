@@ -5,14 +5,29 @@
     android:id="@+id/view_my_video_item"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <ImageButton
+    <LinearLayout
+        android:layout_width="35dp"
+        android:layout_height="80dp"
+        android:id="@+id/select_my_video_item"
+        android:layout_centerVertical="true"
+        android:gravity="center">
+            <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+                android:id="@+id/select_my_video_checkbox"
+                android:gravity="center_vertical|center_horizontal|center"
+            android:button="@drawable/checkbox_selector"/>
+    </LinearLayout>
+
+
+   <!-- <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:src="@drawable/select_item"
         android:background="@color/colorPrimary"
-        android:id="@+id/select_my_video_item"/>
+        android:id="@+id/select_my_video_item"/>-->
     <ImageView
         android:layout_width="80dp"
         android:layout_height="60dp"

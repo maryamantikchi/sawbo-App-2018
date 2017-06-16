@@ -18,7 +18,9 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 
 import java.io.File;
 
@@ -45,6 +47,7 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
     String videoPath;
     Button select_language;
     MyVideoDataSource dataSource;
+    RelativeLayout groupLayput;
 
     public MyVideoDetailFragment(){
     }
@@ -62,7 +65,7 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
         Button deleteBtn = (Button) view.findViewById(R.id.download_video);
         deleteBtn.setText("DELETE");
 
-
+        groupLayput = (RelativeLayout)view.findViewById(R.id.my_video_detail_layout);
 
 
 
@@ -186,10 +189,16 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               // toggleView(false);
+
+                enableDisableViewGroup(groupLayput,false);
+
                 ShareVideoFragment fragment = new ShareVideoFragment();
                 if (videoDetail.getVideo().length()==0)
                     fragment.videoPath = videoDetail.getVideolight();
                 else if (videoDetail.getVideolight().length()==0)fragment.videoPath = videoDetail.getVideo();
+
+                fragment.videoFile = videoDetail;
 
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().add(R.id.main_container, fragment)
@@ -240,6 +249,30 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
         dataSource.close();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+       // toggleView(true);
+        enableDisableViewGroup(groupLayput,true);
+    }
 
+   /* private void toggleView(Boolean isEnable){
+        for (int i = 0; i < groupLayput.getChildCount(); i++) {
+            View child = groupLayput.getChildAt(i);
+            child.setEnabled(isEnable);
+            child.setClickable(isEnable);
+        }
+    }*/
+
+    public static void enableDisableViewGroup(ViewGroup viewGroup, boolean enabled) {
+        int childCount = viewGroup.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View view = viewGroup.getChildAt(i);
+            view.setEnabled(enabled);
+            if (view instanceof ViewGroup) {
+                enableDisableViewGroup((ViewGroup) view, enabled);
+            }
+        }
+    }
 
 }

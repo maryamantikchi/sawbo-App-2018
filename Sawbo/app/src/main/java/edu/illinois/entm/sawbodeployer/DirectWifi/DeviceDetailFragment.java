@@ -1,29 +1,24 @@
-/*
- * Copyright (C) 2011 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package edu.illinois.entm.sawbodeployer.DirectWifi;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.StreamCorruptedException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -46,8 +41,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import edu.illinois.entm.sawbodeployer.MainActivity;
+import org.apache.commons.io.FileUtils;
+
 import edu.illinois.entm.sawbodeployer.R;
+import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 
 /**
  * A fragment that manages a particular peer and allows interaction with device
@@ -56,8 +54,7 @@ import edu.illinois.entm.sawbodeployer.R;
 public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener {
 
 
-
-	private View mContentView = null;
+	private static View mContentView = null;
 	private WifiP2pDevice device;
 	private WifiP2pInfo info;
 	ProgressDialog progressDialog = null;
@@ -69,7 +66,12 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	public static String GroupOwnerAddress = "";
 	static long ActualFilelength = 0;
 	static int Percentage = 0;
-	public static String FolderName = "WiFiDirectDemo";
+	//public static String FolderName = "WiFiDirectDemo";
+	public static all videoInfo;
+
+
+	String fullPath;
+	File f;
 
 	String url;
 
@@ -83,7 +85,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 		mContentView = inflater.inflate(R.layout.device_detail, null);
 		Bundle extras = getActivity().getIntent().getExtras();
-		url= extras.getString("url");
+		url = extras.getString("url");
+		videoInfo = (all) extras.getSerializable("video");
 
 		mContentView.findViewById(R.id.btn_connect).setOnClickListener(new View.OnClickListener() {
 
@@ -116,109 +119,26 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 					@Override
 					public void onClick(View v) {
 
-						Uri uri;
-						String Extension = "";
-						if(url!=null){
-							File f = new File(url);
-
-							uri = Uri.fromFile(f);
-							System.err.println(uri+" hey hey ");
-							System.out.println("file name is   ::" + f.getName());
-							Long FileLength = f.length();
-							ActualFilelength = FileLength;
-							try {
-								Extension = f.getName();
-								Log.e("Name of File-> ", "" + Extension);
-							} catch (Exception e) {
-								// TODO: handle exception
-								e.printStackTrace();
-							}
-						}
-						else{
-							CommonMethods.e("", "path is null");
-							return;
+						File root = new File(Environment.getExternalStorageDirectory(), ".Sawbo");
+						if (!root.exists()) {
+							root.mkdirs();
 						}
 
-
-						TextView statusText = (TextView) mContentView.findViewById(R.id.status_text);
-						statusText.setText("Sending: " + uri);
-						Log.d(WiFiDirectActivity.TAG, "Intent----------- " + uri);
-						Intent serviceIntent = new Intent(getActivity(), FileTransferService.class);
-						serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
-						System.err.println(uri.toString()+" uuuurrrrrriiiiii");
-						serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
-    	        /*
-    	         * Choose on which device file has to send weather its server or client
-    	         */
-						String Ip = SharedPreferencesHandler.getStringValues(
-								getActivity(), "WiFiClientIp");
-						String OwnerIp = SharedPreferencesHandler.getStringValues(
-								getActivity(), "GroupOwnerAddress");
-						if (OwnerIp != null && OwnerIp.length() > 0) {
-							CommonMethods.e("", "inside the check -- >");
-							String host=null;
-							int  sub_port =-1;
-
-							String ServerBool = SharedPreferencesHandler.getStringValues(getActivity(), "ServerBoolean");
-							if (ServerBool!=null && !ServerBool.equals("") && ServerBool.equalsIgnoreCase("true")) {
-
-								//-----------------------------
-								if (Ip != null && !Ip.equals("")) {
-									CommonMethods.e(
-											"in if condition",
-											"Sending data to " + Ip);
-									// Get Client Ip Address and send data
-									host=Ip;
-									sub_port=FileTransferService.PORT;
-									serviceIntent
-											.putExtra(
-													FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
-													Ip);
-
-								}
+						generateNoteOnSD(root,"VideoInfo.txt");
 
 
-							} else {
-								CommonMethods.e(
-										"in else condition",
-										"Sending data to " + OwnerIp);
-
-								FileTransferService.PORT = 8888;
-
-								host=OwnerIp;
-								sub_port=FileTransferService.PORT;
-								serviceIntent
-										.putExtra(
-												FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
-												OwnerIp);
+						File Imgroot = Environment.getExternalStorageDirectory();
+						File ImgDir = new File(Imgroot.getAbsolutePath() +"/.Sawbo/Images");
+						File Imgfile = new File(ImgDir, videoInfo.getImage());
 
 
+						ArrayList<String> filePath=new ArrayList<>();
+						filePath.add(url);
+						filePath.add(Imgfile.getPath());
+						filePath.add(root.getPath()+"/VideoInfo.txt");
+						zipFolder(filePath,root.toString(),"video_pack.zip");
+						sendingFile(root.getPath()+"/video_pack.zip");
 
-							}
-
-
-							serviceIntent.putExtra(FileTransferService.Extension, Extension);
-
-							serviceIntent.putExtra(FileTransferService.Filelength,
-									ActualFilelength + "");
-							serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, FileTransferService.PORT);
-							if(host !=null && sub_port!=-1)
-							{
-								CommonMethods.e("Going to intiate service", "service intent for initiating transfer");
-								showprogress("Sending...");
-								getActivity().startService(serviceIntent);
-							}
-							else {
-								CommonMethods.DisplayToast(getActivity(),
-										"Host Address not found, Please Re-Connect");
-								DismissProgressDialog();
-							}
-
-						} else {
-							DismissProgressDialog();
-							CommonMethods.DisplayToast(getActivity(),
-									"Host Address not found, Please Re-Connect");
-						}
 					}
 
 
@@ -227,12 +147,110 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		return mContentView;
 	}
 
+	public static void sendingFile(String path) {
+		Uri uri;
+		String Extension = "";
+		File f;
+		if (path != null) {
+			f = new File(path);
+
+			uri = Uri.fromFile(f);
+			Long FileLength = f.length();
+			ActualFilelength = FileLength;
+			try {
+				Extension = f.getName();
+				Log.e("Name of File-> ", "" + Extension);
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		} else {
+			CommonMethods.e("", "path is null");
+			return;
+		}
+		Log.d(WiFiDirectActivity.TAG, "Intent----------- " + uri);
+		Intent serviceIntent = new Intent(mContentView.getContext(), FileTransferService.class);
+		serviceIntent.setAction(FileTransferService.ACTION_SEND_FILE);
+		serviceIntent.putExtra(FileTransferService.EXTRAS_FILE_PATH, uri.toString());
+
+    	        /*
+    	         * Choose on which device file has to send weather its server or client
+    	         */
+		String Ip = SharedPreferencesHandler.getStringValues(
+				mContentView.getContext(), "WiFiClientIp");
+		String OwnerIp = SharedPreferencesHandler.getStringValues(
+				mContentView.getContext(), "GroupOwnerAddress");
+		if (OwnerIp != null && OwnerIp.length() > 0) {
+			CommonMethods.e("", "inside the check -- >");
+			String host = null;
+			int sub_port = -1;
+
+			String ServerBool = SharedPreferencesHandler.getStringValues(mContentView.getContext(), "ServerBoolean");
+			if (ServerBool != null && !ServerBool.equals("") && ServerBool.equalsIgnoreCase("true")) {
+
+				//-----------------------------
+				if (Ip != null && !Ip.equals("")) {
+					CommonMethods.e(
+							"in if condition",
+							"Sending data to " + Ip);
+					host = Ip;
+					sub_port = FileTransferService.PORT;
+					serviceIntent
+							.putExtra(
+									FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+									Ip);
+
+				}
+
+
+			} else {
+				CommonMethods.e(
+						"in else condition",
+						"Sending data to " + OwnerIp);
+
+				FileTransferService.PORT = 8888;
+
+				host = OwnerIp;
+				sub_port = FileTransferService.PORT;
+				serviceIntent
+						.putExtra(
+								FileTransferService.EXTRAS_GROUP_OWNER_ADDRESS,
+								OwnerIp);
+
+
+			}
+
+
+			serviceIntent.putExtra(FileTransferService.Extension, Extension);
+
+			serviceIntent.putExtra(FileTransferService.Filelength,
+					ActualFilelength + "");
+			serviceIntent.putExtra(FileTransferService.EXTRAS_GROUP_OWNER_PORT, FileTransferService.PORT);
+			if (host != null && sub_port != -1) {
+				CommonMethods.e("Going to intiate service", "service intent for initiating transfer");
+				showprogress("Sending...");
+				mContentView.getContext().startService(serviceIntent);
+			} else {
+				CommonMethods.DisplayToast(mContentView.getContext(),
+						"Host Address not found, Please Re-Connect");
+				DismissProgressDialog();
+			}
+
+		} else {
+			DismissProgressDialog();
+			CommonMethods.DisplayToast(mContentView.getContext(),
+					"Host Address not found, Please Re-Connect");
+		}
+	}
+
 
 	@Override
 	public void onConnectionInfoAvailable(final WifiP2pInfo info) {
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
+
+		Log.v("onConnectionInfoAv","onConnectionInfoAvailable");
 		this.info = info;
 		this.getView().setVisibility(View.VISIBLE);
 
@@ -244,9 +262,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 		// InetAddress from WifiP2pInfo struct.
 		view = (TextView) mContentView.findViewById(R.id.device_info);
-		if(info.groupOwnerAddress.getHostAddress()!=null)
+		if (info.groupOwnerAddress.getHostAddress() != null)
 			view.setText("Group Owner IP - " + info.groupOwnerAddress.getHostAddress());
-		else{
+		else {
 			CommonMethods.DisplayToast(getActivity(), "Host Address not found");
 		}
 		// After the group negotiation, we assign the group owner as the file
@@ -254,8 +272,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		// socket.
 		try {
 			String GroupOwner = info.groupOwnerAddress.getHostAddress();
-			if(GroupOwner!=null && !GroupOwner.equals("")) SharedPreferencesHandler.setStringValues(getActivity(),
-					"GroupOwnerAddress", GroupOwner);
+			if (GroupOwner != null && !GroupOwner.equals(""))
+				SharedPreferencesHandler.setStringValues(getActivity(),
+						"GroupOwnerAddress", GroupOwner);
 			mContentView.findViewById(R.id.btn_start_client).setVisibility(View.VISIBLE);
 			if (info.groupFormed && info.isGroupOwner) {
         	/*
@@ -263,22 +282,15 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         	 */
 				SharedPreferencesHandler.setStringValues(getActivity(),
 						"ServerBoolean", "true");
-
-            /*new FileServerAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text))
-                    .execute();*/
 				FileServerAsyncTask FileServerobj = new FileServerAsyncTask(
 						getActivity(), FileTransferService.PORT);
 				if (FileServerobj != null) {
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-						FileServerobj.executeOnExecutor(
-								AsyncTask.THREAD_POOL_EXECUTOR,
-								new String[] { null });
-					}
-					else
+						FileServerobj.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[]{null});
+					} else
 						FileServerobj.execute();
 				}
-			}
-			else  {
+			} else {
 				if (!ClientCheck) {
 					firstConnectionMessage firstObj = new firstConnectionMessage(
 							GroupOwnerAddress);
@@ -286,33 +298,27 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 							firstObj.executeOnExecutor(
 									AsyncTask.THREAD_POOL_EXECUTOR,
-									new String[] { null });
+									new String[]{null});
 						} else
 							firstObj.execute();
 					}
 				}
 
-				FileServerAsyncTask FileServerobj = new FileServerAsyncTask(
-						getActivity(), FileTransferService.PORT);
+				FileServerAsyncTask FileServerobj = new FileServerAsyncTask(getActivity(), FileTransferService.PORT);
 				if (FileServerobj != null) {
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 						FileServerobj.executeOnExecutor(
 								AsyncTask.THREAD_POOL_EXECUTOR,
-								new String[] { null });
-					}
-					else
+								new String[]{null});
+					} else
 						FileServerobj.execute();
 
 				}
 
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 
 		}
-
-
-
 
 	}
 
@@ -363,24 +369,24 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	 * the stream.
 	 */
 	static Handler handler;
-	public static class FileServerAsyncTask extends AsyncTask<String, String, String> {
 
-		//        private TextView statusText;
+
+
+	public class FileServerAsyncTask extends AsyncTask<String, String, String> {
+
 		private Context mFilecontext;
 		private String Extension, Key;
 		private File EncryptedFile;
 		private long ReceivedFileLength;
 		private int PORT;
+
 		/**
 		 * @param context
-		 * @param statusText
 		 */
 		public FileServerAsyncTask(Context context, int port) {
 			this.mFilecontext = context;
-//            this.statusText = (TextView) statusText;
 			handler = new Handler();
 			this.PORT = port;
-//			myTask = new FileServerAsyncTask();
 			if (mProgressDialog == null)
 				mProgressDialog = new ProgressDialog(mFilecontext,
 						ProgressDialog.THEME_HOLO_LIGHT);
@@ -396,7 +402,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 				Log.d(CommonMethods.Tag, "Server: Socket opened");
 				Socket client = serverSocket.accept();
-				Log.d("Client's InetAddresssss  ", "" + client.getInetAddress());
 
 				WiFiClientIp = client.getInetAddress().getHostAddress();
 
@@ -444,25 +449,23 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 						mProgressDialog.setMax(100);
 						mProgressDialog.setProgress(0);
 						mProgressDialog.setProgressNumberFormat(null);
-//						mProgressDialog.setCancelable(false);
-						mProgressDialog
-								.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+						mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 						mProgressDialog.show();
 					}
 				};
-				handler.post(r);
-				Log.e("FileName got from socket on other side->>> ",
-						obj.getFileName());
 
-				final File f = new File(
-						Environment.getExternalStorageDirectory() + "/"
-								+ FolderName + "/"
-								+ obj.getFileName());
+				handler.post(r);
+
+				Log.e("FileNameFromSocket", obj.getFileName());
+
+				fullPath = GlobalApplication.getGlobalAppContext().getFilesDir()+ "/video_pack";
+				f = new File(GlobalApplication.getGlobalAppContext().getFilesDir()+"/"+obj.getFileName());
 
 				File dirs = new File(f.getParent());
 				if (!dirs.exists())
 					dirs.mkdirs();
 				f.createNewFile();
+
 
 				/*
 				 * Recieve file length and copy after it
@@ -472,8 +475,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				InputStream inputstream = client.getInputStream();
 
 
-				copyRecievedFile(inputstream, new FileOutputStream(f),
-						ReceivedFileLength);
+				copyRecievedFile(inputstream, new FileOutputStream(f), ReceivedFileLength);
 				ois.close(); // close the ObjectOutputStream object after saving
 				// file to storage.
 				serverSocket.close();
@@ -498,33 +500,25 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		@Override
 		protected void onPostExecute(String result) {
 			if (result != null) {
-            /*	if(!result.equalsIgnoreCase("Demo")){
-            		if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
-                    }
-
-            		Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.parse("file://" + result), "image*//*");
-                    mFilecontext.startActivity(intent);
-            	}
-            	else*/{
+				{
             		/*
 					 * To initiate socket again we are intiating async task
 					 * in this condition.
 					 */
 					FileServerAsyncTask FileServerobj = new
-							FileServerAsyncTask(mFilecontext,FileTransferService.PORT);
-					if(FileServerobj != null) {
+							FileServerAsyncTask(mFilecontext, FileTransferService.PORT);
+					if (FileServerobj != null) {
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-							FileServerobj.executeOnExecutor (AsyncTask.THREAD_POOL_EXECUTOR, new String[] { null });
+							FileServerobj.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[]{null});
 
-						}
-						else FileServerobj.execute();
+						} else FileServerobj.execute();
+
+
+							unZipIt(f.getPath(),fullPath);
+
 
 					}
 				}
-//                statusText.setText("File copied - " + result);
 
 			}
 
@@ -556,8 +550,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 					if (ActualFilelength > 0) {
 						Percentage = (int) ((total * 100) / ActualFilelength);
 					}
-					// Log.e("Percentage--->>> ", Percentage+"   FileLength" +
-					// EncryptedFilelength+"    len" + len+"");
 					mProgressDialog.setProgress(Percentage);
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -572,21 +564,20 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				}
 			}
 
-			out.close();
 			inputStream.close();
 		} catch (IOException e) {
 			Log.d(WiFiDirectActivity.TAG, e.toString());
 			return false;
 		}
+
 		return true;
 	}
+
 
 	public static boolean copyRecievedFile(InputStream inputStream,
 										   OutputStream out, Long length) {
 
 		byte buf[] = new byte[FileTransferService.ByteSize];
-		//byte Decryptedbuf[] = new byte[FileTransferService.ByteSize];
-		//String Decrypted;
 		int len;
 		long total = 0;
 		int progresspercentage = 0;
@@ -614,7 +605,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 					}
 				}
 			}
-			// dismiss progress after sending
+
 			if (mProgressDialog != null) {
 				if (mProgressDialog.isShowing()) {
 					mProgressDialog.dismiss();
@@ -629,9 +620,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		return true;
 	}
 
-	public void showprogress(final String task) {
+	public static void showprogress(final String task) {
 		if (mProgressDialog == null) {
-			mProgressDialog = new ProgressDialog(getActivity(),
+			mProgressDialog = new ProgressDialog(mContentView.getContext(),
 					ProgressDialog.THEME_HOLO_LIGHT);
 		}
 		Handler handle = new Handler();
@@ -640,11 +631,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 			public void run() {
 				// TODO Auto-generated method stub
 				mProgressDialog.setMessage(task);
-				// mProgressDialog.setProgressNumberFormat(null);
-				// mProgressDialog.setProgressPercentFormat(null);
 				mProgressDialog.setIndeterminate(false);
 				mProgressDialog.setMax(100);
-//				mProgressDialog.setCancelable(false);
 				mProgressDialog.setProgressNumberFormat(null);
 				mProgressDialog
 						.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -714,8 +702,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			if(result!=null){
-				if(result.equalsIgnoreCase("success")){
+			if (result != null) {
+				if (result.equalsIgnoreCase("success")) {
 					CommonMethods.e("On first Connect",
 							"On first Connect sent to asynctask");
 					ClientCheck = true;
@@ -725,4 +713,203 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		}
 
 	}
+
+	private void addDataBase(all video) {
+		MyVideoDataSource dataSource = new MyVideoDataSource(GlobalApplication.getGlobalAppContext());
+		dataSource.open();
+		all newVideo = new all();
+		newVideo = video;
+		Boolean isLight = true;
+		if (video.getVideolight().isEmpty() || video.getVideolight() == null) {
+			isLight = false;
+		}
+		if (isLight)
+			newVideo.setVideo("");
+		else newVideo.setVideolight("");
+
+		dataSource.createVideo(newVideo);
+		dataSource.close();
+	}
+
+
+	public void generateNoteOnSD(File dir, String sFileName) {
+		ObjectOutput out = null;
+
+		try {
+			out = new ObjectOutputStream(new FileOutputStream(new File(dir,"")+File.separator+sFileName));
+			out.writeObject(DeviceDetailFragment.videoInfo);
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
+	public void unZipIt(String zipFile, String outputFolder){
+
+		byte[] buffer = new byte[1024];
+
+		try{
+
+			//create output directory is not exists
+			File folder = new File(fullPath);
+			if(!folder.exists()){
+				folder.mkdir();
+			}
+
+			//get the zip file content
+			ZipInputStream zis =
+					new ZipInputStream(new FileInputStream(zipFile));
+			//get the zipped file list entry
+			ZipEntry ze = zis.getNextEntry();
+
+			while(ze!=null){
+
+				String fileName = ze.getName();
+				File newFile = new File(outputFolder + File.separator + fileName);
+
+				System.out.println("file unzip : "+ newFile.getAbsoluteFile());
+
+				//create all non exists folders
+				//else you will hit FileNotFoundException for compressed folder
+				new File(newFile.getParent()).mkdirs();
+
+				FileOutputStream fos = new FileOutputStream(newFile);
+
+				int len;
+				while ((len = zis.read(buffer)) > 0) {
+					fos.write(buffer, 0, len);
+				}
+
+				fos.close();
+
+
+				//System.err.println(jsonString);
+
+				//all newVideo =  new Gson().fromJson(jsonString, all.class);
+
+				if (newFile.getPath().contains(".txt")){
+					//read file
+
+
+					all newVideo = readFile(newFile);
+					//add to db
+					addDataBase(newVideo);
+
+				}else if (newFile.getPath().contains(".3gp")){
+					//copy to videos
+					System.err.println(getActivity().getFilesDir() + "/"+newFile.getName());
+
+					File source = new File(getActivity().getFilesDir() + "/"+newFile.getName());
+
+					FileUtils.copyFile(newFile, source);
+
+				}else if(newFile.getPath().contains(".jpg")){
+					//copy to images
+
+					File Imgroot = Environment.getExternalStorageDirectory();
+					File ImgDir = new File(Imgroot.getAbsolutePath() +"/.Sawbo/Images");
+					File Imgfile = new File(ImgDir.getAbsolutePath()+"/"+ newFile.getName());
+					FileUtils.copyFile(newFile, Imgfile);
+
+				}
+
+				newFile.delete();
+
+
+
+				ze = zis.getNextEntry();
+			}
+
+			zis.closeEntry();
+			zis.close();
+
+			System.out.println("Done");
+
+		}catch(IOException ex){
+			ex.printStackTrace();
+		}
+	}
+
+	public void zipFolder(ArrayList<String> _files, String destination, String fileName) {
+		try {
+			BufferedInputStream origin = null;
+			FileOutputStream dest = new FileOutputStream(destination+"/"+fileName);
+			ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+			byte data[] = new byte[1024];
+
+			for (int i = 0; i < _files.size(); i++) {
+				File f = new File(_files.get(i));
+				if (f.exists()) {
+					FileInputStream fi = new FileInputStream(_files.get(i));
+					origin = new BufferedInputStream(fi, data.length);
+
+					ZipEntry entry = new ZipEntry(_files.get(i).substring(_files.get(i).lastIndexOf("/") + 1));
+					out.putNextEntry(entry);
+					int count;
+
+					while ((count = origin.read(data, 0, data.length)) != -1) {
+						out.write(data, 0, count);
+					}
+					origin.close();
+				}
+			}
+
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private all readFile(File file){
+
+
+		ObjectInputStream input;
+		//String filename = "testFilemost.srl";
+
+		all myPersonObject = new all();
+
+		try {
+			input = new ObjectInputStream(new FileInputStream(file/*new File(new File(getFilesDir(),"")+File.separator+filename)*/));
+			myPersonObject = (all) input.readObject();
+			//Log.v("serialization","Person a="+myPersonObject.getA());
+			input.close();
+		} catch (StreamCorruptedException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return myPersonObject;
+
+
+/*		//Read text from file
+		StringBuilder text = new StringBuilder();
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String line;
+
+			while ((line = br.readLine()) != null) {
+				text.append(line);
+				text.append('\n');
+			}
+			br.close();
+		}
+		catch (IOException e) {
+			//You'll need to add proper error handling here
+		}
+
+		return text.toString();*/
+
+	}
+
 }

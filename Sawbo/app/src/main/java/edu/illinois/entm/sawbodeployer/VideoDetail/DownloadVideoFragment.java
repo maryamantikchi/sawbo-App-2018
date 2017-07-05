@@ -22,7 +22,10 @@ import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,11 +46,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 
+import edu.illinois.entm.sawbodeployer.MyVideoDetail.MyVideoDetailFragment;
+import edu.illinois.entm.sawbodeployer.MyVideos.MyVideoFragment;
 import edu.illinois.entm.sawbodeployer.R;
+import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
+import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
 import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
-import edu.illinois.entm.sawbodeployer.WriteLog;
+//import edu.illinois.entm.sawbodeployer.WriteLog;
 
 /**
  * Created by Mahsa on 4/9/2017.
@@ -63,8 +71,9 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
     boolean stopDownload = false;
     long downloadID;
     BroadcastReceiver onComplete;
+    HelperActivity writeLog;
 
-    WriteLog wl = new WriteLog();
+    //WriteLog wl = new WriteLog();
 
     public DownloadVideoFragment(){
     }
@@ -113,6 +122,8 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
             CheckPermissions();
         }
 
+        writeLog = new HelperActivity(getContext());
+
         liteFile = (Button)view.findViewById(R.id.btn_download_lite);
         standardFile = (Button)view.findViewById(R.id.btn_download_standard);
         TextView title = (TextView)view.findViewById(R.id.title_video_download);
@@ -124,7 +135,7 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                 "fonts/BentonSans Medium.otf");
         liteFile.setTypeface(title_video_font);
         standardFile.setTypeface(title_video_font);
-        checkFileExist(video.getVideo(),standardFile);
+        checkFileExist(video.getGp_file(),standardFile);
         checkFileExist(video.getVideolight(),liteFile);
 
         liteFile.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +152,7 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
             @Override
             public void onClick(View v) {
                // addDataBase(true);
-                download_video(standardFile,video.getVideo(),false);
+                download_video(standardFile,video.getGp_file(),false);
             }
 
 
@@ -187,8 +198,9 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
         dataSource.open();
         all newVideo = new all();
         newVideo = video;
-        if (isLight)
-            newVideo.setVideo("");
+        if (isLight){
+            newVideo.setGp_file("");
+        }
         else newVideo.setVideolight("");
 
         dataSource.createVideo(newVideo);
@@ -289,7 +301,23 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                             }
                             stopDownload = false;
                             btn.setText(context.getResources().getString(R.string.avoffline_str));
-                            btn.setEnabled(false);
+                            btn.setEnabled(true);
+                            btn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    MyVideoDetailFragment fragment = new MyVideoDetailFragment();
+                                    fragment.videoDetail = video;
+
+                                    MyVideoFragment myVideoFragment = new MyVideoFragment();
+
+                                    FragmentManager fragmentManager = getFragmentManager();
+                                    fragmentManager.beginTransaction().hide(myVideoFragment)
+                                            .add(R.id.main_container, fragment)
+                                            .addToBackStack(null)
+                                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                            .commit();
+                                }
+                            });
                             btn.invalidate();
                             if (chkf.exists()) {
                                 chkf.delete();
@@ -332,9 +360,12 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
 
             String videoFilename = "";
             if (isLight) videoFilename = video.getVideolight();
-            else videoFilename = video.getVideo();
+            else videoFilename = video.getGp_file();
 //            wl.writeNow(getActivity(), "download", videoFilename, "");
   //          wl.sendLog(getActivity());
+            UserActivities activities = new UserActivities();
+            activities.setDl_vidID(video.getId());
+            writeLog.WriteUsrActivity(activities,getActivity());
 
             addDataBase(isLight);
 

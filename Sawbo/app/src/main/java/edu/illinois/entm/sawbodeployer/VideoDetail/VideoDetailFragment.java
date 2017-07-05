@@ -14,6 +14,8 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import at.blogc.android.views.ExpandableTextView;
@@ -33,13 +35,16 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
     Typeface title_font,title_video_font,title_religion_font;
     public all videoDetail;
     public Video video;
-    TextView title,videoName,religion;
+    TextView title,videoName,religion,my_video;
     String videoPath;
     View view;
     Button download,select_language,share;
+    RelativeLayout groupLayput;
 
      ExpandableTextView expandableTextView;
     ImageButton buttonToggle;
+
+    ScrollView scroll;
 
     public VideoDetailFragment(){
     }
@@ -52,6 +57,9 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
     }
 
     private void initialize() {
+        my_video = (TextView)view.findViewById(R.id.title_my_video_detail);
+        my_video.setVisibility(View.GONE);
+        groupLayput = (RelativeLayout)view.findViewById(R.id.my_video_detail_layout);
         title_font = Typeface.createFromAsset(getActivity().getAssets(),
                 "fonts/BebasNeue.otf");
         title_video_font = Typeface.createFromAsset(getActivity().getAssets(),
@@ -61,6 +69,8 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
         title = (TextView)view.findViewById(R.id.title_video_detail);
         title.setTypeface(title_font);
 
+        scroll = (ScrollView) view.findViewById(R.id.scroll_detail);
+
         videoName = (TextView)view.findViewById(R.id.title_video_name);
         videoName.setText(videoDetail.getTitle());
         videoName.setTypeface(title_video_font);
@@ -69,7 +79,7 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
         religion.setTypeface(title_religion_font);
         religion.setText(videoDetail.getLanguage()+" from "+videoDetail.getCountry());
 
-        videoPath = getContext().getResources().getString(R.string.video_url)+videoDetail.getVideo();
+        videoPath = getContext().getResources().getString(R.string.video_url)+videoDetail.getGp_file();
 
         expandableTextView = (ExpandableTextView) view.findViewById(R.id.expandable_txt_video_detail);
         expandableTextView.setText(videoDetail.getDescription());
@@ -147,13 +157,13 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                enableDisableViewGroup(groupLayput,false);
                 DownloadVideoFragment fragment = new DownloadVideoFragment();
                 fragment.video = videoDetail;
                 FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().add(R.id.main_container, fragment)
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit();
+                fragmentManager.beginTransaction().replace(R.id.main_container, fragment)
+                        .addToBackStack(null).commit();
             }
         });
 
@@ -162,13 +172,16 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
 
+                enableDisableViewGroup(groupLayput,false);
+
                 ShareVideoFragment fragment = new ShareVideoFragment();
                 fragment.videoPath = videoPath;
                 FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().add(R.id.main_container, fragment)
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit();
+                fragmentManager.beginTransaction().replace(R.id.main_container, fragment)
+                        .addToBackStack(null).commit();
+                        /*.addToBackStack(null)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)*/
+                        //.commit();
 
              /*   Intent tweetIntent = new Intent(Intent.ACTION_SEND);
                 tweetIntent.putExtra(Intent.EXTRA_TEXT, videoPath);
@@ -264,6 +277,26 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
         });
         builderSingle.show();
 
+    }
+
+
+    public void enableDisableViewGroup(ViewGroup viewGroup, boolean enabled) {
+        int childCount = viewGroup.getChildCount();
+
+        for (int i = 0; i < childCount; i++) {
+            View view = viewGroup.getChildAt(i);
+            view.setEnabled(enabled);
+            if (view instanceof ViewGroup) {
+                enableDisableViewGroup((ViewGroup) view, enabled);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // toggleView(true);
+        enableDisableViewGroup(groupLayput,true);
     }
 
 }

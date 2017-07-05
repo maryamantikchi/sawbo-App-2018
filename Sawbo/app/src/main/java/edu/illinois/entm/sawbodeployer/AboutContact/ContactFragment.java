@@ -18,10 +18,13 @@ import edu.illinois.entm.sawbodeployer.R;
  * Created by Mahsa on 4/29/2017.
  */
 
-public class ContactFragment extends Fragment implements View.OnClickListener{
+public class ContactFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
     RelativeLayout mail,facebook,twitter,instagram,sawbo;
     Button rate_btn;
     View v;
+
+    public ContactFragment(){}
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.contact_fragment, container, false);
@@ -31,11 +34,11 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         return v;
     }
 
-    public static ContactFragment newInstance() {
+ /*   public static ContactFragment newInstance() {
 
         ContactFragment f = new ContactFragment();
         return f;
-    }
+    }*/
 
     private void initialize(){
         mail = (RelativeLayout) v.findViewById(R.id.contact_email);

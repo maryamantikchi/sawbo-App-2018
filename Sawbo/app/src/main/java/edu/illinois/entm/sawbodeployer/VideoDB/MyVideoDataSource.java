@@ -41,12 +41,11 @@ public class MyVideoDataSource  {
         values.put(MyVideoTable.COLUMN_LANGUAGE, video.getLanguage());
         values.put(MyVideoTable.COLUMN_TOPIC, video.getTopic());
         values.put(MyVideoTable.COLUMN_TITLE, video.getTitle());
-        values.put(MyVideoTable.COLUMN_VIDEO, video.getVideo());
+        values.put(MyVideoTable.COLUMN_VIDEO, video.getGp_file());
         values.put(MyVideoTable.COLUMN_VIDEO_LIGHT, video.getVideolight());
         values.put(MyVideoTable.COLUMN_DESCRIPTION, video.getDescription());
         values.put(MyVideoTable.COLUMN_IMAGE, video.getImage());
-        database.insert(MyVideoTable.TABLE_NAME, null,
-                values);
+        database.insert(MyVideoTable.TABLE_NAME, null, values);
 
         return video;
     }
@@ -58,7 +57,7 @@ public class MyVideoDataSource  {
     }
 
     public void deleteVideoStandard(all video) {
-        String videoFile = video.getVideo();
+        String videoFile = video.getGp_file();
         database.delete(MyVideoTable.TABLE_NAME, MyVideoTable.COLUMN_VIDEO
                 + " = '" + videoFile+"'", null);
     }
@@ -88,7 +87,7 @@ public class MyVideoDataSource  {
         video.setLanguage(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_LANGUAGE)));
         video.setTopic(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_TOPIC)));
         video.setTitle(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_TITLE)));
-        video.setVideo(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_VIDEO)));
+        video.setGp_file(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_VIDEO)));
         video.setVideolight(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_VIDEO_LIGHT)));
         video.setDescription(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_DESCRIPTION)));
         video.setImage(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_IMAGE)));

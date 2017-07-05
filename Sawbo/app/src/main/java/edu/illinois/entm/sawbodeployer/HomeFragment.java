@@ -109,80 +109,52 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
 
-                    ApplicationInfo app = getApplicationContext().getApplicationInfo();
-                    String filePath = app.sourceDir;
-
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-
-                    // MIME of .apk is "application/vnd.android.package-archive".
-                    // but Bluetooth does not accept this. Let's use "*/*" instead.
-                    intent.setType("*/*");
-                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
-                    startActivity(Intent.createChooser(intent, "Share app via"));
-
-          /*     Resources resources = getResources();
-
-                Intent emailIntent = new Intent();
-                emailIntent.setAction(Intent.ACTION_SEND);
-                // Native email client doesn't currently support HTML, but it doesn't hurt to try in case they fix it
-                emailIntent.putExtra(Intent.EXTRA_TEXT,"share_email_native");
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "share_email_subject");
-                emailIntent.setType("message/rfc822");
-
-                PackageManager pm = getContext().getPackageManager();
-                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.setType("text/plain");
-
-
-                Intent openInChooser = Intent.createChooser(emailIntent, "share_chooser_text");
-
-                List<ResolveInfo> resInfo = pm.queryIntentActivities(sendIntent, 0);
-                List<LabeledIntent> intentList = new ArrayList<LabeledIntent>();
-                for (int i = 0; i < resInfo.size(); i++) {
-                    // Extract the label, append it, and repackage it in a LabeledIntent
-                    ResolveInfo ri = resInfo.get(i);
-                    String packageName = ri.activityInfo.packageName;
-                    if(packageName.contains("android.email")) {
-                        emailIntent.setPackage(packageName);
-                    } else if(packageName.contains("twitter") || packageName.contains("facebook") || packageName.contains("mms") || packageName.contains("android.gm")) {
-                        Intent intent = new Intent();
-                        intent.setComponent(new ComponentName(packageName, ri.activityInfo.name));
-                        intent.setAction(Intent.ACTION_SEND);
-                        intent.setType("text/plain");
-                        if(packageName.contains("twitter")) {
-                            intent.putExtra(Intent.EXTRA_TEXT, "share_twitter");
-                        } else if(packageName.contains("facebook")) {
-                            // Warning: Facebook IGNORES our text. They say "These fields are intended for users to express themselves. Pre-filling these fields erodes the authenticity of the user voice."
-                            // One workaround is to use the Facebook SDK to post, but that doesn't allow the user to choose how they want to share. We can also make a custom landing page, and the link
-                            // will show the <meta content ="..."> text from that page with our link in Facebook.
-                            intent.putExtra(Intent.EXTRA_TEXT, "share_facebook");
-                        } else if(packageName.contains("mms")) {
-                            intent.putExtra(Intent.EXTRA_TEXT, "share_sms");
-                        } else if(packageName.contains("android.gm")) { // If Gmail shows up twice, try removing this else-if clause and the reference to "android.gm" above
-                            intent.putExtra(Intent.EXTRA_TEXT, "share_email_gmail");
-                            intent.putExtra(Intent.EXTRA_SUBJECT, "share_email_subject");
-                            intent.setType("message/rfc822");
-                        }
-
-                        intentList.add(new LabeledIntent(intent, packageName, ri.loadLabel(pm), ri.icon));
-                    }
-                }
-
-                // convert intentList to array
-                LabeledIntent[] extraIntents = intentList.toArray( new LabeledIntent[ intentList.size() ]);
-
-                openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
-                startActivity(openInChooser);
-*/
-
-
-
-
+                shareApplication();
             }
         });
 
 
         return view;
+    }
+
+
+    private void shareApplication() {
+        ApplicationInfo app = getApplicationContext().getApplicationInfo();
+        String filePath = app.sourceDir;
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        intent.setType("*/*");
+
+        File originalApk = new File(filePath);
+
+        try {
+            File tempFile = new File(getActivity().getExternalCacheDir() + "/ExtractedApk");
+            if (!tempFile.isDirectory())
+                if (!tempFile.mkdirs())
+                    return;
+            tempFile = new File(tempFile.getPath() + "/" + getString(app.labelRes).replace(" ","").toLowerCase() + ".apk");
+            if (!tempFile.exists()) {
+                if (!tempFile.createNewFile()) {
+                    return;
+                }
+            }
+            InputStream in = new FileInputStream(originalApk);
+            OutputStream out = new FileOutputStream(tempFile);
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tempFile));
+            startActivity(Intent.createChooser(intent, "Share app via"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

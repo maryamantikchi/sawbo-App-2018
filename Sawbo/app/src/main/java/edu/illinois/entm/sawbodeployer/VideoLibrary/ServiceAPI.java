@@ -9,6 +9,6 @@ import retrofit.http.GET;
 public interface ServiceAPI {
 
 
-    @GET("mobileApp.php")
+    @GET("prod/factors/")
     Call<Video> getVideoDetails();
 }

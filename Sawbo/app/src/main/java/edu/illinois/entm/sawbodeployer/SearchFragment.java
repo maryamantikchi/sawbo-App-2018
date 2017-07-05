@@ -144,7 +144,7 @@ public class SearchFragment extends android.support.v4.app.Fragment {
 
     public void getRetrofitObject() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://www.sawbo-illinois.org/")
+                .baseUrl("https://349j0nfab0.execute-api.us-west-2.amazonaws.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

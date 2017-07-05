@@ -16,20 +16,4 @@
             android:src="@drawable/sawbo_splash"
             android:tileMode="disabled" />
     </item>
-
-<!--    <item android:width="48dp"
-        android:height="48dp"
-        android:bottom="100dp">
-
-        <bitmap
-            android:gravity="center|bottom"
-            android:src="@drawable/play"
-            android:tileMode="disabled"
-            />
-
-    </item>-->
-
-
-
-
 </layer-list>

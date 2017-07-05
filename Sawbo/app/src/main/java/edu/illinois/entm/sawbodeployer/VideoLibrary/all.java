@@ -8,58 +8,113 @@ import java.io.Serializable;
 
 public class all implements Serializable{
 
-        public String id;
-        public String Country;
-        public String Language;
-        public String Topic;
-        public String Title;
-        public String Video;
-        public String Videolight;
-        public String Description;
-        public String Image;
+    public Number post_date;
+    public String url;
+    public String country;
+    public String topic;
+    public String language;
+    public Object f4v_file;
+    public String image;
+    public String lite_file;
+    public String mov_file;
+    public String description;
+    public String ID;
+    public String id;
+    public String gp_file;
+    public String title;
+    public String mp4file;
 
-        public String getTitle() {
-            return Title;
+    public String getLite_file() {
+        return lite_file;
+    }
+
+    public Number getPost_date() {
+        return post_date;
+    }
+
+    public Object getF4v_file() {
+        return f4v_file;
+    }
+
+    public String getGp_file() {
+        return gp_file;
+    }
+
+    public String getMov_file() {
+        return mov_file;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+
+    public void setF4v_file(Object f4v_file) {
+        this.f4v_file = f4v_file;
+    }
+
+    public void setGp_file(String gp_file) {
+        this.gp_file = gp_file;
+    }
+
+    public void setLite_file(String lite_file) {
+        this.lite_file = lite_file;
+    }
+
+    public void setMov_file(String mov_file) {
+        this.mov_file = mov_file;
+    }
+
+    public void setPost_date(int post_date) {
+        this.post_date = post_date;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getTitle() {
+            return title;
         }
 
-        public String getVideolight() {
-            return Videolight;
+    public String getVideolight() {
+            return lite_file;
         }
 
-        public String getCountry() {
-            return Country;
+    public String getCountry() {
+            return country;
         }
 
-        public String getDescription() {
-            return Description;
+    public String getDescription() {
+            return description;
         }
 
-        public String getId() {
+    public String getId() {
             return id;
         }
 
-        public String getImage() {
-            return Image;
+    public String getImage() {
+            return image;
         }
 
-        public String getLanguage() {
-            return Language;
+    public String getLanguage() {
+            return language;
         }
 
-        public String getTopic() {
-            return Topic;
+    public String getTopic() {
+            return topic;
         }
 
-        public String getVideo() {
-            return Video;
+    public String getMp4file() {
+            return mp4file;
         }
 
     public void setCountry(String country) {
-        Country = country;
+        this.country = country;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     public void setId(String id) {
@@ -67,27 +122,35 @@ public class all implements Serializable{
     }
 
     public void setImage(String image) {
-        Image = image;
+        this.image = image;
     }
 
     public void setLanguage(String language) {
-        Language = language;
+        this.language = language;
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
 
     public void setTopic(String topic) {
-        Topic = topic;
+        this.topic = topic;
     }
 
-    public void setVideo(String video) {
-        Video = video;
+    public void setMp4file(String mp4file) {
+        this.mp4file = mp4file;
     }
 
     public void setVideolight(String videolight) {
-        Videolight = videolight;
+        lite_file = videolight;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }
 

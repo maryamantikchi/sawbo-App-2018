@@ -16,7 +16,7 @@ import edu.illinois.entm.sawbodeployer.R;
  * Created by Mahsa on 4/29/2017.
  */
 
-public class AboutFragment extends Fragment {
+public class AboutFragment extends android.support.v4.app.Fragment {
     TextView desc;
 
     @Override
@@ -26,14 +26,7 @@ public class AboutFragment extends Fragment {
         desc = (TextView) v.findViewById(R.id.text_about_sawbo);
         desc.setTypeface(Typeface.createFromAsset(getActivity().getAssets(),
                 "fonts/BentonSans Regular.otf"));
+        desc.setText(getString(R.string.sawbo_about));
         return v;
-    }
-
-    public static AboutFragment newInstance() {
-
-        AboutFragment f = new AboutFragment();
-
-
-        return f;
     }
 }

@@ -1,10 +1,9 @@
 package edu.illinois.entm.sawbodeployer.AboutContact;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -24,6 +23,10 @@ InfoFragment extends android.support.v4.app.Fragment {
     View view;
     TextView about,contact;
 
+    InfoAdapter adapter;
+
+
+
     public InfoFragment(){
         }
 
@@ -41,13 +44,16 @@ InfoFragment extends android.support.v4.app.Fragment {
     }
 
     private void initialize(){
-        VerticalViewPager pager = (VerticalViewPager) view.findViewById(R.id.viewPager);
-        pager.setAdapter(new InfoAdapter(getActivity().getSupportFragmentManager()));
+        final VerticalViewPager pager = (VerticalViewPager) view.findViewById(R.id.viewPager);
+        adapter = new InfoAdapter(getFragmentManager());
+        pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (position==0){
-                    about.setTextColor(getResources().getColor(R.color.black));contact.setTextColor(getResources().getColor(R.color.gray_text));
+                    about.setTextColor(getResources().getColor(R.color.black));
+                    contact.setTextColor(getResources().getColor(R.color.gray_text));
+
                 }else {
                     contact.setTextColor(getResources().getColor(R.color.black));
                     about.setTextColor(getResources().getColor(R.color.gray_text));
@@ -80,39 +86,40 @@ InfoFragment extends android.support.v4.app.Fragment {
 
         public InfoAdapter(FragmentManager fm) {
             super(fm);
+            System.err.println("miad inja1");
+
         }
 
         @Override
         public Fragment getItem(int pos) {
-
+            System.err.println("miad inja2");
             switch(pos) {
-
                 case 0: {
-                    return AboutFragment.newInstance();
+                    Fragment about = new AboutFragment();
+                    return about;
                 }
                 case 1:{
-                    return ContactFragment.newInstance();
+                    Fragment cf = new ContactFragment();
+                    return cf;//ContactFragment.newInstance();
                 }
-                default: return AboutFragment.newInstance();
+                default:{
+                    Fragment about = new AboutFragment();
+                    return about;
+                }
             }
         }
 
         @Override
         public int getCount() {
+            System.err.println("miad inja3");
+
             return 2;
         }
     }
 
-    private void switchColor(final TextView textView, Integer from, Integer to){
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), from, to);
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                textView.setTextColor((Integer)animator.getAnimatedValue());
-            }
-
-        });
-        colorAnimation.start();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
+
 }

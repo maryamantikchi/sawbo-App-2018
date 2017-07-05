@@ -724,7 +724,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 			isLight = false;
 		}
 		if (isLight)
-			newVideo.setVideo("");
+			newVideo.setGp_file("");
 		else newVideo.setVideolight("");
 
 		dataSource.createVideo(newVideo);

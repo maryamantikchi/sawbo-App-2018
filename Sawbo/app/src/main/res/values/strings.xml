@@ -98,5 +98,7 @@
 
     <string name="facebook_app_id">1200851250026974</string>
 
+    <string name="confirmreceiver_str">Pair Devices first</string>
+
 
 </resources>

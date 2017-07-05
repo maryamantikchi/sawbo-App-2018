@@ -43,6 +43,8 @@ import java.util.Arrays;
 
 import edu.illinois.cs.bluetoothobexopp.BluetoothOppFileSender;
 import edu.illinois.entm.sawbodeployer.DirectWifi.WiFiDirectActivity;
+import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
+import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import edu.illinois.entm.sawbodeployer.btxfr.ClientThread;
 import edu.illinois.entm.sawbodeployer.btxfr.MessageType;
@@ -72,6 +74,8 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
     private final static int REQUEST_DISCOVERABLE_BT = 2;
     private final static int REQUEST_CONNECT_DEVICE_SECURE = 3;
     boolean firstTime=true;
+
+    HelperActivity writeLog;
 
 
 
@@ -241,6 +245,8 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
 
     private void initialize(){
 
+        writeLog = new HelperActivity(getContext());
+
         sawbo_share = (RelativeLayout)view.findViewById(R.id.share_sawbo);
         facebook_share = (RelativeLayout)view.findViewById(R.id.share_facebook);
         general_share = (RelativeLayout)view.findViewById(R.id.share_general);
@@ -256,6 +262,10 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                     ShareLinkContent content = new ShareLinkContent.Builder()
                             .setContentUrl(Uri.parse(videoPath))
                             .build();
+                    UserActivities activities = new UserActivities();
+                    activities.setFb_vidID(videoFile.getId());
+
+                    writeLog.WriteUsrActivity(activities,getActivity());
 
                     ShareDialog shareDialog = new ShareDialog(getActivity());
                     shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
@@ -265,6 +275,10 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
             general_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    UserActivities activities = new UserActivities();
+                    activities.setOther_vidID(videoFile.getId());
+
+                    writeLog.WriteUsrActivity(activities,getActivity());
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_TEXT, videoPath);
@@ -277,6 +291,11 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
             sawbo_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    UserActivities activities = new UserActivities();
+                    activities.setWifi_vidID(videoFile.getId());
+
+                    writeLog.WriteUsrActivity(activities,getActivity());
 
                     Intent intent = new Intent(getActivity(), WiFiDirectActivity.class);
                     intent.putExtra("url",getActivity().getFilesDir() + "/" + videoPath);
@@ -293,6 +312,11 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
 
                     File file =  new File(getActivity().getFilesDir() + "/" + videoPath);
                     Uri uri = Uri.fromFile(file);
+
+                    UserActivities activities = new UserActivities();
+                    activities.setFb_vidID(videoFile.getId());
+
+                    writeLog.WriteUsrActivity(activities,getActivity());
 
 
                     ShareVideo shareVideo  = new ShareVideo.Builder()
@@ -313,6 +337,11 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                     File file = new File(getActivity().getFilesDir() , videoPath);
                     Uri uri = FileProvider.getUriForFile(getContext(), "edu.illinois.entm.sawbodeployer", file);
 
+                    UserActivities activities = new UserActivities();
+                    activities.setOther_vidID(videoFile.getId());
+
+                    writeLog.WriteUsrActivity(activities,getActivity());
+
                     Intent intent = ShareCompat.IntentBuilder.from(getActivity())
                             .setType("video/3gp")
                             .setStream(uri)
@@ -327,6 +356,10 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
             bluetooth_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    UserActivities activities = new UserActivities();
+                    activities.setBlue_vidID(videoFile.getId());
+
+                    writeLog.WriteUsrActivity(activities,getActivity());
                     shareNormalAtPos(videoPath);
                 }
             });
@@ -336,9 +369,44 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
 
     }
 
+    private void shareNormalAtPos(String filename) {
+        url = getActivity().getFilesDir() + "/" + filename;
+        videoFilename = filename;
+        //connectBluetooth(url);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getActivity().getResources().getString(R.string.confirmreceiver_str))
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                        if (mBluetoothAdapter == null) {
+                            Log.v("Bluetooth", "not available");
+                        } else {
+                            if (!mBluetoothAdapter.isEnabled()) {
+                                Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                startActivityForResult(enableBTIntent, REQUEST_ENABLE_BT);
+                            } else {
+                                viaOBEX = false;
+                                senderBTReady();
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        return;
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
 
 
-    private void shareNormalAtPos( String filename) {
+    }
+
+
+
+   /* private void shareNormalAtPos( String filename) {
         System.err.println("click 1");
         // OBEX
         OBEXfile = new File(getActivity().getFilesDir() + "/" + filename);
@@ -355,7 +423,7 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                 senderBTReady();
             }
         }
-    }
+    }*/
 
     public void senderBTReady() {
         Intent senderIntent = new Intent(getActivity(), DeviceListActivity.class);
@@ -439,6 +507,4 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
 
         }
     }
-
-
 }

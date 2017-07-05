@@ -33,16 +33,17 @@ public class Video {
         return Topic;
     }
 
+
     public void setLanguage(List<String> language) {
-        Language = language;
+        this.Language = language;
     }
 
     public void setTopic(List<String> topic) {
-        Topic = topic;
+        this.Topic = topic;
     }
 
     public void setCountry(List<String> country) {
-        Country = country;
+        this.Country = country;
     }
 }
 

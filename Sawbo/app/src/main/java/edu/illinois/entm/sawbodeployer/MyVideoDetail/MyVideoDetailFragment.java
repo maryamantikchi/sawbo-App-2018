@@ -49,6 +49,7 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
     MyVideoDataSource dataSource;
     RelativeLayout groupLayput;
 
+
     public MyVideoDetailFragment(){
     }
 
@@ -57,6 +58,7 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_video_detail, container, false);
         initialize();
+
         return view;
     }
 
@@ -95,9 +97,9 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
         religion.setTypeface(title_religion_font);
         religion.setText(videoDetail.getLanguage()+" from "+videoDetail.getCountry());
 
-        if (videoDetail.getVideo().length()==0)
+        if (videoDetail.getGp_file().length()==0)
         videoPath = getActivity().getFilesDir() + "/" + videoDetail.getVideolight();
-        else videoPath = getActivity().getFilesDir()+ "/" + videoDetail.getVideo();
+        else videoPath = getActivity().getFilesDir()+ "/" + videoDetail.getGp_file();
 
         expandableTextView = (ExpandableTextView) view.findViewById(R.id.expandable_txt_video_detail);
         expandableTextView.setText(videoDetail.getDescription());
@@ -194,17 +196,16 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
                 enableDisableViewGroup(groupLayput,false);
 
                 ShareVideoFragment fragment = new ShareVideoFragment();
-                if (videoDetail.getVideo().length()==0)
+                if (videoDetail.getGp_file().length()==0)
                     fragment.videoPath = videoDetail.getVideolight();
-                else if (videoDetail.getVideolight().length()==0)fragment.videoPath = videoDetail.getVideo();
+                else if (videoDetail.getVideolight().length()==0)fragment.videoPath = videoDetail.getGp_file();
 
                 fragment.videoFile = videoDetail;
 
                 FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().add(R.id.main_container, fragment)
-                        .addToBackStack(null)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit();
+
+                fragmentManager.beginTransaction().replace(R.id.main_container, fragment)
+                        .addToBackStack(null).commit();
             }
         });
 
@@ -217,12 +218,12 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
         boolean isLight = false;
 
         String filename = "";
-        if (videoDetail.getVideo() == null || videoDetail.getVideo().equals("")){
+        if (videoDetail.getGp_file() == null || videoDetail.getGp_file().equals("")){
             isLight = true;
             filename = videoDetail.getVideolight();
         }else if(videoDetail.getVideolight() == null || videoDetail.getVideolight().equals("")){
             isLight = false;
-            filename = videoDetail.getVideo();
+            filename = videoDetail.getGp_file();
         }
 
         File file = new File(getActivity().getFilesDir() + "/" + filename);
@@ -256,6 +257,8 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
         enableDisableViewGroup(groupLayput,true);
     }
 
+
+
    /* private void toggleView(Boolean isEnable){
         for (int i = 0; i < groupLayput.getChildCount(); i++) {
             View child = groupLayput.getChildAt(i);
@@ -263,6 +266,7 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
             child.setClickable(isEnable);
         }
     }*/
+
 
     public static void enableDisableViewGroup(ViewGroup viewGroup, boolean enabled) {
         int childCount = viewGroup.getChildCount();

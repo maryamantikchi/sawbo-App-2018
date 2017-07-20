@@ -43,6 +43,7 @@ import java.util.Arrays;
 
 import edu.illinois.cs.bluetoothobexopp.BluetoothOppFileSender;
 import edu.illinois.entm.sawbodeployer.DirectWifi.WiFiDirectActivity;
+import edu.illinois.entm.sawbodeployer.RxWifi.framework.discovery.view.DiscoveryActivity;
 import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
 import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
@@ -301,8 +302,7 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                     intent.putExtra("url",getActivity().getFilesDir() + "/" + videoPath);
                     intent.putExtra("video",videoFile);
 
-                    startActivity(intent
-                    );
+                    startActivity(intent);
                 }
             });
 
@@ -369,7 +369,7 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
 
     }
 
-    private void shareNormalAtPos(String filename) {
+   /* private void shareNormalAtPos(String filename) {
         url = getActivity().getFilesDir() + "/" + filename;
         videoFilename = filename;
         //connectBluetooth(url);
@@ -402,11 +402,11 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
         alert.show();
 
 
-    }
+    }*/
 
 
 
-   /* private void shareNormalAtPos( String filename) {
+    private void shareNormalAtPos( String filename) {
         System.err.println("click 1");
         // OBEX
         OBEXfile = new File(getActivity().getFilesDir() + "/" + filename);
@@ -423,7 +423,7 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                 senderBTReady();
             }
         }
-    }*/
+    }
 
     public void senderBTReady() {
         Intent senderIntent = new Intent(getActivity(), DeviceListActivity.class);

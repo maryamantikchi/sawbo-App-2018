@@ -35,6 +35,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +52,7 @@ import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
  * A fragment that manages a particular peer and allows interaction with device
  * i.e. setting up network connection and transferring data.
  */
-public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener {
+public class DeviceDetailFragment extends Fragment implements ConnectionInfoListener  {
 
 
 	private static View mContentView = null;
@@ -147,7 +148,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		return mContentView;
 	}
 
-	public static void sendingFile(String path) {
+	public  void sendingFile(String path) {
 		Uri uri;
 		String Extension = "";
 		File f;
@@ -514,7 +515,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 						} else FileServerobj.execute();
 
 
-							unZipIt(f.getPath(),fullPath);
+						unZipIt(f.getPath(),fullPath);
 
 
 					}
@@ -876,7 +877,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		try {
 			input = new ObjectInputStream(new FileInputStream(file/*new File(new File(getFilesDir(),"")+File.separator+filename)*/));
 			myPersonObject = (all) input.readObject();
-			//Log.v("serialization","Person a="+myPersonObject.getA());
 			input.close();
 		} catch (StreamCorruptedException e) {
 			e.printStackTrace();
@@ -890,25 +890,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 		return myPersonObject;
 
-
-/*		//Read text from file
-		StringBuilder text = new StringBuilder();
-
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line;
-
-			while ((line = br.readLine()) != null) {
-				text.append(line);
-				text.append('\n');
-			}
-			br.close();
-		}
-		catch (IOException e) {
-			//You'll need to add proper error handling here
-		}
-
-		return text.toString();*/
 
 	}
 

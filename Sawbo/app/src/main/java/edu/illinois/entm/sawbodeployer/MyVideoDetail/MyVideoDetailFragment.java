@@ -1,17 +1,12 @@
 package edu.illinois.entm.sawbodeployer.MyVideoDetail;
 
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +43,6 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
     Button select_language;
     MyVideoDataSource dataSource;
     RelativeLayout groupLayput;
-
 
     public MyVideoDetailFragment(){
     }
@@ -97,9 +91,15 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
         religion.setTypeface(title_religion_font);
         religion.setText(videoDetail.getLanguage()+" from "+videoDetail.getCountry());
 
-        if (videoDetail.getGp_file().length()==0)
-        videoPath = getActivity().getFilesDir() + "/" + videoDetail.getVideolight();
-        else videoPath = getActivity().getFilesDir()+ "/" + videoDetail.getGp_file();
+        if(!videoDetail.getVideolight().contains("Bluetooth")&& !videoDetail.getGp_file().contains("Bluetooth")){
+           if (videoDetail.getGp_file().length()==0)
+             videoPath = getActivity().getFilesDir() + "/" + videoDetail.getVideolight();
+           else videoPath = getActivity().getFilesDir()+ "/" + videoDetail.getGp_file();
+        }else {
+            videoPath = videoDetail.getGp_file();
+        }
+
+        File ff = new File(videoPath);
 
         expandableTextView = (ExpandableTextView) view.findViewById(R.id.expandable_txt_video_detail);
         expandableTextView.setText(videoDetail.getDescription());
@@ -118,9 +118,6 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
                 expandableTextView.toggle();
             }
         });
-
-
-
 
         final VidstaPlayer player = (VidstaPlayer)view.findViewById(R.id.player);
         player.setVideoSource(videoPath);
@@ -208,7 +205,6 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
                         .addToBackStack(null).commit();
             }
         });
-
     }
 
     private void deleteVideo(){
@@ -253,19 +249,8 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
     @Override
     public void onResume() {
         super.onResume();
-       // toggleView(true);
         enableDisableViewGroup(groupLayput,true);
     }
-
-
-
-   /* private void toggleView(Boolean isEnable){
-        for (int i = 0; i < groupLayput.getChildCount(); i++) {
-            View child = groupLayput.getChildAt(i);
-            child.setEnabled(isEnable);
-            child.setClickable(isEnable);
-        }
-    }*/
 
 
     public static void enableDisableViewGroup(ViewGroup viewGroup, boolean enabled) {

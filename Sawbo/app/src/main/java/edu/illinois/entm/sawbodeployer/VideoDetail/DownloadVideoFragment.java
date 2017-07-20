@@ -73,8 +73,6 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
     BroadcastReceiver onComplete;
     HelperActivity writeLog;
 
-    //WriteLog wl = new WriteLog();
-
     public DownloadVideoFragment(){
     }
 
@@ -135,28 +133,28 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                 "fonts/BentonSans Medium.otf");
         liteFile.setTypeface(title_video_font);
         standardFile.setTypeface(title_video_font);
-        checkFileExist(video.getGp_file(),standardFile);
-        checkFileExist(video.getVideolight(),liteFile);
+        checkFileExist(video.getGp_file(),standardFile,false);
+        checkFileExist(video.getVideolight(),liteFile,true);
 
-        liteFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //addDataBase(true);
-
-
-                download_video(liteFile,video.getVideolight(),true);
-            }
-        });
-
-        standardFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               // addDataBase(true);
-                download_video(standardFile,video.getGp_file(),false);
-            }
-
-
-        });
+//        liteFile.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //addDataBase(true);
+//
+//
+//                download_video(liteFile,video.getVideolight(),true);
+//            }
+//        });
+//
+//        standardFile.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//               // addDataBase(true);
+//                download_video(standardFile,video.getGp_file(),false);
+//            }
+//
+//
+//        });
 
 
 
@@ -207,7 +205,7 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
         dataSource.close();
     }
 
-    private void removeFromDB(Boolean isLight){
+    private void removeFromDB(boolean isLight){
             dataSource = new MyVideoDataSource(getContext());
             dataSource.open();
             if (isLight){
@@ -275,15 +273,15 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
 
                     downloadID = manager.enqueue(request);
 
-                    try {
+                  /*  try {
                         String urlImage = URLEncoder.encode(video.getImage(), "UTF-8").replace("+", "%20");
                         final URL url_image = new URL(getResources().getString(R.string.thumbnail_url)+urlImage);
-                        saveToInternalStorage(downloadImage(url_image),video.getImage());
+                        //saveToInternalStorage(downloadImage(url_image),video.getImage());
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
-                    }
+                    }*/
 
                     onComplete = new BroadcastReceiver() {
                         @Override
@@ -358,9 +356,9 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
             }
 
 
-            String videoFilename = "";
+            /*String videoFilename = "";
             if (isLight) videoFilename = video.getVideolight();
-            else videoFilename = video.getGp_file();
+            else videoFilename = video.getGp_file();*/
 //            wl.writeNow(getActivity(), "download", videoFilename, "");
   //          wl.sendLog(getActivity());
             UserActivities activities = new UserActivities();
@@ -377,35 +375,65 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
 
         }
 
-    private void checkFileExist(String url,Button btn){
+    private void checkFileExist(final String url, final Button btn, final boolean isLight){
         File file = new File(getActivity().getFilesDir() + "/" + url );
+        System.err.println("exist: "+file.exists()+ " path : " +file.getPath());
         if(file.exists()) {
             btn.setText(getResources().getString(R.string.avoffline_str));
-            btn.setEnabled(false);
+            btn.setEnabled(true);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MyVideoDetailFragment fragment = new MyVideoDetailFragment();
+                    fragment.videoDetail = video;
+                    if (isLight)
+                    fragment.videoDetail.setGp_file("");
+                    else fragment.videoDetail.setLite_file("");
+
+                    MyVideoDetailFragment myVideoFragment = new MyVideoDetailFragment();
+
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().hide(myVideoFragment)
+                            .add(R.id.main_container, fragment)
+                            .addToBackStack(null)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit();
+                }
+            });
+        }else {
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //addDataBase(true);
+
+
+                    download_video(btn,url,isLight);
+                }
+            });
         }
     }
 
 
-    public static Bitmap downloadImage(URL encodedUrl) {
-        try {
-            HttpURLConnection connection = (HttpURLConnection) encodedUrl.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream is = connection.getInputStream();
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = false;
-            options.inSampleSize = 1;
-            Bitmap bitmap = BitmapFactory.decodeStream(is,null, options);
-            is.close();
-            return bitmap;
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
+//    public static Bitmap downloadImage(URL encodedUrl) {
+//        try {
+//            HttpURLConnection connection = (HttpURLConnection) encodedUrl.openConnection();
+//            connection.setDoInput(true);
+//            connection.connect();
+//            InputStream is = connection.getInputStream();
+//            final BitmapFactory.Options options = new BitmapFactory.Options();
+//            options.inJustDecodeBounds = false;
+//            options.inSampleSize = 1;
+//            Bitmap bitmap = BitmapFactory.decodeStream(is,null, options);
+//            is.close();
+//            return bitmap;
+//        }
+//        catch (Exception e)
+//        {
+//            return null;
+//        }
+//    }
 
-    public static void saveToInternalStorage(Bitmap bitmapImage, String icon){
+/*    public static void saveToInternalStorage(Bitmap bitmapImage, String icon){
         File root = Environment.getExternalStorageDirectory();
         File Dir=null;
             Dir = new File(root.getAbsolutePath() +"/.Sawbo/Images");
@@ -431,7 +459,7 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                 }
             }
         }
-    }
+    }*/
 
 
 

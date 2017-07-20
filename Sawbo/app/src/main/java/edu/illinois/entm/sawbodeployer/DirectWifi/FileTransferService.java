@@ -31,8 +31,8 @@ import java.net.Socket;
  */
 public class FileTransferService extends IntentService {
 
-	Handler mHandler;
-	
+    Handler mHandler;
+
     public static final int SOCKET_TIMEOUT = 5000;
     public static final String ACTION_SEND_FILE = "com.example.android.wifidirect.SEND_FILE";
     public static final String EXTRAS_FILE_PATH = "file_url";
@@ -56,9 +56,9 @@ public class FileTransferService extends IntentService {
 
     @Override
     public void onCreate() {
-    	// TODO Auto-generated method stub
-    	super.onCreate();
-    	mHandler = new Handler();
+        // TODO Auto-generated method stub
+        super.onCreate();
+        mHandler = new Handler();
     }
     /*
      * (non-Javadoc)
@@ -85,21 +85,21 @@ public class FileTransferService extends IntentService {
                 Log.d(WiFiDirectActivity.TAG, "Client socket - " + socket.isConnected());
                 OutputStream stream = socket.getOutputStream();
                 ContentResolver cr = context.getContentResolver();
-               // System.err.println(context+ "  ----   "+ cr);
+                // System.err.println(context+ "  ----   "+ cr);
                 InputStream is = null;
-                
+
                 /*
                  * Object that is used to send file name with extension and recieved on other side.
                  */
-                 Long FileLength = Long.parseLong(filelength);
-                 WiFiTransferModal transObj = null;
-                 ObjectOutputStream oos = new ObjectOutputStream(stream);
-                 if(transObj == null) transObj = new WiFiTransferModal();
-                 
-                 
-                 transObj = new WiFiTransferModal(extension,FileLength);
-                 oos.writeObject(transObj);
-                 
+                Long FileLength = Long.parseLong(filelength);
+                WiFiTransferModal transObj = null;
+                ObjectOutputStream oos = new ObjectOutputStream(stream);
+                if(transObj == null) transObj = new WiFiTransferModal();
+
+
+                transObj = new WiFiTransferModal(extension,FileLength);
+                oos.writeObject(transObj);
+
                 try {
                     is = cr.openInputStream(Uri.parse(fileUri));
                 } catch (FileNotFoundException e) {
@@ -109,29 +109,27 @@ public class FileTransferService extends IntentService {
                 DeviceDetailFragment.copyFile(is, stream);
                 Log.d(WiFiDirectActivity.TAG, "Client: Data written");
                 oos.close();	//close the ObjectOutputStream after sending data.
-                } catch (IOException e) {
-                    Log.e(WiFiDirectActivity.TAG, e.getMessage());
+            } catch (IOException e) {
+                Log.e(WiFiDirectActivity.TAG, e.getMessage());
                 e.printStackTrace();
                 CommonMethods.e("Unable to connect host", "service socket error in wififiletransferservice class");
-           	 mHandler.post(new Runnable() {
-					
-					public void run() {
-						// TODO Auto-generated method stub
-						Toast.makeText(FileTransferService.this, "Paired Device is not Ready to receive the file", Toast.LENGTH_LONG).show();
-					}
-           	 });
-           	 DeviceDetailFragment.DismissProgressDialog();
+                mHandler.post(new Runnable() {
+
+                    public void run() {
+                        // TODO Auto-generated method stub
+                        Toast.makeText(FileTransferService.this, "Paired Device is not Ready to receive the file", Toast.LENGTH_LONG).show();
+                    }
+                });
+                DeviceDetailFragment.DismissProgressDialog();
 
     /*            Gson gson = new Gson();
                 String jsonString = gson.toJson(DeviceDetailFragment.videoInfo);
-
                 File root = new File(Environment.getExternalStorageDirectory(), ".Sawbo");
                 // File dir = new File(root,"temp");
                 if (!root.exists()) {
                     root.mkdirs();
                 }
                 generateNoteOnSD(root,"VideoInfo.txt",jsonString);
-
                DeviceDetailFragment.sendingFile(root.getAbsolutePath()+"/.Sawbo/VideoInfo.txt");*/
 
 

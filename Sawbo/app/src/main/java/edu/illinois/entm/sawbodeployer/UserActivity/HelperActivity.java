@@ -99,7 +99,7 @@ public class HelperActivity {
         }
     }
 
-    private String getIP(){
+    public String getIP(){
         try {
 
             Retrofit retrofit = new Retrofit.Builder()

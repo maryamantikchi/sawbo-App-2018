@@ -15,11 +15,11 @@ public class UserActivityTable {
     public static final String COLUMN_IP = "ip";
     public static final String COLUMN_GPS_LAT = "coordinates_lat";
     public static final String COLUMN_GPS_LANG = "coordinates_lang";
-    public static final String COLUMN_DL_VID_ID = "dl-vidID";
-    public static final String COLUMN_blue_vidID = "blue-vidID";
-    public static final String COLUMN_wifi_vidID = "wifi-vidID";
-    public static final String COLUMN_fb_vidID = "fb-vidID";
-    public static final String COLUMN_other_vidID = "other-vidID";
+    public static final String COLUMN_DL_VID_ID = "dl_vidID";
+    public static final String COLUMN_blue_vidID = "blue_vidID";
+    public static final String COLUMN_wifi_vidID = "wifi_vidID";
+    public static final String COLUMN_fb_vidID = "fb_vidID";
+    public static final String COLUMN_other_vidID = "other_vidID";
 
 
 
@@ -53,6 +53,5 @@ public class UserActivityTable {
             COLUMN_blue_vidID + " TEXT, " +
             COLUMN_wifi_vidID + " TEXT, " +
             COLUMN_fb_vidID + " TEXT, " +
-            COLUMN_other_vidID + " TEXT " +
-            ")";
+            COLUMN_other_vidID + " TEXT )";
 }

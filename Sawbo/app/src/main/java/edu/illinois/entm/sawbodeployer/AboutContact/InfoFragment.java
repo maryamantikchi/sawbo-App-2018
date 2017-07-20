@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +44,15 @@ InfoFragment extends android.support.v4.app.Fragment {
         return view;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     private void initialize(){
+
+
         final VerticalViewPager pager = (VerticalViewPager) view.findViewById(R.id.viewPager);
         adapter = new InfoAdapter(getFragmentManager());
         pager.setAdapter(adapter);
@@ -82,17 +91,15 @@ InfoFragment extends android.support.v4.app.Fragment {
     }
 
 
-    private class InfoAdapter extends FragmentPagerAdapter {
+    private class InfoAdapter extends FragmentStatePagerAdapter {
 
         public InfoAdapter(FragmentManager fm) {
             super(fm);
-            System.err.println("miad inja1");
 
         }
 
         @Override
         public Fragment getItem(int pos) {
-            System.err.println("miad inja2");
             switch(pos) {
                 case 0: {
                     Fragment about = new AboutFragment();
@@ -100,7 +107,7 @@ InfoFragment extends android.support.v4.app.Fragment {
                 }
                 case 1:{
                     Fragment cf = new ContactFragment();
-                    return cf;//ContactFragment.newInstance();
+                    return cf;
                 }
                 default:{
                     Fragment about = new AboutFragment();
@@ -111,15 +118,9 @@ InfoFragment extends android.support.v4.app.Fragment {
 
         @Override
         public int getCount() {
-            System.err.println("miad inja3");
 
             return 2;
         }
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
 }

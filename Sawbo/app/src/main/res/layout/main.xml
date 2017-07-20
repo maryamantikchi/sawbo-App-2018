@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -60,14 +61,72 @@
                 android:layout_weight="1"
                 android:text="Turn on Wifi"/>
         </LinearLayout>
-        <fragment
-            class="edu.illinois.entm.sawbodeployer.DirectWifi.DeviceListFragment"
-            android:id="@+id/frag_list"
+
+        <LinearLayout
+            android:id="@+id/vg_discovery_state_not_found"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:padding="48dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_discovery_state_not_found"
+                android:layout_width="192dp"
+                android:layout_height="192dp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:alpha="0.10"
+                android:paddingTop="16dp"
+                android:scaleType="fitCenter"
+                tools:background="@drawable/ic_explore_24dp"/>
+
+            <TextView
+                android:layout_width="192dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center"
+                android:text="@string/no_devices_found"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:background="@color/colorPrimary"
-            android:layout_height="@dimen/phone_list_height">
-            <!-- Preview: layout=@layout/row_devices -->
-        </fragment>
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="64dp"
+            android:paddingRight="64dp">
+
+            <ListView
+                android:id="@+id/lv_devices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="1dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_device_found_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:fontFamily="sans-serif-thin"
+            android:gravity="center"
+            android:paddingBottom="16dp"
+            android:visibility="gone"
+            tools:text="1 Device was found"/>
+        <!--<fragment-->
+            <!--class="edu.illinois.entm.sawbodeployer.DirectWifi.DeviceListFragment"-->
+            <!--android:id="@+id/frag_list"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--android:layout_height="@dimen/phone_list_height">-->
+            <!--&lt;!&ndash; Preview: layout=@layout/row_devices &ndash;&gt;-->
+        <!--</fragment>-->
         <fragment
             class="edu.illinois.entm.sawbodeployer.DirectWifi.DeviceDetailFragment"
             android:id="@+id/frag_detail"

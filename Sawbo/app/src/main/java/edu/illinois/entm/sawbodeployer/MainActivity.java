@@ -1,9 +1,13 @@
 package edu.illinois.entm.sawbodeployer;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
+import android.widget.Toast;
 
 import com.rey.material.widget.ImageButton;
 
@@ -20,11 +25,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.illinois.entm.sawbodeployer.AboutContact.InfoFragment;
 import edu.illinois.entm.sawbodeployer.MyVideos.MyVideoFragment;
+import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
+import edu.illinois.entm.sawbodeployer.UserActivity.IUserLogs;
+import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
+import edu.illinois.entm.sawbodeployer.UserActivityDB.UserActivityDataSource;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.VideoLibraryFragment;
-
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -33,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FragmentManager fragmentManager;
     private ImageButton home,video_library,my_videos,share,info;
     private AppCompatImageButton setting,search;
-
+    IUserLogs api;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +58,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initialize();
 
     }
-
-
-
-
     public void initialize(){
+
+        if (isOnline(this)){
+            HelperActivity writeLog = new HelperActivity(this);
+            String ip = writeLog.getIP();
+            UserActivityDataSource dataSource = new UserActivityDataSource(this);
+            dataSource.open();
+            List<UserActivities> user_logs = new ArrayList<UserActivities>();
+            user_logs = dataSource.getUserActivities(ip);
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://2svz9cfvr4.execute-api.us-west-2.amazonaws.com/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            api = retrofit.create(IUserLogs.class);
+
+            postRequest(user_logs,dataSource);
+
+        }
         home = (ImageButton)findViewById(R.id.btn_home);
         home.setOnClickListener(this);
         video_library = (ImageButton)findViewById(R.id.btn_video_library);
@@ -117,16 +148,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_info:
                 fragment = new InfoFragment();
-                FragmentTransaction transaction_info = fragmentManager.beginTransaction();
-                transaction_info.replace(R.id.main_container, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_container, fragment).commit();
                 break;
         }
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
 
@@ -169,4 +194,63 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void postRequest(List<UserActivities> product, final UserActivityDataSource dataSource) {
+
+         Call<UserActivities> call = api.CreateProduct(product);
+
+
+        call.enqueue(new Callback<UserActivities>() {
+
+            @Override
+            public void onResponse(Response<UserActivities> response, Retrofit retrofit) {
+                dataSource.deleteAllActivities();
+                dataSource.close();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                dataSource.close();
+            }
+        });
+
+    }
+/*
+    boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this,getResources().getString(R.string.twice), Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                doubleBackToExitPressedOnce=false;
+
+                if (getIntent().getBooleanExtra("EXIT", false)) {
+                    finish();
+                }
+
+
+            }
+        }, 2000);
+    }*/
 }

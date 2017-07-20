@@ -33,6 +33,9 @@
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
 
+    <string name="twice" translatable="false">Press twice to exit</string>
+
+
     <string name="cannotcon_str">Could not connect to the paired device. Make sure the receiver on the other device has been turned on (press the Bluetooth logo in the Share page).</string>
     <string name="sending_str">Sending video &#8230;&#8230;&#8230; \n *If no progress bar appears on the receiver\'s phone, make sure that the receiver on the other phone has been turned on (press the Bluetooth logo on the Share page) then restart the process again.</string>
     <string name="stopsending_str">Are you sure you want to stop sending?</string>
@@ -100,5 +103,15 @@
 
     <string name="confirmreceiver_str">Pair Devices first</string>
 
+    <!--RXWifi-->
+    <string name="device_found_1d">%1$d device(s) found</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="welcome">Welcome</string>
+    <string name="pull_to_discover">Pull to discover</string>
+    <string name="connection_info">Connection info</string>
+    <string name="no_devices_found">No devices found</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="not_connected">Not connected</string>
 
 </resources>

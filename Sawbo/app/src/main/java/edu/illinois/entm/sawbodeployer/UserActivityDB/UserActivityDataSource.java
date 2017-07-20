@@ -58,7 +58,7 @@ public class UserActivityDataSource {
     }
 
 
-    public List<UserActivities> getUserActivities() {
+    public List<UserActivities> getUserActivities(String ip) {
         List<UserActivities> activities = new ArrayList<UserActivities>();
 
         Cursor cursor = database.query(UserActivityTable.TABLE_NAME,
@@ -66,7 +66,7 @@ public class UserActivityDataSource {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            UserActivities usrAct = cursorToUsrAct(cursor);
+            UserActivities usrAct = cursorToUsrAct(cursor,ip);
             activities.add(usrAct);
             cursor.moveToNext();
         }
@@ -76,7 +76,7 @@ public class UserActivityDataSource {
     }
 
 
-    private UserActivities cursorToUsrAct(Cursor cursor) {
+    private UserActivities cursorToUsrAct(Cursor cursor,String ip) {
         UserActivities usrAct = new UserActivities();
         String[] gps = {cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_GPS_LAT)),
                 cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_GPS_LANG))};
@@ -84,7 +84,7 @@ public class UserActivityDataSource {
         usrAct.setAppid(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_APPID)));
         usrAct.setUsrid(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_USERID)));
         usrAct.setTimestamp(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_TIME_STAMP)));
-        usrAct.setIp(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_IP)));
+        usrAct.setIp(ip);
         usrAct.setGPS(gps);
         usrAct.setDl_vidID(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_DL_VID_ID)));
         usrAct.setBlue_vidID(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_blue_vidID)));

@@ -15,5 +15,6 @@
 <color name="transparent">#20ffffff</color>
 <color name="black">#1A171B</color>
 <color name="white">#FFFFFF</color>
+    <color name="grey">#737273</color>
 
 </resources>

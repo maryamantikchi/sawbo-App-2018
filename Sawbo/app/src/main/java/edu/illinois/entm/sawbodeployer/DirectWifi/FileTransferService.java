@@ -124,12 +124,14 @@ public class FileTransferService extends IntentService {
 
     /*            Gson gson = new Gson();
                 String jsonString = gson.toJson(DeviceDetailFragment.videoInfo);
+
                 File root = new File(Environment.getExternalStorageDirectory(), ".Sawbo");
                 // File dir = new File(root,"temp");
                 if (!root.exists()) {
                     root.mkdirs();
                 }
                 generateNoteOnSD(root,"VideoInfo.txt",jsonString);
+
                DeviceDetailFragment.sendingFile(root.getAbsolutePath()+"/.Sawbo/VideoInfo.txt");*/
 
 

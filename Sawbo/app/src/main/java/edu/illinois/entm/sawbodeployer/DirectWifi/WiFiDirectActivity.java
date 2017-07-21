@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2011 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package edu.illinois.entm.sawbodeployer.DirectWifi;
 
 import android.app.Activity;
@@ -316,7 +300,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     @Override
     protected void onStop() {
         super.onStop();
-        safeUnsubscribe();
+        this.finish();
+     //   safeUnsubscribe();
     }
 
     private void safeUnsubscribe() {
@@ -347,7 +332,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     //-------------------------------------------------------------------------------------------------------------------------
 
 
-	
+
     public static final String TAG = "wifidirectdemo";
     private WifiP2pManager manager;
     private boolean isWifiP2pEnabled = false;
@@ -469,7 +454,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         return video_url;
     }
 
-   
+
     /** register the BroadcastReceiver with the intent values to be matched */
     @Override
     public void onResume() {
@@ -482,7 +467,17 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     public void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
+        mRxWifiP2pManager.disconnect()
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisconnectFromDeviceSubscriber());
+        this.finish();
     }
+
+
+
+
+
 
     /**
      * Remove all peers and clear all fields. This is called on

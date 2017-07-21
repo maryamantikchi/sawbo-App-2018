@@ -20,13 +20,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.net.wifi.WpsInfo;
-import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
@@ -35,12 +34,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 
@@ -72,14 +71,14 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 
 	String fullPath;
-	File f;
+	File Selected_file;
 
 	String url;
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-	}
+//	@Override
+//	public void onActivityCreated(Bundle savedInstanceState) {
+//		super.onActivityCreated(savedInstanceState);
+//	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,22 +88,22 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		url = extras.getString("url");
 		videoInfo = (all) extras.getSerializable("video");
 
-		mContentView.findViewById(R.id.btn_connect).setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				WifiP2pConfig config = new WifiP2pConfig();
-				config.deviceAddress = device.deviceAddress;
-				config.wps.setup = WpsInfo.PBC;
-				if (progressDialog != null && progressDialog.isShowing()) {
-					progressDialog.dismiss();
-				}
-				progressDialog = ProgressDialog.show(getActivity(), "Press back to cancel",
-						"Connecting to :" + device.deviceAddress, true, true);
-				((DeviceListFragment.DeviceActionListener) getActivity()).connect(config);
-
-			}
-		});
+//		mContentView.findViewById(R.id.btn_connect).setOnClickListener(new View.OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				WifiP2pConfig config = new WifiP2pConfig();
+//				config.deviceAddress = device.deviceAddress;
+//				config.wps.setup = WpsInfo.PBC;
+//				if (progressDialog != null && progressDialog.isShowing()) {
+//					progressDialog.dismiss();
+//				}
+//				progressDialog = ProgressDialog.show(getActivity(), "Press back to cancel",
+//						"Connecting to :" + device.deviceAddress, true, true);
+//				((DeviceListFragment.DeviceActionListener) getActivity()).connect(config);
+//
+//			}
+//		});
 
 		mContentView.findViewById(R.id.btn_disconnect).setOnClickListener(
 				new View.OnClickListener() {
@@ -128,14 +127,14 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 						generateNoteOnSD(root,"VideoInfo.txt");
 
 
-						File Imgroot = Environment.getExternalStorageDirectory();
-						File ImgDir = new File(Imgroot.getAbsolutePath() +"/.Sawbo/Images");
-						File Imgfile = new File(ImgDir, videoInfo.getImage());
+//						File Imgroot = Environment.getExternalStorageDirectory();
+//						File ImgDir = new File(Imgroot.getAbsolutePath() +"/.Sawbo/Images");
+//						File Imgfile = new File(ImgDir, videoInfo.getImage());
 
 
 						ArrayList<String> filePath=new ArrayList<>();
 						filePath.add(url);
-						filePath.add(Imgfile.getPath());
+						//filePath.add(Imgfile.getPath());
 						filePath.add(root.getPath()+"/VideoInfo.txt");
 						zipFolder(filePath,root.toString(),"video_pack.zip");
 						sendingFile(root.getPath()+"/video_pack.zip");
@@ -247,6 +246,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 	@Override
 	public void onConnectionInfoAvailable(final WifiP2pInfo info) {
+
+		//System.err.println(info+"    infooooo");
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
@@ -343,7 +344,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	 * Clears the UI fields after a disconnect or direct mode disable operation.
 	 */
 	public void resetViews() {
-		mContentView.findViewById(R.id.btn_connect).setVisibility(View.VISIBLE);
+		//mContentView.findViewById(R.id.btn_connect).setVisibility(View.VISIBLE);
 		TextView view = (TextView) mContentView.findViewById(R.id.device_address);
 		view.setText(R.string.empty);
 		view = (TextView) mContentView.findViewById(R.id.device_info);
@@ -445,13 +446,20 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 					public void run() {
 						// TODO Auto-generated method stub
-						mProgressDialog.setMessage("Receiving...");
-						mProgressDialog.setIndeterminate(false);
-						mProgressDialog.setMax(100);
-						mProgressDialog.setProgress(0);
-						mProgressDialog.setProgressNumberFormat(null);
-						mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-						mProgressDialog.show();
+
+						if (mProgressDialog == null) {
+							mProgressDialog = new ProgressDialog(GlobalApplication.getGlobalAppContext(),
+									ProgressDialog.THEME_HOLO_LIGHT);
+						}
+
+							mProgressDialog.setMessage("Receiving...");
+							mProgressDialog.setIndeterminate(false);
+							mProgressDialog.setMax(100);
+							mProgressDialog.setProgress(0);
+							mProgressDialog.setProgressNumberFormat(null);
+							mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+							mProgressDialog.show();
+
 					}
 				};
 
@@ -460,12 +468,12 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				Log.e("FileNameFromSocket", obj.getFileName());
 
 				fullPath = GlobalApplication.getGlobalAppContext().getFilesDir()+ "/video_pack";
-				f = new File(GlobalApplication.getGlobalAppContext().getFilesDir()+"/"+obj.getFileName());
+				Selected_file = new File(GlobalApplication.getGlobalAppContext().getFilesDir()+"/"+obj.getFileName());
 
-				File dirs = new File(f.getParent());
+				File dirs = new File(Selected_file.getParent());
 				if (!dirs.exists())
 					dirs.mkdirs();
-				f.createNewFile();
+				Selected_file.createNewFile();
 
 
 				/*
@@ -476,7 +484,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				InputStream inputstream = client.getInputStream();
 
 
-				copyRecievedFile(inputstream, new FileOutputStream(f), ReceivedFileLength);
+				copyRecievedFile(inputstream, new FileOutputStream(Selected_file), ReceivedFileLength);
 				ois.close(); // close the ObjectOutputStream object after saving
 				// file to storage.
 				serverSocket.close();
@@ -485,9 +493,11 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				 * Set file related data and decrypt file in postExecute.
 				 */
 				this.Extension = obj.getFileName();
-				this.EncryptedFile = f;
+				this.EncryptedFile = Selected_file;
 
-				return f.getAbsolutePath();
+				unZipIt(Selected_file.getPath(),fullPath);
+
+				return Selected_file.getAbsolutePath();
 			} catch (IOException e) {
 				Log.e(WiFiDirectActivity.TAG, e.getMessage());
 				return null;
@@ -515,7 +525,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 						} else FileServerobj.execute();
 
 
-						unZipIt(f.getPath(),fullPath);
 
 
 					}
@@ -631,13 +640,21 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 			public void run() {
 				// TODO Auto-generated method stub
-				mProgressDialog.setMessage(task);
-				mProgressDialog.setIndeterminate(false);
-				mProgressDialog.setMax(100);
-				mProgressDialog.setProgressNumberFormat(null);
-				mProgressDialog
-						.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-				mProgressDialog.show();
+
+				if (mProgressDialog == null) {
+					mProgressDialog = new ProgressDialog(GlobalApplication.getGlobalAppContext(),
+							ProgressDialog.THEME_HOLO_LIGHT);
+				}
+
+					mProgressDialog.setMessage(task);
+					mProgressDialog.setIndeterminate(false);
+					mProgressDialog.setMax(100);
+					mProgressDialog.setProgressNumberFormat(null);
+					mProgressDialog
+							.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+					mProgressDialog.show();
+
+
 			}
 		};
 		handle.post(send);
@@ -803,13 +820,13 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 				}else if (newFile.getPath().contains(".3gp")){
 					//copy to videos
-					System.err.println(getActivity().getFilesDir() + "/"+newFile.getName());
+				//	System.err.println(getActivity().getFilesDir() + "/"+newFile.getName());
 
-					File source = new File(getActivity().getFilesDir() + "/"+newFile.getName());
+					File source = new File(GlobalApplication.getGlobalAppContext().getFilesDir() + "/"+newFile.getName());
 
 					FileUtils.copyFile(newFile, source);
 
-				}else if(newFile.getPath().contains(".jpg")){
+				}/*else if(newFile.getPath().contains(".jpg")){
 					//copy to images
 
 					File Imgroot = Environment.getExternalStorageDirectory();
@@ -817,7 +834,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 					File Imgfile = new File(ImgDir.getAbsolutePath()+"/"+ newFile.getName());
 					FileUtils.copyFile(newFile, Imgfile);
 
-				}
+				}*/
 
 				newFile.delete();
 
@@ -893,4 +910,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		((DeviceListFragment.DeviceActionListener) getActivity()).disconnect();
+
+	}
 }

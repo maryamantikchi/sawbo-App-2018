@@ -471,7 +471,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DisconnectFromDeviceSubscriber());
-        this.finish();
+
     }
 
 

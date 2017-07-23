@@ -132,12 +132,13 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 //						File Imgfile = new File(ImgDir, videoInfo.getImage());
 
 
-						ArrayList<String> filePath=new ArrayList<>();
-						filePath.add(url);
-						//filePath.add(Imgfile.getPath());
-						filePath.add(root.getPath()+"/VideoInfo.txt");
-						zipFolder(filePath,root.toString(),"video_pack.zip");
-						sendingFile(root.getPath()+"/video_pack.zip");
+//						ArrayList<String> filePath=new ArrayList<>();
+//						filePath.add(url);
+//						//filePath.add(Imgfile.getPath());
+//						filePath.add(root.getPath()+"/VideoInfo.txt");
+//						zipFolder(filePath,root.toString(),"video_pack.zip");
+//						sendingFile(root.getPath()+"/video_pack.zip");
+						sendingFile(url);
 
 					}
 
@@ -447,11 +448,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 					public void run() {
 						// TODO Auto-generated method stub
 
-						if (mProgressDialog == null) {
-							mProgressDialog = new ProgressDialog(GlobalApplication.getGlobalAppContext(),
-									ProgressDialog.THEME_HOLO_LIGHT);
-						}
-
 							mProgressDialog.setMessage("Receiving...");
 							mProgressDialog.setIndeterminate(false);
 							mProgressDialog.setMax(100);
@@ -467,8 +463,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 				Log.e("FileNameFromSocket", obj.getFileName());
 
-				fullPath = GlobalApplication.getGlobalAppContext().getFilesDir()+ "/video_pack";
-				Selected_file = new File(GlobalApplication.getGlobalAppContext().getFilesDir()+"/"+obj.getFileName());
+				Selected_file = new File(GlobalApplication.getGlobalAppContext().getFilesDir()+"/"+obj.getFileName()
+						/*Environment.getExternalStorageDirectory() + "/"
+								+ FolderName + "/"
+								+ obj.getFileName()*/);
 
 				File dirs = new File(Selected_file.getParent());
 				if (!dirs.exists())
@@ -476,9 +474,18 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				Selected_file.createNewFile();
 
 
-				/*
-				 * Recieve file length and copy after it
-				 */
+//				fullPath = GlobalApplication.getGlobalAppContext().getFilesDir()+ "/video_pack";
+//				Selected_file = new File(GlobalApplication.getGlobalAppContext().getFilesDir()+"/"+obj.getFileName());
+//
+//				File dirs = new File(Selected_file.getParent());
+//				if (!dirs.exists())
+//					dirs.mkdirs();
+//				Selected_file.createNewFile();
+
+
+
+				// * Recieve file length and copy after it
+
 				this.ReceivedFileLength = obj.getFileLength();
 
 				InputStream inputstream = client.getInputStream();
@@ -489,13 +496,13 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				// file to storage.
 				serverSocket.close();
 
-				/*
-				 * Set file related data and decrypt file in postExecute.
-				 */
+
+				// * Set file related data and decrypt file in postExecute.
+
 				this.Extension = obj.getFileName();
 				this.EncryptedFile = Selected_file;
 
-				unZipIt(Selected_file.getPath(),fullPath);
+				//unZipIt(Selected_file.getPath(),fullPath);
 
 				return Selected_file.getAbsolutePath();
 			} catch (IOException e) {
@@ -641,10 +648,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 			public void run() {
 				// TODO Auto-generated method stub
 
-				if (mProgressDialog == null) {
-					mProgressDialog = new ProgressDialog(GlobalApplication.getGlobalAppContext(),
-							ProgressDialog.THEME_HOLO_LIGHT);
-				}
 
 					mProgressDialog.setMessage(task);
 					mProgressDialog.setIndeterminate(false);

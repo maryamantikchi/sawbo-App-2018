@@ -10,6 +10,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.NetworkOnMainThreadException;
+import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -20,9 +21,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import edu.illinois.entm.sawbodeployer.UserActivityDB.GPS;
 import edu.illinois.entm.sawbodeployer.UserActivityDB.UserActivityDataSource;
 import edu.illinois.entm.sawbodeployer.logService;
 import retrofit2.Call;
@@ -53,13 +56,16 @@ public class HelperActivity {
         dataSource.close();
     }
 
-    private String[] getGPS(Activity act) {
+    private GPS getGPS(Activity act) {
         LocationManager lm = (LocationManager) act.getSystemService(Context.LOCATION_SERVICE);
         final Criteria criteria = new Criteria();
 
         Boolean acc = getAcc(act);
-        String[] gps = new String[2];
+        //String[] gps = new String[2];
+        GPS gps = new GPS();
+        List<String> coordinates = new ArrayList<>();
         if (!acc) {
+            gps.setCoordinates(coordinates);
             return gps;
         }
         //Alt
@@ -73,8 +79,8 @@ public class HelperActivity {
 
         for (int i = providers.size() - 1; i >= 0; i--) {
             if (ActivityCompat.checkSelfPermission(act, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(act, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                gps[0] = "0";
-                gps[1] = "0";
+                coordinates.add(0,"0");
+                coordinates.add(1,"1");
                 return gps;
             }
             l = lm.getLastKnownLocation(providers.get(i));
@@ -82,9 +88,10 @@ public class HelperActivity {
         }
 
         if (l != null) {
-            gps[0] = String.valueOf(l.getLatitude());
-            gps[1] = String.valueOf(l.getLongitude());
+            coordinates.add(0, String.valueOf(l.getLatitude()));
+            coordinates.add(1,String.valueOf(l.getLongitude()));
         }
+        gps.setCoordinates(coordinates);
         return gps;
     }
 
@@ -102,17 +109,27 @@ public class HelperActivity {
     public String getIP(){
         try {
 
+            if (android.os.Build.VERSION.SDK_INT > 9)
+            {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+            }
+
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://www.sawbo-illinois.org/mobile_app/")
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .build();
 
+
             logService service = retrofit.create(logService.class);
+
             final Call<String> call = service.getIp();
             return call.execute().body();
         }catch (IOException e){
+
             return "";
         }catch (NetworkOnMainThreadException e){
+
             return "";
         }
     }

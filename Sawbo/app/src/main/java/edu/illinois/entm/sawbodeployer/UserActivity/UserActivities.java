@@ -2,6 +2,8 @@ package edu.illinois.entm.sawbodeployer.UserActivity;
 
 import java.util.List;
 
+import edu.illinois.entm.sawbodeployer.UserActivityDB.GPS;
+
 /**
  * Created by Mahsa on 7/4/2017.
  */
@@ -12,7 +14,7 @@ public class UserActivities {
     String usrid;
     String timestamp;
     String ip;
-    String[] GPS;
+    GPS GPS;
     String dl_vidID;
     String blue_vidID;
     String wifi_vidID;
@@ -59,11 +61,11 @@ public class UserActivities {
         this.ip = ip;
     }
 
-    public String[] getGPS() {
+    public GPS getGPS() {
         return GPS;
     }
 
-    public void setGPS(String[] GPS) {
+    public void setGPS(GPS GPS) {
         this.GPS = GPS;
     }
 
@@ -106,4 +108,13 @@ public class UserActivities {
     public void setOther_vidID(String other_vidID) {
         this.other_vidID = other_vidID;
     }
+
+    @Override
+    public String toString() {
+        return "ip: "+getIp()+" gps0:"+getGPS()+" dl_vid: "
+                +getDl_vidID()+" "+" appId: "+getAppid()
+                +" userId "+getUsrid()+" timeStamp "+getTimestamp()+" blue_videoId: "
+                +getBlue_vidID()+" wifiVidId: "+getWifi_vidID()+" fbVideoId: "+getFb_vidID()+" others: "+getOther_vidID();
+    }
+
 }

@@ -40,8 +40,8 @@ public class UserActivityDataSource {
         usrActvs.put(UserActivityTable.COLUMN_USERID, usrActv.getUsrid());
         usrActvs.put(UserActivityTable.COLUMN_TIME_STAMP, usrActv.getTimestamp());
         usrActvs.put(UserActivityTable.COLUMN_IP, usrActv.getIp());
-        usrActvs.put(UserActivityTable.COLUMN_GPS_LAT, usrActv.getGPS()[0]);
-        usrActvs.put(UserActivityTable.COLUMN_GPS_LANG, usrActv.getGPS()[1]);
+        usrActvs.put(UserActivityTable.COLUMN_GPS_LAT, usrActv.getGPS().getCoordinates().get(0));
+        usrActvs.put(UserActivityTable.COLUMN_GPS_LANG, usrActv.getGPS().getCoordinates().get(1));
         usrActvs.put(UserActivityTable.COLUMN_DL_VID_ID, usrActv.getDl_vidID());
         usrActvs.put(UserActivityTable.COLUMN_blue_vidID, usrActv.getBlue_vidID());
         usrActvs.put(UserActivityTable.COLUMN_wifi_vidID, usrActv.getWifi_vidID());
@@ -78,8 +78,14 @@ public class UserActivityDataSource {
 
     private UserActivities cursorToUsrAct(Cursor cursor,String ip) {
         UserActivities usrAct = new UserActivities();
-        String[] gps = {cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_GPS_LAT)),
-                cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_GPS_LANG))};
+        GPS gps = new GPS();
+        List<String> coordinates = new ArrayList<>();
+
+        coordinates.add(0,cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_GPS_LAT)));
+        coordinates.add(1,cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_GPS_LANG)));
+
+        gps.setCoordinates(coordinates);
+
         usrAct.setId(cursor.getInt(cursor.getColumnIndex(UserActivityTable.COLUMN_ID)));
         usrAct.setAppid(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_APPID)));
         usrAct.setUsrid(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_USERID)));

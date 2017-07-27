@@ -7,7 +7,6 @@ import android.content.pm.ApplicationInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
-import android.widget.Toast;
 
 import com.rey.material.widget.ImageButton;
 
@@ -34,7 +32,6 @@ import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
 import edu.illinois.entm.sawbodeployer.UserActivity.IUserLogs;
 import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
 import edu.illinois.entm.sawbodeployer.UserActivityDB.UserActivityDataSource;
-import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.VideoLibraryFragment;
 import retrofit.Call;
 import retrofit.Callback;
@@ -62,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (isOnline(this)){
             HelperActivity writeLog = new HelperActivity(this);
+
+
             String ip = writeLog.getIP();
             UserActivityDataSource dataSource = new UserActivityDataSource(this);
             dataSource.open();
@@ -206,11 +205,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void postRequest(List<UserActivities> product, final UserActivityDataSource dataSource) {
-
          Call<UserActivities> call = api.CreateProduct(product);
-
-
-        call.enqueue(new Callback<UserActivities>() {
+         call.enqueue(new Callback<UserActivities>() {
 
             @Override
             public void onResponse(Response<UserActivities> response, Retrofit retrofit) {
@@ -225,32 +221,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
-/*
-    boolean doubleBackToExitPressedOnce = false;
-
-    @Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this,getResources().getString(R.string.twice), Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-
-                doubleBackToExitPressedOnce=false;
-
-                if (getIntent().getBooleanExtra("EXIT", false)) {
-                    finish();
-                }
-
-
-            }
-        }, 2000);
-    }*/
 }

@@ -16,8 +16,7 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.View;
-
-import com.rey.material.widget.ImageButton;
+import android.widget.ImageButton;
 
 import java.io.File;
 import java.io.FileInputStream;

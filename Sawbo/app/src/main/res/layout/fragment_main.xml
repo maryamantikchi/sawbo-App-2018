@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         android:id="@+id/extention_sawbo_image"
         >
-        <com.rey.material.widget.ImageView
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="130dp"
             android:padding="18dp"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:orientation="vertical">
-            <com.rey.material.widget.Button
+            <Button
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="8dp"
@@ -54,7 +54,7 @@
                 android:background="@color/blue_dark"
                 tools:ignore="RtlCompat"/>
 
-            <com.rey.material.widget.Button
+            <Button
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="8dp"
@@ -73,7 +73,7 @@
                 android:id="@+id/btn_my_video_home" />
 
 
-            <com.rey.material.widget.Button
+            <Button
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="8dp"
@@ -92,7 +92,7 @@
                 android:id="@+id/btn_share_home"/>
 
 
-            <com.rey.material.widget.Button
+            <Button
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="8dp"

@@ -12,7 +12,7 @@
         android:id="@+id/extention_splash"
         android:layout_centerInParent="true"/>
 
-    <com.rey.material.widget.ImageButton
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/transparent"

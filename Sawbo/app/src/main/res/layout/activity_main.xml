@@ -56,7 +56,7 @@
 
 
     </android.support.design.widget.BottomNavigationView>-->
-    <com.rey.material.widget.LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:gravity="center_vertical"
@@ -64,7 +64,7 @@
         android:id="@+id/navigation_layout"
         android:orientation="horizontal">
 
-        <com.rey.material.widget.ImageButton
+        <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_home"
@@ -75,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_weight="0.01"/>
 
-        <com.rey.material.widget.ImageButton
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_video_library"
@@ -83,7 +83,7 @@
             android:id="@+id/btn_video_library"
             android:background="@color/transparent"/>
 
-        <com.rey.material.widget.ImageButton
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_play_menu"
@@ -91,14 +91,14 @@
             android:id="@+id/btn_my_video"
             android:background="@color/transparent"/>
 
-        <com.rey.material.widget.ImageButton
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_share"
             android:layout_weight="0.01"
             android:id="@+id/btn_share"
             android:background="@color/transparent"/>
-        <com.rey.material.widget.ImageButton
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_info"
@@ -107,7 +107,7 @@
             android:background="@color/transparent"/>
 
 
-    </com.rey.material.widget.LinearLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

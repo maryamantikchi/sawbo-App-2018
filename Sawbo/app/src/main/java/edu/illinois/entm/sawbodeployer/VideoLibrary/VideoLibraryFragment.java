@@ -19,12 +19,16 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.illinois.entm.sawbodeployer.LogFileDB.LogFileDBHelperAssets;
 import edu.illinois.entm.sawbodeployer.LogFileDB.LogVideoSource;
+import edu.illinois.entm.sawbodeployer.MainActivity;
 import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
@@ -310,9 +314,6 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
                 adapter = new VideoListAdapter(filtered_video, getContext(), fragmentManager, VideoLibraryFragment.this);
             }
 
-
-
-
             return null;
 
         }
@@ -435,12 +436,28 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
     private void getVideoFromDB(){
         dataSource = new LogVideoSource(getContext());
         dataSource.open();
+        List<all> videos = dataSource.getAllVideos();
         videoModel = new Video();
-        videoModel.setCountry(dataSource.getAllCountry());
-        videoModel.setLanguage(dataSource.getAllLanguage());
-        videoModel.setTopic(dataSource.getAllTopics());
-        videoModel.setAll(dataSource.getAllVideos());
-        dataSource.close();
+        if (videos.size()!=0){
+            videoModel.setCountry(dataSource.getAllCountry());
+            videoModel.setLanguage(dataSource.getAllLanguage());
+            videoModel.setTopic(dataSource.getAllTopics());
+            videoModel.setAll(videos);
+            dataSource.close();
+        }else{
+            LogFileDBHelperAssets dbAssets = new LogFileDBHelperAssets(getContext(),getActivity().getFilesDir().getAbsolutePath());
+            try {
+                dbAssets.prepareDatabase();
+            } catch (IOException e) {
+                Log.e("tag", e.getMessage());
+            }
+
+            videoModel.setAll(dbAssets.getAllVideos());
+            videoModel.setCountry(dbAssets.getCountries());
+            videoModel.setLanguage(dbAssets.getLanguages());
+            videoModel.setTopic(dbAssets.getTopics());
+        }
+
 
         adapter = new VideoListAdapter(videoModel,getContext(),fragmentManager,VideoLibraryFragment.this);
 

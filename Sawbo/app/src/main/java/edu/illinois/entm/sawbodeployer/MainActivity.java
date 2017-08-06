@@ -1,6 +1,7 @@
 package edu.illinois.entm.sawbodeployer;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
+import android.util.Log;
 import android.view.View;
 
 import com.rey.material.widget.ImageButton;
@@ -27,12 +29,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.illinois.entm.sawbodeployer.AboutContact.InfoFragment;
+import edu.illinois.entm.sawbodeployer.LogFileDB.LogFileDBHelperAssets;
 import edu.illinois.entm.sawbodeployer.MyVideos.MyVideoFragment;
 import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
 import edu.illinois.entm.sawbodeployer.UserActivity.IUserLogs;
 import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
 import edu.illinois.entm.sawbodeployer.UserActivityDB.UserActivityDataSource;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.VideoLibraryFragment;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton home,video_library,my_videos,share,info;
     private AppCompatImageButton setting,search;
     IUserLogs api;
+    ProgressDialog progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,26 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     public void initialize(){
 
-        if (isOnline(this)){
-            HelperActivity writeLog = new HelperActivity(this);
 
-
-            String ip = writeLog.getIP();
-            UserActivityDataSource dataSource = new UserActivityDataSource(this);
-            dataSource.open();
-            List<UserActivities> user_logs = new ArrayList<UserActivities>();
-            user_logs = dataSource.getUserActivities(ip);
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://2svz9cfvr4.execute-api.us-west-2.amazonaws.com/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            api = retrofit.create(IUserLogs.class);
-
-            postRequest(user_logs,dataSource);
-
-        }
         home = (ImageButton)findViewById(R.id.btn_home);
         home.setOnClickListener(this);
         video_library = (ImageButton)findViewById(R.id.btn_video_library);
@@ -120,6 +106,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragment = new HomeFragment();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.main_container, fragment).commit();
+
+
+
+            progress = ProgressDialog.show(this, "Loading",
+                    "Fetching data...", true);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run()
+                {
+                    if (isOnline(MainActivity.this)) {
+                        HelperActivity writeLog = new HelperActivity(MainActivity.this);
+
+
+                        String ip = writeLog.getIP();
+                        UserActivityDataSource dataSource = new UserActivityDataSource(MainActivity.this);
+                        dataSource.open();
+                        List<UserActivities> user_logs = new ArrayList<UserActivities>();
+                        user_logs = dataSource.getUserActivities(ip);
+
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("https://2svz9cfvr4.execute-api.us-west-2.amazonaws.com/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        api = retrofit.create(IUserLogs.class);
+
+                        postRequest(user_logs, dataSource);
+                    }
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            progress.dismiss();
+                        }
+                    });
+                }
+            }).start();
+
 
     }
 

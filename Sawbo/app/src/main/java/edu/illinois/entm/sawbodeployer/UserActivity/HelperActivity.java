@@ -159,7 +159,7 @@ public class HelperActivity {
             }catch (NullPointerException e){
                 Log.v("Error", e.toString());
             }
-            if(result.isEmpty()) {
+            if(result==null || result.isEmpty()) {
                 TelephonyManager tManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 result = tManager.getDeviceId();
                 if(result.isEmpty() || result.equals("000000000000000")){

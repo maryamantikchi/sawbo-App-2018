@@ -458,10 +458,7 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
             videoModel.setTopic(dbAssets.getTopics());
         }
 
-
         adapter = new VideoListAdapter(videoModel,getContext(),fragmentManager,VideoLibraryFragment.this);
-
-
     }
 
 }

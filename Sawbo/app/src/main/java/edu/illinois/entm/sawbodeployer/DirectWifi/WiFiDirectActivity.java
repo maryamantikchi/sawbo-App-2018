@@ -1,6 +1,7 @@
 package edu.illinois.entm.sawbodeployer.DirectWifi;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -67,6 +68,7 @@ import rx.schedulers.Schedulers;
 public class WiFiDirectActivity extends Activity implements ChannelListener, DeviceListFragment.DeviceActionListener{
 
     //-------------------------------------------------------------------------------------------------------------------------
+    ProgressDialog progress,connect_progress;
 
 
     private class DefaultSubscriber<T> extends Subscriber<T> {
@@ -89,10 +91,11 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
      * Subscriber for when we are initiating a new peer discovery
      */
     private class DiscoverPeersSubscription extends DefaultSubscriber<List<DeviceModel>> {
+
         @Override
         public void onNext(final List<DeviceModel> deviceList) {
             // We got a list with nearby p2p devices
-
+            progress.dismiss();
             // Stop refreshing
             stopDiscoveringUi();
 
@@ -103,6 +106,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         @Override
         public void onError(final Throwable e) {
             if (e instanceof TimeoutException) {
+                progress.dismiss();
+
                 // No devices were found, or the discovery took too long time
 
                 // Stop refreshing
@@ -127,6 +132,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         @Override
         public void onCompleted() {
             // Change screen state
+            connect_progress.dismiss();
             setConnectedToDeviceScreen(mDeviceModel);
         }
     }
@@ -322,6 +328,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     @OnItemClick(R.id.lv_devices)
     protected void onDeviceClick(int position) {
         final DeviceModel deviceModel = mDeviceListAdapter.getItem(position);
+        connect_progress = ProgressDialog.show(this, "connecting",
+                "Please wait...", true);
         mRxWifiP2pManager
                 .connect(mRxWifiP2pManager.createConfig(deviceModel.getAddress(), WpsInfo.PBC))
                 .subscribeOn(Schedulers.computation())
@@ -389,12 +397,18 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
                     return;
                 }
 
+                progress = ProgressDialog.show(WiFiDirectActivity.this, "Scaning",
+                        "Searching for devices", true);
+
+
                 mDiscoverPeersSubscription = mRxWifiP2pManager.discoverAndRequestPeersList()
                         .timeout(5, TimeUnit.SECONDS)
                         .map(new DeviceModelMapper())
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new DiscoverPeersSubscription());
+
+
 //                final DeviceListFragment fragment = (DeviceListFragment) getFragmentManager()
 //                        .findFragmentById(R.id.frag_list);
 //                fragment.onInitiateDiscovery();

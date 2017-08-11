@@ -14,9 +14,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,14 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.illinois.entm.sawbodeployer.AboutContact.InfoFragment;
-import edu.illinois.entm.sawbodeployer.LogFileDB.LogFileDBHelperAssets;
 import edu.illinois.entm.sawbodeployer.MyVideos.MyVideoFragment;
 import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
 import edu.illinois.entm.sawbodeployer.UserActivity.IUserLogs;
 import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
 import edu.illinois.entm.sawbodeployer.UserActivityDB.UserActivityDataSource;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.VideoLibraryFragment;
-import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;

@@ -1,13 +1,13 @@
 package edu.illinois.entm.sawbodeployer;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +18,17 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.illinois.entm.sawbodeployer.MyVideoDetail.MyVideoDetailFragment;
-import edu.illinois.entm.sawbodeployer.MyVideos.MyVideoFragment;
+import edu.illinois.entm.sawbodeployer.LogFileDB.LogFileDBHelperAssets;
+import edu.illinois.entm.sawbodeployer.LogFileDB.LogVideoSource;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.ServiceAPI;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.VideoLibraryFragment;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.VideoListAdapter;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
@@ -47,6 +50,7 @@ public class SearchFragment extends android.support.v4.app.Fragment {
     ArrayList<String> selected_topic = new ArrayList<>();
     ArrayList<String> selected_language = new ArrayList<>();
     ArrayList<String> selected_country = new ArrayList<>();
+    private LogVideoSource dataSource;
 
     public SearchFragment(){
 
@@ -223,8 +227,50 @@ public class SearchFragment extends android.support.v4.app.Fragment {
         @Override
         protected Void doInBackground(Void... params) {
             Log.i("OCRTask","extracting..");
-            getRetrofitObject();
+            if (isOnline(getContext())){
+                getRetrofitObject();
+            }else {
+                getVideoFromDB();
+            }
             return null;
         }
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    private void getVideoFromDB(){
+        dataSource = new LogVideoSource(getContext());
+        dataSource.open();
+        List<all> videos = dataSource.getAllVideos();
+        videoModel = new Video();
+        if (videos.size()!=0){
+            videoModel.setCountry(dataSource.getAllCountry());
+            videoModel.setLanguage(dataSource.getAllLanguage());
+            videoModel.setTopic(dataSource.getAllTopics());
+            videoModel.setAll(videos);
+            dataSource.close();
+        }else{
+            LogFileDBHelperAssets dbAssets = new LogFileDBHelperAssets(getContext(),getActivity().getFilesDir().getAbsolutePath());
+            try {
+                dbAssets.prepareDatabase();
+            } catch (IOException e) {
+                Log.e("tag", e.getMessage());
+            }
+
+            videoModel.setAll(dbAssets.getAllVideos());
+            videoModel.setCountry(dbAssets.getCountries());
+            videoModel.setLanguage(dbAssets.getLanguages());
+            videoModel.setTopic(dbAssets.getTopics());
+        }
+
     }
 }

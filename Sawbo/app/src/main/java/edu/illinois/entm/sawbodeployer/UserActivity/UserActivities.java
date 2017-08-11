@@ -9,7 +9,7 @@ import edu.illinois.entm.sawbodeployer.UserActivityDB.GPS;
  */
 
 public class UserActivities {
-    int id;
+
     String appid;
     String usrid;
     String timestamp;
@@ -20,14 +20,6 @@ public class UserActivities {
     String wifi_vidID;
     String fb_vidID;
     String other_vidID;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getAppid() {
         return appid;
@@ -108,13 +100,4 @@ public class UserActivities {
     public void setOther_vidID(String other_vidID) {
         this.other_vidID = other_vidID;
     }
-
-    @Override
-    public String toString() {
-        return "ip: "+getIp()+" gps0:"+getGPS()+" dl_vid: "
-                +getDl_vidID()+" "+" appId: "+getAppid()
-                +" userId "+getUsrid()+" timeStamp "+getTimestamp()+" blue_videoId: "
-                +getBlue_vidID()+" wifiVidId: "+getWifi_vidID()+" fbVideoId: "+getFb_vidID()+" others: "+getOther_vidID();
-    }
-
 }

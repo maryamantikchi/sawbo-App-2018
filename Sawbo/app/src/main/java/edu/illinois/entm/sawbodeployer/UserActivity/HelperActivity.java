@@ -6,7 +6,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.NetworkOnMainThreadException;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import edu.illinois.entm.sawbodeployer.UserActivityDB.GPS;
@@ -48,12 +51,49 @@ public class HelperActivity {
     public void WriteUsrActivity(UserActivities activities,Activity act){
         dataSource = new UserActivityDataSource(context);
         dataSource.open();
+        GPS gps = getGPS(act);
         activities.setUsrid(getdID());
-        activities.setGPS(getGPS(act));
+        activities.setGPS(gps);
+        activities.setCountry(getCountryName(act,gps));
+        activities.setCity(getCityName(act,gps));
         activities.setAppid(appID);
         activities.setTimestamp(getTimeStamp());
         dataSource.createUserActivity(activities);
         dataSource.close();
+    }
+
+    private String getCityName(Activity activity,GPS gps){
+        if (gps.getCoordinates().size()==0) return null;
+        Geocoder gcd = new Geocoder(activity, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = gcd.getFromLocation(Double.valueOf(gps.getCoordinates().get(0)),
+                    Double.valueOf(gps.getCoordinates().get(1)), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (addresses.size() > 0) {
+            if (addresses.get(0).getLocality()=="") return null;
+            return addresses.get(0).getLocality();
+        }
+        return null;
+    }
+
+    private String getCountryName(Activity activity,GPS gps){
+        if (gps.getCoordinates().size()==0) return null;
+        Geocoder gcd = new Geocoder(activity, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = gcd.getFromLocation(Double.valueOf(gps.getCoordinates().get(0)),
+                    Double.valueOf(gps.getCoordinates().get(1)), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (addresses.size() > 0) {
+            if (addresses.get(0).getCountryName()=="") return null;
+             return addresses.get(0).getCountryName();
+        }
+        return null;
     }
 
     private GPS getGPS(Activity act) {

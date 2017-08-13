@@ -20,6 +20,8 @@ public class UserActivityTable {
     public static final String COLUMN_wifi_vidID = "wifi_vidID";
     public static final String COLUMN_fb_vidID = "fb_vidID";
     public static final String COLUMN_other_vidID = "other_vidID";
+    public static final String COLUMN_CITY_NAME = "city";
+    public static final String COLUMN_COUNTRY_NAME = "country";
 
 
 
@@ -38,7 +40,10 @@ public class UserActivityTable {
             COLUMN_blue_vidID,
             COLUMN_wifi_vidID,
             COLUMN_fb_vidID,
-            COLUMN_other_vidID
+            COLUMN_other_vidID,
+            COLUMN_COUNTRY_NAME,
+            COLUMN_CITY_NAME
+
     };
 
     public static final String TABLE_USER_ACTIVITY_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
@@ -53,5 +58,7 @@ public class UserActivityTable {
             COLUMN_blue_vidID + " TEXT, " +
             COLUMN_wifi_vidID + " TEXT, " +
             COLUMN_fb_vidID + " TEXT, " +
-            COLUMN_other_vidID + " TEXT )";
+            COLUMN_other_vidID + " TEXT, "+
+            COLUMN_COUNTRY_NAME +" TEXT, "+
+            COLUMN_CITY_NAME +" TEXT )";
 }

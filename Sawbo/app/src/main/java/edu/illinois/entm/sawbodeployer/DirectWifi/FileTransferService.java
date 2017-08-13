@@ -7,15 +7,11 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -106,7 +102,11 @@ public class FileTransferService extends IntentService {
                     Log.d(WiFiDirectActivity.TAG, e.toString());
                 }
                 System.err.println(is+"------"+stream);
-                DeviceDetailFragment.copyFile(is, stream);
+                if (is != null) {
+
+                    DeviceDetailFragment.copyFile(is, stream);
+
+                }
                 Log.d(WiFiDirectActivity.TAG, "Client: Data written");
                 oos.close();	//close the ObjectOutputStream after sending data.
             } catch (IOException e) {

@@ -30,20 +30,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.pixplicity.sharp.Sharp;
 import com.stetcho.rxwifip2pmanager.data.wifi.RxWifiP2pManager;
 import com.stetcho.rxwifip2pmanager.data.wifi.broadcast.factory.WifiP2pBroadcastObservableManagerFactory;
 
-import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -145,7 +136,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         public void onCompleted() {
             // Change screen state. Restore to the default - welcome screen.
             setWelcomeScreen();
-           // Snackbar.make(mSwipeRefreshLayout, R.string.disconnected, Snackbar.LENGTH_SHORT).show();
+            // Snackbar.make(mSwipeRefreshLayout, R.string.disconnected, Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -307,7 +298,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     protected void onStop() {
         super.onStop();
         this.finish();
-     //   safeUnsubscribe();
+        //   safeUnsubscribe();
     }
 
     private void safeUnsubscribe() {
@@ -614,6 +605,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 //        }
 
     }
+
+
 
 
 

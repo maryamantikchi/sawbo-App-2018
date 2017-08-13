@@ -1,6 +1,8 @@
 package edu.illinois.entm.sawbodeployer.VideoLibrary;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
@@ -75,14 +77,28 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.view
                         .commit();
             }
         });
-        Glide.with(context)
-                .load("http://sawbo-illinois.org/images/videoThumbnails/"+video.getImage())
-                .into(holder.videoImage);
+        if (isOnline(context)) {
+            Glide.with(context)
+                    .load("http://sawbo-illinois.org/images/videoThumbnails/" + video.getImage())
+                    .into(holder.videoImage);
+        }else {
+            holder.videoImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_launcher));
+        }
     }
 
     @Override
     public int getItemCount() {
         return object.getAll().size();
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

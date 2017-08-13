@@ -1,7 +1,5 @@
 package edu.illinois.entm.sawbodeployer.UserActivity;
 
-import java.util.List;
-
 import edu.illinois.entm.sawbodeployer.UserActivityDB.GPS;
 
 /**
@@ -20,6 +18,24 @@ public class UserActivities {
     String wifi_vidID;
     String fb_vidID;
     String other_vidID;
+    String city;
+    String country;
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
     public String getAppid() {
         return appid;
@@ -99,5 +115,10 @@ public class UserActivities {
 
     public void setOther_vidID(String other_vidID) {
         this.other_vidID = other_vidID;
+    }
+
+    @Override
+    public String toString() {
+        return getCity()+" city bood , "+getCountry()+ getAppid();
     }
 }

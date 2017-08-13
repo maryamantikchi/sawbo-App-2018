@@ -16,11 +16,13 @@ import java.io.StreamCorruptedException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -39,7 +41,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 
@@ -132,12 +133,12 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 //						File Imgfile = new File(ImgDir, videoInfo.getImage());
 
 
-//						ArrayList<String> filePath=new ArrayList<>();
-//						filePath.add(url);
-//						//filePath.add(Imgfile.getPath());
-//						filePath.add(root.getPath()+"/VideoInfo.txt");
-//						zipFolder(filePath,root.toString(),"video_pack.zip");
-//						sendingFile(root.getPath()+"/video_pack.zip");
+						ArrayList<String> filePath=new ArrayList<>();
+						filePath.add(url);
+						//filePath.add(Imgfile.getPath());
+						filePath.add(root.getPath()+"/VideoInfo.txt");
+						zipFolder(filePath,root.toString(),"video_pack.zip");
+						sendingFile(root.getPath()+"/video_pack.zip");
 						sendingFile(url);
 
 					}
@@ -413,7 +414,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				WiFiTransferModal obj = null;
 				// obj = (WiFiTransferModal) ois.readObject();
 				String InetAddress;
-				try {
+
 					obj = (WiFiTransferModal) ois.readObject();
 					InetAddress = obj.getInetAddress();
 					if (InetAddress != null
@@ -439,22 +440,25 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 						return "Demo";
 					}
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
 				final Runnable r = new Runnable() {
 
 					public void run() {
 						// TODO Auto-generated method stub
 
-							mProgressDialog.setMessage("Receiving...");
-							mProgressDialog.setIndeterminate(false);
-							mProgressDialog.setMax(100);
-							mProgressDialog.setProgress(0);
-							mProgressDialog.setProgressNumberFormat(null);
-							mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+						mProgressDialog.setMessage("Receiving...");
+						mProgressDialog.setIndeterminate(false);
+						mProgressDialog.setMax(100);
+						mProgressDialog.setProgress(0);
+						mProgressDialog.setProgressNumberFormat(null);
+						mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+						if(!getActivity().isFinishing())
+						{
 							mProgressDialog.show();
+						}
+
+
 
 					}
 				};
@@ -474,13 +478,13 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				Selected_file.createNewFile();
 
 
-//				fullPath = GlobalApplication.getGlobalAppContext().getFilesDir()+ "/video_pack";
-//				Selected_file = new File(GlobalApplication.getGlobalAppContext().getFilesDir()+"/"+obj.getFileName());
-//
-//				File dirs = new File(Selected_file.getParent());
-//				if (!dirs.exists())
-//					dirs.mkdirs();
-//				Selected_file.createNewFile();
+				fullPath = GlobalApplication.getGlobalAppContext().getFilesDir()+ "/video_pack";
+				Selected_file = new File(GlobalApplication.getGlobalAppContext().getFilesDir()+"/"+obj.getFileName());
+
+				File dirss = new File(Selected_file.getParent());
+				if (!dirss.exists())
+					dirss.mkdirs();
+				Selected_file.createNewFile();
 
 
 
@@ -502,11 +506,14 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				this.Extension = obj.getFileName();
 				this.EncryptedFile = Selected_file;
 
-				//unZipIt(Selected_file.getPath(),fullPath);
+				unZipIt(Selected_file.getPath(),fullPath);
 
 				return Selected_file.getAbsolutePath();
 			} catch (IOException e) {
 				Log.e(WiFiDirectActivity.TAG, e.getMessage());
+				return null;
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
 				return null;
 			}
 		}
@@ -637,7 +644,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		return true;
 	}
 
-	public static void showprogress(final String task) {
+	public void showprogress(final String task) {
 		if (mProgressDialog == null) {
 			mProgressDialog = new ProgressDialog(mContentView.getContext(),
 					ProgressDialog.THEME_HOLO_LIGHT);
@@ -649,13 +656,18 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 				// TODO Auto-generated method stub
 
 
-					mProgressDialog.setMessage(task);
-					mProgressDialog.setIndeterminate(false);
-					mProgressDialog.setMax(100);
-					mProgressDialog.setProgressNumberFormat(null);
-					mProgressDialog
-							.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				mProgressDialog.setMessage(task);
+				mProgressDialog.setIndeterminate(false);
+				mProgressDialog.setMax(100);
+				mProgressDialog.setProgressNumberFormat(null);
+				mProgressDialog
+						.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+				if(!getActivity().isFinishing())
+				{
 					mProgressDialog.show();
+				}
+
 
 
 			}
@@ -823,7 +835,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 				}else if (newFile.getPath().contains(".3gp")){
 					//copy to videos
-				//	System.err.println(getActivity().getFilesDir() + "/"+newFile.getName());
+					//	System.err.println(getActivity().getFilesDir() + "/"+newFile.getName());
 
 					File source = new File(GlobalApplication.getGlobalAppContext().getFilesDir() + "/"+newFile.getName());
 
@@ -831,12 +843,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 				}/*else if(newFile.getPath().contains(".jpg")){
 					//copy to images
-
 					File Imgroot = Environment.getExternalStorageDirectory();
 					File ImgDir = new File(Imgroot.getAbsolutePath() +"/.Sawbo/Images");
 					File Imgfile = new File(ImgDir.getAbsolutePath()+"/"+ newFile.getName());
 					FileUtils.copyFile(newFile, Imgfile);
-
 				}*/
 
 				newFile.delete();
@@ -916,7 +926,21 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	@Override
 	public void onPause() {
 		super.onPause();
+		mProgressDialog.dismiss();
 		((DeviceListFragment.DeviceActionListener) getActivity()).disconnect();
 
+	}
+
+
+	public boolean isRunning(Context ctx) {
+		ActivityManager activityManager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+
+		for (ActivityManager.RunningTaskInfo task : tasks) {
+			if (ctx.getPackageName().equalsIgnoreCase(task.baseActivity.getPackageName()))
+				return true;
+		}
+
+		return false;
 	}
 }

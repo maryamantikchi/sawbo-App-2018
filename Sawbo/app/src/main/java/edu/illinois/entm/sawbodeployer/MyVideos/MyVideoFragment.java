@@ -30,7 +30,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.illinois.entm.sawbodeployer.LogFileDB.LogVideoSource;
@@ -199,6 +201,8 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
         @Override
         protected Void doInBackground(Void... params) {
 
+
+
                 adapter = new MyVideoListAdapter(gettVideos(),getContext());
             return null;
         }
@@ -241,8 +245,7 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
             Log.v("filename", strFile);
         }
 
-        File sdCard = Environment.getExternalStorageDirectory();
-        String bluetoothFile = sdCard.getAbsolutePath() + "/Bluetooth";
+        String bluetoothFile = searchForBluetoothFolder();
         File bluetoothFolder = new File(bluetoothFile);
 
         if (bluetoothFolder.exists()){
@@ -266,7 +269,6 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
                                     (videosdb.get(i).getMp4file() !=null && videosdb.get(i).getMp4file().equalsIgnoreCase(strFile))) {
                                 // dataSource.createVideo(videosdb.get(i));
                                 File f= new File(bluetoothFile,strFile);
-                                System.err.println("Pathhhh "+f.getPath() );
                                 videosdb.get(i).setGp_file(String.valueOf(Uri.fromFile(f)));
                                 videosdb.get(i).setLite_file(String.valueOf(Uri.fromFile(f)));
                                 videos.add(videosdb.get(i));
@@ -324,9 +326,15 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
                 dataSource.deleteVideoStandard(video);
             }
 
-        File sdCard = Environment.getExternalStorageDirectory();
-        String bluetoothFile = sdCard.getAbsolutePath() + "/Bluetooth";
+//        File sdCard = Environment.getExternalStorageDirectory();
+//        String bluetoothFile = sdCard.getAbsolutePath() + "/Bluetooth";
+//        File bluetoothFolder = new File(bluetoothFile);
+
+
+        String bluetoothFile = searchForBluetoothFolder();
         File bluetoothFolder = new File(bluetoothFile);
+
+
 
         if (bluetoothFolder.exists()){
             logDateSource = new LogVideoSource(getContext());
@@ -362,5 +370,51 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
         dataSource.close();
 
 
+    }
+
+    public List<File> folderSearchBT(File src, String folder)
+            throws FileNotFoundException {
+
+        List<File> result = new ArrayList<File>();
+
+        File[] filesAndDirs = src.listFiles();
+        List<File> filesDirs = Arrays.asList(filesAndDirs);
+
+        for (File file : filesDirs) {
+            result.add(file); // always add, even if directory
+            if (!file.isFile()) {
+                List<File> deeperList = folderSearchBT(file, folder);
+                result.addAll(deeperList);
+            }
+        }
+        return result;
+    }
+
+    public String searchForBluetoothFolder() {
+
+        String splitchar = "/";
+        File root = Environment.getExternalStorageDirectory();
+        List<File> btFolder = null;
+        String bt = "bluetooth";
+        try {
+            btFolder = folderSearchBT(root, bt);
+        } catch (FileNotFoundException e) {
+            Log.e("FILE: ", e.getMessage());
+        }
+
+        for (int i = 0; i < btFolder.size(); i++) {
+
+            String g = btFolder.get(i).toString();
+
+            String[] subf = g.split(splitchar);
+
+            String s = subf[subf.length - 1].toUpperCase();
+
+            boolean equals = s.equalsIgnoreCase(bt);
+
+            if (equals)
+                return g;
+        }
+        return null; // not found
     }
 }

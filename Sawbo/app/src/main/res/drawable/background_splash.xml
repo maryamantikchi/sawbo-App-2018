@@ -9,8 +9,7 @@
         </shape>
     </item>
 
-    <item
-       >
+    <item>
         <bitmap
             android:gravity="center"
             android:src="@drawable/sawbo_splash"

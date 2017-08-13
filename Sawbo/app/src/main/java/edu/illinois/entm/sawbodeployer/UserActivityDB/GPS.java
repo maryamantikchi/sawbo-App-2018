@@ -16,4 +16,5 @@ public class GPS {
     public void setCoordinates(List<String> coordinates) {
         this.coordinates = coordinates;
     }
+
 }

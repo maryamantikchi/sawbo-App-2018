@@ -120,12 +120,12 @@
             android:visibility="gone"
             tools:text="1 Device was found"/>
         <!--<fragment-->
-            <!--class="edu.illinois.entm.sawbodeployer.DirectWifi.DeviceListFragment"-->
-            <!--android:id="@+id/frag_list"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:background="@color/colorPrimary"-->
-            <!--android:layout_height="@dimen/phone_list_height">-->
-            <!--&lt;!&ndash; Preview: layout=@layout/row_devices &ndash;&gt;-->
+        <!--class="edu.illinois.entm.sawbodeployer.DirectWifi.DeviceListFragment"-->
+        <!--android:id="@+id/frag_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:layout_height="@dimen/phone_list_height">-->
+        <!--&lt;!&ndash; Preview: layout=@layout/row_devices &ndash;&gt;-->
         <!--</fragment>-->
         <fragment
             class="edu.illinois.entm.sawbodeployer.DirectWifi.DeviceDetailFragment"

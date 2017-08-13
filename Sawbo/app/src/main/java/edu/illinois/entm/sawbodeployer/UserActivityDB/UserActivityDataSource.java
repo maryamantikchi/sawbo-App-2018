@@ -49,6 +49,8 @@ public class UserActivityDataSource {
         usrActvs.put(UserActivityTable.COLUMN_wifi_vidID, usrActv.getWifi_vidID());
         usrActvs.put(UserActivityTable.COLUMN_fb_vidID, usrActv.getFb_vidID());
         usrActvs.put(UserActivityTable.COLUMN_other_vidID, usrActv.getOther_vidID());
+        usrActvs.put(UserActivityTable.COLUMN_COUNTRY_NAME, usrActv.getCountry());
+        usrActvs.put(UserActivityTable.COLUMN_CITY_NAME, usrActv.getCity());
         database.insert(UserActivityTable.TABLE_NAME, null, usrActvs);
 
         return usrActv;
@@ -98,6 +100,8 @@ public class UserActivityDataSource {
         usrAct.setWifi_vidID(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_wifi_vidID)));
         usrAct.setFb_vidID(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_fb_vidID)));
         usrAct.setOther_vidID(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_other_vidID)));
+        usrAct.setCountry(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_COUNTRY_NAME)));
+        usrAct.setCity(cursor.getString(cursor.getColumnIndex(UserActivityTable.COLUMN_CITY_NAME)));
 
         return usrAct;
     }

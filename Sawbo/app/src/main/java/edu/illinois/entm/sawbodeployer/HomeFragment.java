@@ -1,5 +1,6 @@
 package edu.illinois.entm.sawbodeployer;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -35,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,6 +113,10 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
 
+
+
+
+
                 shareApplication();
             }
         });
@@ -149,6 +157,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
             }
             in.close();
             out.close();
+
             intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tempFile));
             startActivity(Intent.createChooser(intent, "Share app via"));
 

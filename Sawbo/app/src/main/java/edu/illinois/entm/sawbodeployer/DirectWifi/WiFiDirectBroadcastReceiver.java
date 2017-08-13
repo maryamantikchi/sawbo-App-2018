@@ -20,10 +20,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
-import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
-import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import edu.illinois.entm.sawbodeployer.R;
@@ -43,7 +42,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
      * @param activity activity associated with the receiver
      */
     public WiFiDirectBroadcastReceiver(WifiP2pManager manager, Channel channel,
-            WiFiDirectActivity activity) {
+                                       WiFiDirectActivity activity) {
         super();
         this.manager = manager;
         this.channel = channel;

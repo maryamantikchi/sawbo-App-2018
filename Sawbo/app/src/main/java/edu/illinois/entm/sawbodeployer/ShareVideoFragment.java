@@ -5,13 +5,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ShareCompat;
@@ -24,34 +21,25 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
-import com.facebook.CallbackManager;
-import com.facebook.login.LoginManager;
 import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.ShareMediaContent;
 import com.facebook.share.model.ShareVideo;
-import com.facebook.share.model.ShareVideoContent;
-import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import edu.illinois.cs.bluetoothobexopp.BluetoothOppFileSender;
 import edu.illinois.entm.sawbodeployer.DirectWifi.WiFiDirectActivity;
-import edu.illinois.entm.sawbodeployer.RxWifi.framework.discovery.view.DiscoveryActivity;
 import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
 import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import edu.illinois.entm.sawbodeployer.btxfr.ClientThread;
 import edu.illinois.entm.sawbodeployer.btxfr.MessageType;
 import edu.illinois.entm.sawbodeployer.btxfr.ProgressData;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by Mahsa on 5/16/2017.
@@ -297,6 +285,16 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                     activities.setWifi_vidID(videoFile.getId());
 
                     writeLog.WriteUsrActivity(activities,getActivity());
+
+//                    WiFiDirectActivity fragment = new WiFiDirectActivity();
+//                    fragment.video_url = getActivity().getFilesDir() + "/" + videoPath;
+//                    fragment.videoFile = videoFile;
+//
+//                    FragmentManager fragmentManager = getFragmentManager();
+//
+//                    fragmentManager.beginTransaction().replace(R.id.main_container, fragment)
+//                            .addToBackStack(null).commit();
+
 
                     Intent intent = new Intent(getActivity(), WiFiDirectActivity.class);
                     intent.putExtra("url",getActivity().getFilesDir() + "/" + videoPath);

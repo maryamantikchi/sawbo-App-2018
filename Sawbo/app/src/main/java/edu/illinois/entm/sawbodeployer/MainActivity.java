@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -26,6 +28,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import edu.illinois.entm.sawbodeployer.AboutContact.InfoFragment;
 import edu.illinois.entm.sawbodeployer.MyVideos.MyVideoFragment;
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
     public void initialize(){
+
+
 
 
         home = (ImageButton)findViewById(R.id.btn_home);

@@ -218,7 +218,6 @@ public class VideoLibraryFragment extends android.support.v4.app.Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.i("OCRTask", "extracting..");
             if (isOnline(getContext()) && (selected_language == null && selected_topic == null &&
                     selected_country == null)){
                 getRetrofitObject();

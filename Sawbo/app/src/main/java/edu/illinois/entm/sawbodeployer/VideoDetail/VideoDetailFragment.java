@@ -79,7 +79,7 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
         religion.setTypeface(title_religion_font);
         religion.setText(videoDetail.getLanguage()+" from "+videoDetail.getCountry());
 
-        if (videoDetail.getLite_file().equals("")||videoDetail.getLite_file()==null)
+        if (videoDetail.getLite_file()==null|| videoDetail.getLite_file().equals(""))
         videoPath = getContext().getResources().getString(R.string.video_url)+videoDetail.getGp_file();
         else videoPath = getContext().getResources().getString(R.string.video_url)+videoDetail.getLite_file();
 

@@ -1,7 +1,6 @@
 package edu.illinois.entm.sawbodeployer.MyVideos;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -11,9 +10,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -41,7 +37,8 @@ import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.DividerItemDecoration;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Mahsa on 4/1/2017.
@@ -90,6 +87,7 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Fabric.with(getActivity(), new Crashlytics());
         view = inflater.inflate(R.layout.fragment_my_video, container, false);
             initialize();
         return view;
@@ -99,7 +97,6 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
     private void initialize(){
 
         if (Build.VERSION.SDK_INT >= 23){
-            System.err.println(1+"bella");
             CheckPermissions();
         }else {
             getData = new MyVideoFragment.getData().execute();
@@ -245,8 +242,16 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
             Log.v("filename", strFile);
         }
 
-        String bluetoothFile = searchForBluetoothFolder();
+//        String bluetoothFile = searchForBluetoothFolder();
+//        File bluetoothFolder = new File(bluetoothFile);
+
+        File sdCard = Environment.getExternalStorageDirectory();
+        String bluetoothFile = sdCard.getAbsolutePath() + "/Bluetooth";
         File bluetoothFolder = new File(bluetoothFile);
+        if (!bluetoothFolder.exists()){
+             bluetoothFile = sdCard.getAbsolutePath() + "/bluetooth";
+             bluetoothFolder = new File(bluetoothFile);
+        }
 
         if (bluetoothFolder.exists()){
             logDateSource = new LogVideoSource(getContext());
@@ -326,13 +331,18 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
                 dataSource.deleteVideoStandard(video);
             }
 
-//        File sdCard = Environment.getExternalStorageDirectory();
-//        String bluetoothFile = sdCard.getAbsolutePath() + "/Bluetooth";
-//        File bluetoothFolder = new File(bluetoothFile);
-
-
-        String bluetoothFile = searchForBluetoothFolder();
+        File sdCard = Environment.getExternalStorageDirectory();
+        String bluetoothFile = sdCard.getAbsolutePath() + "/Bluetooth";
         File bluetoothFolder = new File(bluetoothFile);
+
+        if (!bluetoothFolder.exists()){
+            bluetoothFile = sdCard.getAbsolutePath() + "/bluetooth";
+            bluetoothFolder = new File(bluetoothFile);
+        }
+
+
+//        String bluetoothFile = searchForBluetoothFolder();
+//        File bluetoothFolder = new File(bluetoothFile);
 
 
 

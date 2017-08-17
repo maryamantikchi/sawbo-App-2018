@@ -115,7 +115,7 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
     }
     void initialize(){
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= 23) {
             CheckPermissions();
         }
 

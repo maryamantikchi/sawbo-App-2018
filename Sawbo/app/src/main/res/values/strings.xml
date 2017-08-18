@@ -114,4 +114,7 @@
     <string name="unknown_error">Unknown error</string>
     <string name="not_connected">Not connected</string>
 
+    <string name="nointernet">Please check your internet connection. This section of the app only works if you have an internet connection.</string>
+
+
 </resources>

@@ -151,7 +151,7 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
                             public void onClick(DialogInterface d, int id) {
                                 List<all> removeVideoList = adapter.getSelectedVideo();
                                 for (all video:removeVideoList) {
-                                    deleteVideo(video);
+                                   deleteVideo(video);
                                 }
                                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                                 ft.detach(MyVideoFragment.this).attach(MyVideoFragment.this).commit();
@@ -338,6 +338,9 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
         if (!bluetoothFolder.exists()){
             bluetoothFile = sdCard.getAbsolutePath() + "/bluetooth";
             bluetoothFolder = new File(bluetoothFile);
+        }
+        if(!bluetoothFolder.exists()){
+            bluetoothFolder = new File(searchForBluetoothFolder());
         }
 
 

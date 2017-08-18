@@ -3,29 +3,31 @@ package edu.illinois.entm.sawbodeployer.VideoDetail;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,20 +43,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.illinois.entm.sawbodeployer.MyVideoDetail.MyVideoDetailFragment;
 import edu.illinois.entm.sawbodeployer.MyVideos.MyVideoFragment;
 import edu.illinois.entm.sawbodeployer.R;
 import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
+import edu.illinois.entm.sawbodeployer.UserActivity.IUserLogs;
 import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
+import edu.illinois.entm.sawbodeployer.UserActivityDB.GPS;
+import edu.illinois.entm.sawbodeployer.UserActivityDB.UserActivityDataSource;
 import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
-//import edu.illinois.entm.sawbodeployer.WriteLog;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 /**
  * Created by Mahsa on 4/9/2017.
@@ -66,11 +75,13 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
     Button liteFile,standardFile;
     public all video;
     View view;
+    ProgressDialog progress;
 
     boolean stopDownload = false;
     long downloadID;
     BroadcastReceiver onComplete;
     HelperActivity writeLog;
+    IUserLogs api;
 
     public DownloadVideoFragment(){
     }
@@ -404,9 +415,70 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                 @Override
                 public void onClick(View view) {
                     //addDataBase(true);
+                    if (isOnline(getContext())) {
+
+                        progress = ProgressDialog.show(getContext(), "Loading",
+                            "Fetching data...", true);
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            HelperActivity writeLog = new HelperActivity(getContext());
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                            String ip = preferences.getString("IP", "");
+                            if (ip==null||ip==""){
+                                ip = writeLog.getIP(getActivity());
+                            }
 
 
-                    download_video(btn,url,isLight);
+
+
+                              //  UserActivityDataSource dataSource = new UserActivityDataSource(getContext());
+                               // dataSource.open();
+                            UserActivities activities = new UserActivities();
+                            activities.setIp(ip);
+                            GPS gps = writeLog.getGPSs(getActivity());
+                            activities.setGPS(gps);
+                            activities.setCity(writeLog.getCityName(getActivity(),gps));
+                            activities.setCountry(writeLog.getCountryName(getActivity(),gps));
+                            activities.setAppid("googleplay");
+                            activities.setDl_vidID(video.getID());
+                            activities.setTimestamp(writeLog.getTimeStamp());
+                            String UID = preferences.getString("UsrID", "");
+                            if (UID==null || UID=="")
+                                UID = writeLog.getdID(getActivity());
+                            activities.setUsrid(UID);
+
+
+                                List<UserActivities> user_logs = new ArrayList<UserActivities>();
+                                user_logs.add(activities);
+
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("https://2svz9cfvr4.execute-api.us-west-2.amazonaws.com/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build();
+
+                                api = retrofit.create(IUserLogs.class);
+
+                                postRequest(user_logs);
+
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run()
+                                {
+                                    progress.dismiss();
+                                }
+                            });
+                        }
+                    }).start();
+                        download_video(btn,url,isLight);
+                    }else {
+                    Toast.makeText(getContext(),getResources().getString(R.string.nointernet),Toast.LENGTH_SHORT).show();
+                    }
+
+
                 }
             });
         }
@@ -460,6 +532,33 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
         }
     }*/
 
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    private void postRequest(List<UserActivities> product) {
+        Call<UserActivities> call = api.CreateProduct(product);
+
+        call.enqueue(new Callback<UserActivities>() {
+            @Override
+            public void onResponse(Response<UserActivities> response, Retrofit retrofit) {
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                UserActivityDataSource dataSources = new UserActivityDataSource(getContext());
+                dataSources.open();
+                dataSources.createUserActivity(product.get(0));
+                dataSources.close();
+            }
+        });
+
+    }
 
 }

@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.NetworkOnMainThreadException;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -51,8 +52,8 @@ public class HelperActivity {
     public void WriteUsrActivity(UserActivities activities,Activity act){
         dataSource = new UserActivityDataSource(context);
         dataSource.open();
-        GPS gps = getGPS(act);
-        activities.setUsrid(getdID());
+        GPS gps = getGPSs(act);
+        activities.setUsrid(getdID(act));
         activities.setGPS(gps);
         activities.setCountry(getCountryName(act,gps));
         activities.setCity(getCityName(act,gps));
@@ -62,7 +63,7 @@ public class HelperActivity {
         dataSource.close();
     }
 
-    private String getCityName(Activity activity,GPS gps){
+    public String getCityName(Activity activity,GPS gps){
         if (gps.getCoordinates().size()==0) return null;
         Geocoder gcd = new Geocoder(activity, Locale.getDefault());
         List<Address> addresses = null;
@@ -79,7 +80,7 @@ public class HelperActivity {
         return null;
     }
 
-    private String getCountryName(Activity activity,GPS gps){
+    public String getCountryName(Activity activity,GPS gps){
         if (gps.getCoordinates().size()==0) return null;
         Geocoder gcd = new Geocoder(activity, Locale.getDefault());
         List<Address> addresses = null;
@@ -96,7 +97,7 @@ public class HelperActivity {
         return null;
     }
 
-    private GPS getGPS(Activity act) {
+    public GPS getGPSs(Activity act) {
         LocationManager lm = (LocationManager) act.getSystemService(Context.LOCATION_SERVICE);
         final Criteria criteria = new Criteria();
 
@@ -146,7 +147,7 @@ public class HelperActivity {
         }
     }
 
-    public String getIP(){
+    public String getIP(Activity activity){
         try {
 
             if (android.os.Build.VERSION.SDK_INT > 9)
@@ -164,7 +165,12 @@ public class HelperActivity {
             logService service = retrofit.create(logService.class);
 
             final Call<String> call = service.getIp();
-            return call.execute().body();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+            SharedPreferences.Editor editor = preferences.edit();
+            String responce = call.execute().body();
+            editor.putString("IP",responce);
+            editor.apply();
+            return responce;
         }catch (IOException e){
 
             return "";
@@ -174,7 +180,7 @@ public class HelperActivity {
         }
     }
 
-    public String getdID() {
+    public String getdID(Activity activity) {
         String result = "";
         String url = context.getFilesDir() + "/id.txt";
         File file = new File(url);
@@ -217,6 +223,11 @@ public class HelperActivity {
             }
         }
         Log.v("Return", result);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("UsrID",result);
+        editor.apply();
         return result;
     }
 

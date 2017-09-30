@@ -75,12 +75,13 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
     Button liteFile,standardFile;
     public all video;
     View view;
-    ProgressDialog progress;
+
 
     boolean stopDownload = false;
     long downloadID;
     BroadcastReceiver onComplete;
     HelperActivity writeLog;
+    ProgressDialog progress;
     IUserLogs api;
 
     public DownloadVideoFragment(){
@@ -371,9 +372,9 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
             else videoFilename = video.getGp_file();*/
 //            wl.writeNow(getActivity(), "download", videoFilename, "");
   //          wl.sendLog(getActivity());
-            UserActivities activities = new UserActivities();
-            activities.setDl_vidID(video.getId());
-            writeLog.WriteUsrActivity(activities,getActivity());
+//            UserActivities activities = new UserActivities();
+//            activities.setDl_vidID(video.getId());
+//            writeLog.WriteUsrActivity(activities,getActivity());
 
             addDataBase(isLight);
 
@@ -430,10 +431,6 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                             if (ip==null||ip==""){
                                 ip = writeLog.getIP(getActivity());
                             }
-
-
-
-
                               //  UserActivityDataSource dataSource = new UserActivityDataSource(getContext());
                                // dataSource.open();
                             UserActivities activities = new UserActivities();
@@ -443,7 +440,7 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                             activities.setCity(writeLog.getCityName(getActivity(),gps));
                             activities.setCountry(writeLog.getCountryName(getActivity(),gps));
                             activities.setAppid("googleplay");
-                            activities.setDl_vidID(video.getID());
+                            activities.setDl_vidID(video.getId());
                             activities.setTimestamp(writeLog.getTimeStamp());
                             String UID = preferences.getString("UsrID", "");
                             if (UID==null || UID=="")
@@ -552,10 +549,8 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
 
             @Override
             public void onFailure(Throwable t) {
-                UserActivityDataSource dataSources = new UserActivityDataSource(getContext());
-                dataSources.open();
-                dataSources.createUserActivity(product.get(0));
-                dataSources.close();
+                writeLog.WriteUsrActivity(product.get(0),getActivity());
+
             }
         });
 

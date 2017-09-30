@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import edu.illinois.entm.sawbodeployer.MainActivity;
 import edu.illinois.entm.sawbodeployer.UserActivityDB.GPS;
 import edu.illinois.entm.sawbodeployer.UserActivityDB.UserActivityDataSource;
 import edu.illinois.entm.sawbodeployer.logService;
@@ -53,7 +54,13 @@ public class HelperActivity {
         dataSource = new UserActivityDataSource(context);
         dataSource.open();
         GPS gps = getGPSs(act);
-        activities.setUsrid(getdID(act));
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(act);
+        String UsrID = preferences.getString("UsrID", "");
+        if (UsrID==null||UsrID==""){
+            UsrID = getdID(act);
+        }
+        activities.setUsrid(UsrID);
         activities.setGPS(gps);
         activities.setCountry(getCountryName(act,gps));
         activities.setCity(getCityName(act,gps));
@@ -73,7 +80,7 @@ public class HelperActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (addresses.size() > 0) {
+        if (addresses!=null && addresses.size() > 0) {
             if (addresses.get(0).getLocality()=="") return null;
             return addresses.get(0).getLocality();
         }
@@ -90,7 +97,7 @@ public class HelperActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (addresses.size() > 0) {
+        if (addresses!=null && addresses.size() > 0) {
             if (addresses.get(0).getCountryName()=="") return null;
              return addresses.get(0).getCountryName();
         }

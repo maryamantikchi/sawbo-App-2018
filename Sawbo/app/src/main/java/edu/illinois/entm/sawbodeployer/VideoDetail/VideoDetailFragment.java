@@ -179,6 +179,7 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
 
                 ShareVideoFragment fragment = new ShareVideoFragment();
                 fragment.videoPath = videoPath;
+                fragment.VideoId = videoDetail.getId();
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_container, fragment)
                         .addToBackStack(null).commit();

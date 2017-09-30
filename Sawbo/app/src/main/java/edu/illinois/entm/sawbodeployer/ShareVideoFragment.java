@@ -5,12 +5,17 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -30,16 +35,25 @@ import com.facebook.share.widget.ShareDialog;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import edu.illinois.cs.bluetoothobexopp.BluetoothOppFileSender;
 import edu.illinois.entm.sawbodeployer.DirectWifi.WiFiDirectActivity;
 import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
+import edu.illinois.entm.sawbodeployer.UserActivity.IUserLogs;
 import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
+import edu.illinois.entm.sawbodeployer.UserActivityDB.GPS;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import edu.illinois.entm.sawbodeployer.btxfr.ClientThread;
 import edu.illinois.entm.sawbodeployer.btxfr.MessageType;
 import edu.illinois.entm.sawbodeployer.btxfr.ProgressData;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 /**
  * Created by Mahsa on 5/16/2017.
@@ -50,7 +64,7 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
     RelativeLayout sawbo_share,facebook_share,
             general_share, bluetooth_share;
     public String videoPath;
-    public String dialogVideo, videoFilename, url;
+    public String dialogVideo, videoFilename, url,VideoId;
     public all videoFile;
 
     File OBEXfile;
@@ -65,7 +79,8 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
     boolean firstTime=true;
 
     HelperActivity writeLog;
-
+    ProgressDialog progress;
+    IUserLogs api;
 
 
 
@@ -246,28 +261,146 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
             bluetooth_share.setVisibility(View.GONE);
 
             facebook_share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+
+                    @Override
+                    public void onClick (View v){
+                        if (isOnline(getContext())){
+
+                            progress = ProgressDialog.show(getContext(), "Loading",
+                                    "Fetching data...", true);
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run()
+                                {
+                                    HelperActivity writeLog = new HelperActivity(getContext());
+                                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                    String ip = preferences.getString("IP", "");
+                                    if (ip==null||ip==""){
+                                        ip = writeLog.getIP(getActivity());
+                                    }
+                                    //  UserActivityDataSource dataSource = new UserActivityDataSource(getContext());
+                                    // dataSource.open();
+                                    UserActivities activities = new UserActivities();
+                                    activities.setIp(ip);
+                                    GPS gps = writeLog.getGPSs(getActivity());
+                                    activities.setGPS(gps);
+                                    activities.setCity(writeLog.getCityName(getActivity(),gps));
+                                    activities.setCountry(writeLog.getCountryName(getActivity(),gps));
+                                    activities.setAppid("googleplay");
+                                    activities.setFb_vidID(VideoId);
+                                    activities.setTimestamp(writeLog.getTimeStamp());
+                                    String UID = preferences.getString("UsrID", "");
+                                    if (UID==null || UID=="")
+                                        UID = writeLog.getdID(getActivity());
+                                    activities.setUsrid(UID);
+
+
+                                    List<UserActivities> user_logs = new ArrayList<UserActivities>();
+                                    user_logs.add(activities);
+
+                                    Retrofit retrofit = new Retrofit.Builder()
+                                            .baseUrl("https://2svz9cfvr4.execute-api.us-west-2.amazonaws.com/")
+                                            .addConverterFactory(GsonConverterFactory.create())
+                                            .build();
+
+                                    api = retrofit.create(IUserLogs.class);
+
+                                    postRequest(user_logs);
+
+
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run()
+                                        {
+                                            progress.dismiss();
+                                        }
+                                    });
+                                }
+                            }).start();
+
                     ShareLinkContent content = new ShareLinkContent.Builder()
                             .setContentUrl(Uri.parse(videoPath))
                             .build();
-                    UserActivities activities = new UserActivities();
-                    activities.setFb_vidID(videoFile.getId());
+                   // UserActivities activities = new UserActivities();
+                   // activities.setFb_vidID(videoFile.getId());
 
-                    writeLog.WriteUsrActivity(activities,getActivity());
+                   // writeLog.WriteUsrActivity(activities, getActivity());
 
                     ShareDialog shareDialog = new ShareDialog(getActivity());
                     shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+                }else {
+                            Toast.makeText(getContext(),getResources().getString(R.string.nointernet),Toast.LENGTH_SHORT).show();
+                        }
                 }
             });
 
             general_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UserActivities activities = new UserActivities();
-                    activities.setOther_vidID(videoFile.getId());
+//                    UserActivities activities = new UserActivities();
+//                    activities.setOther_vidID(videoFile.getId());
+//
+//                    writeLog.WriteUsrActivity(activities,getActivity());
 
-                    writeLog.WriteUsrActivity(activities,getActivity());
+                    if (isOnline(getContext())) {
+
+                        progress = ProgressDialog.show(getContext(), "Loading",
+                                "Fetching data...", true);
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                HelperActivity writeLog = new HelperActivity(getContext());
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                String ip = preferences.getString("IP", "");
+                                if (ip == null || ip == "") {
+                                    ip = writeLog.getIP(getActivity());
+                                }
+                                //  UserActivityDataSource dataSource = new UserActivityDataSource(getContext());
+                                // dataSource.open();
+                                UserActivities activities = new UserActivities();
+                                activities.setIp(ip);
+                                GPS gps = writeLog.getGPSs(getActivity());
+                                activities.setGPS(gps);
+                                activities.setCity(writeLog.getCityName(getActivity(), gps));
+                                activities.setCountry(writeLog.getCountryName(getActivity(), gps));
+                                activities.setAppid("googleplay");
+                                activities.setOther_vidID(VideoId);
+                                activities.setTimestamp(writeLog.getTimeStamp());
+                                String UID = preferences.getString("UsrID", "");
+                                if (UID == null || UID == "")
+                                    UID = writeLog.getdID(getActivity());
+                                activities.setUsrid(UID);
+
+
+                                List<UserActivities> user_logs = new ArrayList<UserActivities>();
+                                user_logs.add(activities);
+
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("https://2svz9cfvr4.execute-api.us-west-2.amazonaws.com/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build();
+
+                                api = retrofit.create(IUserLogs.class);
+
+                                postRequest(user_logs);
+
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progress.dismiss();
+                                    }
+                                });
+                            }
+                        }).start();
+                    }else {
+                        UserActivities activities = new UserActivities();
+                        activities.setOther_vidID(VideoId);
+
+                        writeLog.WriteUsrActivity(activities,getActivity());
+                    }
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_TEXT, videoPath);
@@ -281,10 +414,66 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                 @Override
                 public void onClick(View v) {
 
-                    UserActivities activities = new UserActivities();
-                    activities.setWifi_vidID(videoFile.getId());
+                    if (isOnline(getContext())) {
 
-                    writeLog.WriteUsrActivity(activities,getActivity());
+                        progress = ProgressDialog.show(getContext(), "Loading",
+                                "Fetching data...", true);
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                HelperActivity writeLog = new HelperActivity(getContext());
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                String ip = preferences.getString("IP", "");
+                                if (ip == null || ip == "") {
+                                    ip = writeLog.getIP(getActivity());
+                                }
+                                //  UserActivityDataSource dataSource = new UserActivityDataSource(getContext());
+                                // dataSource.open();
+                                UserActivities activities = new UserActivities();
+                                activities.setIp(ip);
+                                GPS gps = writeLog.getGPSs(getActivity());
+                                activities.setGPS(gps);
+                                activities.setCity(writeLog.getCityName(getActivity(), gps));
+                                activities.setCountry(writeLog.getCountryName(getActivity(), gps));
+                                activities.setAppid("googleplay");
+                                activities.setWifi_vidID(videoFile.getId());
+                                activities.setTimestamp(writeLog.getTimeStamp());
+                                String UID = preferences.getString("UsrID", "");
+                                if (UID == null || UID == "")
+                                    UID = writeLog.getdID(getActivity());
+                                activities.setUsrid(UID);
+
+
+                                List<UserActivities> user_logs = new ArrayList<UserActivities>();
+                                user_logs.add(activities);
+
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("https://2svz9cfvr4.execute-api.us-west-2.amazonaws.com/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build();
+
+                                api = retrofit.create(IUserLogs.class);
+
+                                postRequest(user_logs);
+
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progress.dismiss();
+                                    }
+                                });
+                            }
+                        }).start();
+                    }else {
+                        UserActivities activities = new UserActivities();
+                        activities.setWifi_vidID(videoFile.getId());
+
+                        writeLog.WriteUsrActivity(activities,getActivity());
+                    }
+
+
 
 //                    WiFiDirectActivity fragment = new WiFiDirectActivity();
 //                    fragment.video_url = getActivity().getFilesDir() + "/" + videoPath;
@@ -308,56 +497,223 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                 @Override
                 public void onClick(View v) {
 
-                    File file =  new File(getActivity().getFilesDir() + "/" + videoPath);
-                    Uri uri = Uri.fromFile(file);
+                    if (isOnline(getContext())) {
 
-                    UserActivities activities = new UserActivities();
-                    activities.setFb_vidID(videoFile.getId());
+                        progress = ProgressDialog.show(getContext(), "Loading",
+                                "Fetching data...", true);
+                        System.err.println(progress);
 
-                    writeLog.WriteUsrActivity(activities,getActivity());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                HelperActivity writeLog = new HelperActivity(getContext());
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                String ip = preferences.getString("IP", "");
+                                if (ip == null || ip == "") {
+                                    ip = writeLog.getIP(getActivity());
+                                }
+                                //  UserActivityDataSource dataSource = new UserActivityDataSource(getContext());
+                                // dataSource.open();
+                                UserActivities activities = new UserActivities();
+                                activities.setIp(ip);
+                                GPS gps = writeLog.getGPSs(getActivity());
+                                activities.setGPS(gps);
+                                activities.setCity(writeLog.getCityName(getActivity(), gps));
+                                activities.setCountry(writeLog.getCountryName(getActivity(), gps));
+                                activities.setAppid("googleplay");
+                                activities.setFb_vidID(videoFile.getId());
+                                activities.setTimestamp(writeLog.getTimeStamp());
+                                String UID = preferences.getString("UsrID", "");
+                                if (UID == null || UID == "")
+                                    UID = writeLog.getdID(getActivity());
+                                activities.setUsrid(UID);
 
 
-                    ShareVideo shareVideo  = new ShareVideo.Builder()
-                            .setLocalUrl(uri)
-                            .build();
-                    ShareContent shareContent = new ShareMediaContent.Builder()
-                            .addMedium(shareVideo)
-                            .build();
+                                List<UserActivities> user_logs = new ArrayList<UserActivities>();
+                                user_logs.add(activities);
 
-                    ShareDialog shareDialog = new ShareDialog(getActivity());
-                    shareDialog.show(shareContent, ShareDialog.Mode.AUTOMATIC);
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("https://2svz9cfvr4.execute-api.us-west-2.amazonaws.com/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build();
+
+                                api = retrofit.create(IUserLogs.class);
+
+                                postRequest(user_logs);
+
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progress.dismiss();
+                                    }
+                                });
+                            }
+                        }).start();
+
+                        File file = new File(getActivity().getFilesDir() + "/" + videoPath);
+                        Uri uri = Uri.fromFile(file);
+
+//                        UserActivities activities = new UserActivities();
+//                        activities.setFb_vidID(videoFile.getId());
+//
+//                        writeLog.WriteUsrActivity(activities, getActivity());
+
+
+                        ShareVideo shareVideo = new ShareVideo.Builder()
+                                .setLocalUrl(uri)
+                                .build();
+                        ShareContent shareContent = new ShareMediaContent.Builder()
+                                .addMedium(shareVideo)
+                                .build();
+
+                        ShareDialog shareDialog = new ShareDialog(getActivity());
+                        shareDialog.show(shareContent, ShareDialog.Mode.AUTOMATIC);
+                    }else {
+                        Toast.makeText(getContext(),getResources().getString(R.string.nointernet),Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
             general_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    File file = new File(getActivity().getFilesDir() , videoPath);
+                    if (isOnline(getContext())) {
+
+                        progress = ProgressDialog.show(getContext(), "Loading",
+                                "Fetching data...", true);
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                HelperActivity writeLog = new HelperActivity(getContext());
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                String ip = preferences.getString("IP", "");
+                                if (ip == null || ip == "") {
+                                    ip = writeLog.getIP(getActivity());
+                                }
+                                //  UserActivityDataSource dataSource = new UserActivityDataSource(getContext());
+                                // dataSource.open();
+                                UserActivities activities = new UserActivities();
+                                activities.setIp(ip);
+                                GPS gps = writeLog.getGPSs(getActivity());
+                                activities.setGPS(gps);
+                                activities.setCity(writeLog.getCityName(getActivity(), gps));
+                                activities.setCountry(writeLog.getCountryName(getActivity(), gps));
+                                activities.setAppid("googleplay");
+                                activities.setOther_vidID(videoFile.getId());
+                                activities.setTimestamp(writeLog.getTimeStamp());
+                                String UID = preferences.getString("UsrID", "");
+                                if (UID == null || UID == "")
+                                    UID = writeLog.getdID(getActivity());
+                                activities.setUsrid(UID);
+
+
+                                List<UserActivities> user_logs = new ArrayList<UserActivities>();
+                                user_logs.add(activities);
+
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("https://2svz9cfvr4.execute-api.us-west-2.amazonaws.com/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build();
+
+                                api = retrofit.create(IUserLogs.class);
+
+                                postRequest(user_logs);
+
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progress.dismiss();
+                                    }
+                                });
+                            }
+                        }).start();
+                    }else {
+
+
+                        UserActivities activities = new UserActivities();
+                        activities.setOther_vidID(videoFile.getId());
+
+                        writeLog.WriteUsrActivity(activities, getActivity());
+                    }
+                    File file = new File(getActivity().getFilesDir(), videoPath);
                     Uri uri = FileProvider.getUriForFile(getContext(), "edu.illinois.entm.sawbodeployer", file);
 
-                    UserActivities activities = new UserActivities();
-                    activities.setOther_vidID(videoFile.getId());
+                        Intent intent = ShareCompat.IntentBuilder.from(getActivity())
+                                .setType("video/3gp")
+                                .setStream(uri)
+                                .setChooserTitle("Share via")
+                                .createChooserIntent()
+                                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                    writeLog.WriteUsrActivity(activities,getActivity());
+                        startActivity(intent);
 
-                    Intent intent = ShareCompat.IntentBuilder.from(getActivity())
-                            .setType("video/3gp")
-                            .setStream(uri)
-                            .setChooserTitle("Share via")
-                            .createChooserIntent()
-                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                    startActivity(intent);
                 }
             });
 
             bluetooth_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UserActivities activities = new UserActivities();
-                    activities.setBlue_vidID(videoFile.getId());
+                    if (isOnline(getContext())) {
 
-                    writeLog.WriteUsrActivity(activities,getActivity());
+                        progress = ProgressDialog.show(getContext(), "Loading",
+                                "Fetching data...", true);
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                HelperActivity writeLog = new HelperActivity(getContext());
+                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                                String ip = preferences.getString("IP", "");
+                                if (ip == null || ip == "") {
+                                    ip = writeLog.getIP(getActivity());
+                                }
+                                //  UserActivityDataSource dataSource = new UserActivityDataSource(getContext());
+                                // dataSource.open();
+                                UserActivities activities = new UserActivities();
+                                activities.setIp(ip);
+                                GPS gps = writeLog.getGPSs(getActivity());
+                                activities.setGPS(gps);
+                                activities.setCity(writeLog.getCityName(getActivity(), gps));
+                                activities.setCountry(writeLog.getCountryName(getActivity(), gps));
+                                activities.setAppid("googleplay");
+                                activities.setBlue_vidID(videoFile.getId());
+                                activities.setTimestamp(writeLog.getTimeStamp());
+                                String UID = preferences.getString("UsrID", "");
+                                if (UID == null || UID == "")
+                                    UID = writeLog.getdID(getActivity());
+                                activities.setUsrid(UID);
+
+
+                                List<UserActivities> user_logs = new ArrayList<UserActivities>();
+                                user_logs.add(activities);
+
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("https://2svz9cfvr4.execute-api.us-west-2.amazonaws.com/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build();
+
+                                api = retrofit.create(IUserLogs.class);
+
+                                postRequest(user_logs);
+
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progress.dismiss();
+                                    }
+                                });
+                            }
+                        }).start();
+                    }else {
+                        UserActivities activities = new UserActivities();
+                        activities.setBlue_vidID(videoFile.getId());
+
+                        writeLog.WriteUsrActivity(activities, getActivity());
+                    }
                     shareNormalAtPos(videoPath);
                 }
             });
@@ -504,5 +860,32 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                 break;
 
         }
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void postRequest(List<UserActivities> product) {
+        Call<UserActivities> call = api.CreateProduct(product);
+
+        call.enqueue(new Callback<UserActivities>() {
+            @Override
+            public void onResponse(Response<UserActivities> response, Retrofit retrofit) {
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                writeLog.WriteUsrActivity(product.get(0),getActivity());
+
+            }
+        });
+
     }
 }

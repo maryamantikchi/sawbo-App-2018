@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item>
         <shape
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle" >
-            <solid android:color="#F4F6F8" />
+            <solid android:color="#fff" />
         </shape>
     </item>
 
-    <item>
+    <item android:left="20dp" android:right="10dp" >
         <bitmap
             android:gravity="center"
             android:src="@drawable/sawbo_splash"
             android:tileMode="disabled" />
+    </item>
+
+    <item android:bottom="-1dp" android:top="250dp">
+        <bitmap
+            android:gravity="center_vertical"
+            android:src="@drawable/ic_play"
+            android:tileMode="disabled"
+            />
     </item>
 </layer-list>

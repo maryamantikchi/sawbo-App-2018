@@ -4,10 +4,12 @@ package edu.illinois.entm.sawbodeployer;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -122,8 +124,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (isOnline(MainActivity.this)) {
                         HelperActivity writeLog = new HelperActivity(MainActivity.this);
 
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        String ip = preferences.getString("IP", "");
+                        if (ip==null||ip==""){
+                            ip = writeLog.getIP(MainActivity.this);
+                        }
 
-                        String ip = writeLog.getIP(MainActivity.this);
+
+                        //String ip = writeLog.getIP(MainActivity.this);
                         UserActivityDataSource dataSource = new UserActivityDataSource(MainActivity.this);
                         dataSource.open();
                         List<UserActivities> user_logs = new ArrayList<UserActivities>();

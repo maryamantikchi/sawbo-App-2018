@@ -227,6 +227,7 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
         videos = new ArrayList<all>();
 
         File dirFiles = getContext().getFilesDir();
+
         final ArrayList<String> videoFile = new ArrayList<String>();
 
         for (String strFile : dirFiles.list()){

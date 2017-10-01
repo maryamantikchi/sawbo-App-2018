@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.os.NetworkOnMainThreadException;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -36,6 +37,8 @@ import edu.illinois.entm.sawbodeployer.logService;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by Mahsa on 7/4/2017.
@@ -189,7 +192,10 @@ public class HelperActivity {
 
     public String getdID(Activity activity) {
         String result = "";
-        String url = context.getFilesDir() + "/id.txt";
+      result = Settings.Secure.getString(activity.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        System.err.println(result+"resulttt");
+        /*String url = context.getFilesDir() + "/id.txt";
         File file = new File(url);
         if(file.exists()){
             Log.v("getdID", "exists");
@@ -234,7 +240,7 @@ public class HelperActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("UsrID",result);
-        editor.apply();
+        editor.apply();*/
         return result;
     }
 

@@ -34,6 +34,7 @@ import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.ShareMediaContent;
 import com.facebook.share.model.ShareVideo;
+import com.facebook.share.model.ShareVideoContent;
 import com.facebook.share.widget.ShareDialog;
 
 import java.io.File;
@@ -560,9 +561,22 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                         ShareVideo shareVideo = new ShareVideo.Builder()
                                 .setLocalUrl(uri)
                                 .build();
+
+//                        ShareVideoContent content = new ShareVideoContent.Builder()
+//                                .setVideo(video)
+//                                .build();
                         ShareContent shareContent = new ShareMediaContent.Builder()
                                 .addMedium(shareVideo)
                                 .build();
+
+
+//                        Uri videoFileUri = ...
+//                        ShareVideo = new ShareVideo.Builder()
+//                                .setLocalUrl(videoUrl)
+//                                .build();
+//                        ShareVideoContent content = new ShareVideoContent.Builder()
+//                                .setVideo(video)
+//                                .build();
 
                         ShareDialog shareDialog = new ShareDialog(getActivity());
                         shareDialog.show(shareContent, ShareDialog.Mode.AUTOMATIC);

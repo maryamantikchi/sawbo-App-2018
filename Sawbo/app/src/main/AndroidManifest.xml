@@ -9,11 +9,8 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_BLUETOOTH_SHARE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -32,7 +29,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="edu.illinois.entm.sawbodeployer.MainActivity"/>
+        <activity android:name="edu.illinois.entm.sawbodeployer.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <activity android:name=".DeviceListActivity"
             android:configChanges="orientation|keyboardHidden" />
@@ -55,8 +53,7 @@
 
         <provider android:authorities="com.facebook.app.FacebookContentProvider1200851250026974"
             android:name="com.facebook.FacebookContentProvider"
-            android:exported="true">
-        </provider>
+            android:exported="true" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

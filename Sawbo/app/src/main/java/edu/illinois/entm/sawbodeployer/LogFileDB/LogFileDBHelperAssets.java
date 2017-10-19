@@ -17,7 +17,8 @@ import java.util.List;
 
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 
-import static com.facebook.login.widget.ProfilePictureView.TAG;
+import static com.facebook.internal.FacebookDialogFragment.TAG;
+
 
 /**
  * Created by Mahsa on 8/6/2017.

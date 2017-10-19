@@ -122,11 +122,11 @@ public class MyVideoListAdapter extends RecyclerView.Adapter<MyVideoListAdapter.
         if (isSelectedAll) {
             holder.selector.setChecked(true);
             selectedVideo.add(video);
-        }/*else if (!isSelectedAll) {
+        }else if (!isSelectedAll) {
             holder.selector.setChecked(false);
             selectedVideo.remove(video);
 
-        }*/
+        }
 
             holder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -249,13 +249,13 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	@Override
 	public void onConnectionInfoAvailable(final WifiP2pInfo info) {
 
-		//System.err.println(info+"    infooooo");
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
 
 		Log.v("onConnectionInfoAv","onConnectionInfoAvailable");
 		this.info = info;
+		if (this.getView()!=null)
 		this.getView().setVisibility(View.VISIBLE);
 
 		// The owner IP is now known.
@@ -453,7 +453,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 						mProgressDialog.setProgressNumberFormat(null);
 						mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 
-						if(!getActivity().isFinishing())
+						if(getActivity()!=null && !getActivity().isFinishing())
 						{
 							mProgressDialog.show();
 						}
@@ -655,7 +655,8 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 			public void run() {
 				// TODO Auto-generated method stub
 
-
+//				mProgressDialog = new ProgressDialog(mContentView.getContext(),
+//						ProgressDialog.THEME_HOLO_LIGHT);
 				mProgressDialog.setMessage(task);
 				mProgressDialog.setIndeterminate(false);
 				mProgressDialog.setMax(100);
@@ -665,6 +666,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 				if(!getActivity().isFinishing())
 				{
+
 					mProgressDialog.show();
 				}
 
@@ -924,9 +926,15 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 	}
 
 	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		mProgressDialog.dismiss();
+	}
+
+	@Override
 	public void onPause() {
 		super.onPause();
-		mProgressDialog.dismiss();
+//		mProgressDialog.dismiss();
 		((DeviceListFragment.DeviceActionListener) getActivity()).disconnect();
 
 	}

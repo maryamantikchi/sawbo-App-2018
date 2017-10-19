@@ -30,10 +30,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.pixplicity.sharp.Sharp;
 import com.stetcho.rxwifip2pmanager.data.wifi.RxWifiP2pManager;
 import com.stetcho.rxwifip2pmanager.data.wifi.broadcast.factory.WifiP2pBroadcastObservableManagerFactory;
-
 
 import java.util.ArrayList;
 import java.util.List;

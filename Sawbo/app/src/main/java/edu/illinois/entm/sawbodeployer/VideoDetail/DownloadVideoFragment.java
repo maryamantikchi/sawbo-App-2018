@@ -388,7 +388,6 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
 
     private void checkFileExist(final String url, final Button btn, final boolean isLight){
         File file = new File(getActivity().getFilesDir() + "/" + url );
-        System.err.println("exist: "+file.exists()+ " path : " +file.getPath());
         if(file.exists()) {
             btn.setText(getResources().getString(R.string.avoffline_str));
             btn.setEnabled(true);

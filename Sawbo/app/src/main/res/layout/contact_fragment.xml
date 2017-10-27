@@ -59,14 +59,12 @@
                         android:layout_margin="10dp"
                         android:id="@+id/contact_twitter"
                         android:background="@drawable/twitter"/>
-
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:id="@+id/contact_instagram"
-                        android:background="@drawable/instagram"/>
-
+                        android:id="@+id/contact_youtube"
+                        android:background="@drawable/youtube"/>
                 </LinearLayout>
 
                 <Button

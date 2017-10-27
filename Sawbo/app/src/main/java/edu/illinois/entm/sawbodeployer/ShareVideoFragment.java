@@ -35,6 +35,7 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.ShareMediaContent;
 import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
+import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 
 import java.io.File;
@@ -69,6 +70,7 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
     View view;
     RelativeLayout sawbo_share,facebook_share,
             general_share, bluetooth_share;
+    ShareButton shareLink;
     public String videoPath;
     public String dialogVideo, videoFilename, url,VideoId;
     public all videoFile;
@@ -297,7 +299,7 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
         writeLog = new HelperActivity(getContext());
 
         sawbo_share = (RelativeLayout)view.findViewById(R.id.share_sawbo);
-        facebook_share = (RelativeLayout)view.findViewById(R.id.share_facebook);
+        facebook_share = (RelativeLayout) view.findViewById(R.id.share_facebook);
         general_share = (RelativeLayout)view.findViewById(R.id.share_general);
         bluetooth_share = (RelativeLayout)view.findViewById(R.id.share_bluetooth);
 
@@ -364,16 +366,21 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                                 }
                             }).start();
 
-                    ShareLinkContent content = new ShareLinkContent.Builder()
-                            .setContentUrl(Uri.parse(videoPath))
-                            .build();
+//                    ShareLinkContent content = new ShareLinkContent.Builder()
+//                            .setContentUrl(Uri.parse(videoPath))
+//                            .build();
+
+                            ShareLinkContent content = new ShareLinkContent.Builder()
+                                    .setContentUrl(Uri.parse(videoPath))
+                                    .build();
+                            ShareDialog.show(ShareVideoFragment.this, content);
                    // UserActivities activities = new UserActivities();
                    // activities.setFb_vidID(videoFile.getId());
 
                    // writeLog.WriteUsrActivity(activities, getActivity());
 
-                    ShareDialog shareDialog = new ShareDialog(getActivity());
-                    shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+//                    ShareDialog shareDialog = new ShareDialog(getActivity());
+//                    shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
                 }else {
                             Toast.makeText(getContext(),getResources().getString(R.string.nointernet),Toast.LENGTH_SHORT).show();
                         }
@@ -550,24 +557,23 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
                         }).start();
 
                         File file = new File(getActivity().getFilesDir() + "/" + videoPath);
-                        Uri uri = Uri.fromFile(file);
+                        Uri videoFileUri = Uri.fromFile(file);
 
-//                        UserActivities activities = new UserActivities();
-//                        activities.setFb_vidID(videoFile.getId());
-//
-//                        writeLog.WriteUsrActivity(activities, getActivity());
-
-
-                        ShareVideo shareVideo = new ShareVideo.Builder()
-                                .setLocalUrl(uri)
+                        ShareVideo ShareVideo = new ShareVideo.Builder()
+                                .setLocalUrl(videoFileUri)
                                 .build();
+                        ShareVideoContent content = new ShareVideoContent.Builder()
+                                .setVideo(ShareVideo)
+                                .build();
+                        ShareDialog.show(ShareVideoFragment.this, content);
+
 
 //                        ShareVideoContent content = new ShareVideoContent.Builder()
 //                                .setVideo(video)
 //                                .build();
-                        ShareContent shareContent = new ShareMediaContent.Builder()
-                                .addMedium(shareVideo)
-                                .build();
+//                        ShareContent shareContent = new ShareMediaContent.Builder()
+//                                .addMedium(shareVideo)
+//                                .build();
 
 
 //                        Uri videoFileUri = ...
@@ -578,8 +584,8 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
 //                                .setVideo(video)
 //                                .build();
 
-                        ShareDialog shareDialog = new ShareDialog(getActivity());
-                        shareDialog.show(shareContent, ShareDialog.Mode.AUTOMATIC);
+//                        ShareDialog shareDialog = new ShareDialog(getActivity());
+//                        shareDialog.show(shareContent, ShareDialog.Mode.AUTOMATIC);
                     }else {
                         Toast.makeText(getContext(),getResources().getString(R.string.nointernet),Toast.LENGTH_SHORT).show();
                     }

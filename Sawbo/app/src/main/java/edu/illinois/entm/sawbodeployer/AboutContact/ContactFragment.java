@@ -19,7 +19,7 @@ import edu.illinois.entm.sawbodeployer.R;
  */
 
 public class ContactFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
-    RelativeLayout mail,facebook,twitter,instagram,sawbo;
+    RelativeLayout mail,facebook,twitter,youtube,sawbo;
     Button rate_btn;
     View v;
 
@@ -47,8 +47,8 @@ public class ContactFragment extends android.support.v4.app.Fragment implements 
         facebook.setOnClickListener(this);
         twitter = (RelativeLayout) v.findViewById(R.id.contact_twitter);
         twitter.setOnClickListener(this);
-        instagram = (RelativeLayout) v.findViewById(R.id.contact_instagram);
-        instagram.setOnClickListener(this);
+        youtube = (RelativeLayout) v.findViewById(R.id.contact_youtube);
+        youtube.setOnClickListener(this);
         sawbo = (RelativeLayout) v.findViewById(R.id.contact_sawbo);
         sawbo.setOnClickListener(this);
         rate_btn = (Button)v.findViewById(R.id.rate_google_play);
@@ -93,11 +93,11 @@ public class ContactFragment extends android.support.v4.app.Fragment implements 
                 getActivity().startActivity(intent);
                 break;
 
-            case R.id.contact_instagram:
-                url = getResources().getString(R.string.contact_instagram);
+            case R.id.contact_youtube:
+                url = getResources().getString(R.string.contact_youtube);
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
-               // getActivity().startActivity(intent);
+                getActivity().startActivity(intent);
                 break;
 
             case R.id.rate_google_play:

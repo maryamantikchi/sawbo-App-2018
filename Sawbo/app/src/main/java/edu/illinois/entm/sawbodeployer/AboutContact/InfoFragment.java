@@ -59,14 +59,16 @@ InfoFragment extends android.support.v4.app.Fragment {
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (position==0){
-                    about.setTextColor(getResources().getColor(R.color.black));
-                    contact.setTextColor(getResources().getColor(R.color.gray_text));
+              /*  if (position==0){
 
-                }else {
                     contact.setTextColor(getResources().getColor(R.color.black));
                     about.setTextColor(getResources().getColor(R.color.gray_text));
-                }
+
+                }else {
+
+                    about.setTextColor(getResources().getColor(R.color.black));
+                    contact.setTextColor(getResources().getColor(R.color.gray_text));
+                }*/
 
             }
 
@@ -86,8 +88,8 @@ InfoFragment extends android.support.v4.app.Fragment {
 
         about = (TextView)view.findViewById(R.id.title_about_setting);
         about.setTypeface(titleFont);
-        contact = (TextView)view.findViewById(R.id.title_contact_setting);
-        contact.setTypeface(titleFont);
+        /*contact = (TextView)view.findViewById(R.id.title_contact_setting);
+        contact.setTypeface(titleFont);*/
     }
 
 
@@ -102,12 +104,12 @@ InfoFragment extends android.support.v4.app.Fragment {
         public Fragment getItem(int pos) {
             switch(pos) {
                 case 0: {
-                    Fragment about = new AboutFragment();
-                    return about;
-                }
-                case 1:{
                     Fragment cf = new ContactFragment();
                     return cf;
+                }
+                case 1:{
+                    Fragment about = new AboutFragment();
+                    return about;
                 }
                 default:{
                     Fragment about = new AboutFragment();

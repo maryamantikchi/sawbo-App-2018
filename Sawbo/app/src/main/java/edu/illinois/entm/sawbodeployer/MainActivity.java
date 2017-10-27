@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 
 import com.crashlytics.android.Crashlytics;
@@ -51,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Fragment fragment;
     private FragmentManager fragmentManager;
     private ImageButton home,video_library,my_videos,share,info;
-    private AppCompatImageButton setting,search;
+    private AppCompatImageButton setting;
+    private LinearLayout search;
     IUserLogs api;
     ProgressDialog progress;
     @Override
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 transaction.commit();
             }
         });
-        search = (AppCompatImageButton)findViewById(R.id.search_compat);
+        search = (LinearLayout)findViewById(R.id.search_compat);
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override

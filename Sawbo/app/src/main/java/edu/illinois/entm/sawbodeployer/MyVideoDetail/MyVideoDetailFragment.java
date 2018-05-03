@@ -23,6 +23,7 @@ import at.blogc.android.views.ExpandableTextView;
 import edu.illinois.entm.sawbodeployer.R;
 import edu.illinois.entm.sawbodeployer.ShareVideoFragment;
 import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import uk.co.jakelee.vidsta.VidstaPlayer;
 import uk.co.jakelee.vidsta.listeners.FullScreenClickListener;
@@ -34,7 +35,7 @@ import uk.co.jakelee.vidsta.listeners.VideoStateListeners;
 
 public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
     View view;
-    public all videoDetail;
+    public Video videoDetail;
     Typeface title_font,title_video_font,title_religion_font;
     TextView title, myVideo,videoName,religion;
     ExpandableTextView expandableTextView;
@@ -91,12 +92,12 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
         religion.setTypeface(title_religion_font);
         religion.setText(videoDetail.getLanguage()+" from "+videoDetail.getCountry());
 
-        if(!videoDetail.getVideolight().contains("Bluetooth")&& !videoDetail.getGp_file().contains("Bluetooth")){
-           if (videoDetail.getGp_file().length()==0)
-             videoPath = getActivity().getFilesDir() + "/" + videoDetail.getVideolight();
-           else videoPath = getActivity().getFilesDir()+ "/" + videoDetail.getGp_file();
+        if(!videoDetail.getLiteFile().contains("Bluetooth")&& !videoDetail.getGpFile().contains("Bluetooth")){
+           if (videoDetail.getGpFile().length()==0)
+             videoPath = getActivity().getFilesDir() + "/" + videoDetail.getLiteFile();
+           else videoPath = getActivity().getFilesDir()+ "/" + videoDetail.getGpFile();
         }else {
-            videoPath = videoDetail.getGp_file();
+            videoPath = videoDetail.getGpFile();
         }
 
         File ff = new File(videoPath);
@@ -193,9 +194,9 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
                 enableDisableViewGroup(groupLayput,false);
 
                 ShareVideoFragment fragment = new ShareVideoFragment();
-                if (videoDetail.getGp_file().length()==0)
-                    fragment.videoPath = videoDetail.getVideolight();
-                else if (videoDetail.getVideolight().length()==0)fragment.videoPath = videoDetail.getGp_file();
+                if (videoDetail.getGpFile().length()==0)
+                    fragment.videoPath = videoDetail.getLiteFile();
+                else if (videoDetail.getLiteFile().length()==0)fragment.videoPath = videoDetail.getGpFile();
 
                 fragment.videoFile = videoDetail;
 
@@ -214,12 +215,12 @@ public class MyVideoDetailFragment extends android.support.v4.app.Fragment{
         boolean isLight = false;
 
         String filename = "";
-        if (videoDetail.getGp_file() == null || videoDetail.getGp_file().equals("")){
+        if (videoDetail.getGpFile() == null || videoDetail.getGpFile().equals("")){
             isLight = true;
-            filename = videoDetail.getVideolight();
-        }else if(videoDetail.getVideolight() == null || videoDetail.getVideolight().equals("")){
+            filename = videoDetail.getLiteFile();
+        }else if(videoDetail.getLiteFile() == null || videoDetail.getLiteFile().equals("")){
             isLight = false;
-            filename = videoDetail.getGp_file();
+            filename = videoDetail.getGpFile();
         }
 
         File file = new File(getActivity().getFilesDir() + "/" + filename);

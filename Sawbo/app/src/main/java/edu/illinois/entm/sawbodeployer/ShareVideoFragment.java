@@ -52,6 +52,7 @@ import edu.illinois.entm.sawbodeployer.UserActivity.HelperActivity;
 import edu.illinois.entm.sawbodeployer.UserActivity.IUserLogs;
 import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
 import edu.illinois.entm.sawbodeployer.UserActivityDB.GPS;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import edu.illinois.entm.sawbodeployer.btxfr.ClientThread;
 import edu.illinois.entm.sawbodeployer.btxfr.MessageType;
@@ -73,7 +74,7 @@ public class ShareVideoFragment extends android.support.v4.app.Fragment/* implem
     ShareButton shareLink;
     public String videoPath;
     public String dialogVideo, videoFilename, url,VideoId;
-    public all videoFile;
+    public Video videoFile;
 
     File OBEXfile;
 

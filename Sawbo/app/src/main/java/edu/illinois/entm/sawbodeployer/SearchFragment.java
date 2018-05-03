@@ -43,7 +43,7 @@ public class SearchFragment extends android.support.v4.app.Fragment {
     LinearLayout clear,search,main;
     TextView search_title,clear_title,title_video,title_filter;
     Button country,language,topic;
-    Video videoModel = new Video();
+    ArrayList<Video> videoModel = new ArrayList<>();
     ProgressBar pbar;
 
     AsyncTask<Void, Void, Void> getData;
@@ -124,14 +124,14 @@ public class SearchFragment extends android.support.v4.app.Fragment {
         country.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              ShowAlertDialogWithListview(videoModel.getCountry(),"Country");
+              ShowAlertDialogWithListview(/*videoModel.getCountry()*/new ArrayList<>(),"Country");
             }
         });
 
         language.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               ShowAlertDialogWithListview(videoModel.getLanguage(),"Language");
+               ShowAlertDialogWithListview(new ArrayList<>()/*videoModel.getLanguage()*/,"Language");
 
             }
         });
@@ -139,7 +139,7 @@ public class SearchFragment extends android.support.v4.app.Fragment {
         topic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              ShowAlertDialogWithListview(videoModel.getTopic(),"Topic");
+              ShowAlertDialogWithListview(new ArrayList<>()/*videoModel.getTopic()*/,"Topic");
 
             }
         });
@@ -153,9 +153,9 @@ public class SearchFragment extends android.support.v4.app.Fragment {
                 .build();
 
         ServiceAPI service = retrofit.create(ServiceAPI.class);
-        final Call<Video> call = service.getVideoDetails();
+      //  final Call<ArrayList<Video>> call = service.getVideoDetails();
         try {
-            videoModel = call.execute().body();
+          //  videoModel = call.execute().body();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -251,12 +251,12 @@ public class SearchFragment extends android.support.v4.app.Fragment {
         dataSource = new LogVideoSource(getContext());
         dataSource.open();
         List<all> videos = dataSource.getAllVideos();
-        videoModel = new Video();
+        //videoModel = new Video();
         if (videos.size()!=0){
-            videoModel.setCountry(dataSource.getAllCountry());
-            videoModel.setLanguage(dataSource.getAllLanguage());
-            videoModel.setTopic(dataSource.getAllTopics());
-            videoModel.setAll(videos);
+          //  videoModel.setCountry(dataSource.getAllCountry());
+           // videoModel.setLanguage(dataSource.getAllLanguage());
+           // videoModel.setTopic(dataSource.getAllTopics());
+           // videoModel.setAll(videos);
             dataSource.close();
         }else{
             LogFileDBHelperAssets dbAssets = new LogFileDBHelperAssets(getContext(),getActivity().getFilesDir().getAbsolutePath());
@@ -266,10 +266,10 @@ public class SearchFragment extends android.support.v4.app.Fragment {
                 Log.e("tag", e.getMessage());
             }
 
-            videoModel.setAll(dbAssets.getAllVideos());
-            videoModel.setCountry(dbAssets.getCountries());
-            videoModel.setLanguage(dbAssets.getLanguages());
-            videoModel.setTopic(dbAssets.getTopics());
+           // videoModel.setAll(dbAssets.getAllVideos());
+          //  videoModel.setCountry(dbAssets.getCountries());
+           // videoModel.setLanguage(dbAssets.getLanguages());
+           // videoModel.setTopic(dbAssets.getTopics());
         }
 
     }

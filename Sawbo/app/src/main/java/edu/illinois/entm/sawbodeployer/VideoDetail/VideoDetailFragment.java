@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import at.blogc.android.views.ExpandableTextView;
 import edu.illinois.entm.sawbodeployer.R;
 import edu.illinois.entm.sawbodeployer.ShareVideoFragment;
@@ -33,7 +35,7 @@ import uk.co.jakelee.vidsta.listeners.VideoStateListeners;
 
 public class VideoDetailFragment extends android.support.v4.app.Fragment {
     Typeface title_font,title_video_font,title_religion_font;
-    public all videoDetail;
+    //public all videoDetail;
     public Video video;
     TextView title,videoName,religion,my_video;
     String videoPath;
@@ -72,20 +74,21 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
         scroll = (ScrollView) view.findViewById(R.id.scroll_detail);
 
         videoName = (TextView)view.findViewById(R.id.title_video_name);
-        videoName.setText(videoDetail.getTitle());
+        videoName.setText(video.getTitle());
         videoName.setTypeface(title_video_font);
 
         religion = (TextView)view.findViewById(R.id.title_religion_video_detail);
         religion.setTypeface(title_religion_font);
-        religion.setText(videoDetail.getLanguage()+" from "+videoDetail.getCountry());
+        religion.setText(video.getLanguage()+" from "+video.getCountry());
 
-        if (videoDetail.getLite_file()==null|| videoDetail.getLite_file().equals(""))
-        videoPath = getContext().getResources().getString(R.string.video_url)+videoDetail.getGp_file();
-        else videoPath = getContext().getResources().getString(R.string.video_url)+videoDetail.getLite_file();
+        if (video.getLiteFile()==null || video.getLiteFile().equals("") || video.getLiteFile().equalsIgnoreCase("null"))
+            videoPath = getContext().getResources().getString(R.string.video_url)+video.getLiteFile();
+       // videoPath = getContext().getResources().getString(R.string.video_url)+video.getGpFile();
+       // else
 
 
         expandableTextView = (ExpandableTextView) view.findViewById(R.id.expandable_txt_video_detail);
-        expandableTextView.setText(videoDetail.getDescription());
+        expandableTextView.setText(video.getDescription());
         expandableTextView.setTypeface(title_religion_font);
         expandableTextView.setInterpolator(new OvershootInterpolator());
         expandableTextView.setExpandInterpolator(new OvershootInterpolator());
@@ -163,7 +166,7 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
 
                 enableDisableViewGroup(groupLayput,false);
                 DownloadVideoFragment fragment = new DownloadVideoFragment();
-                fragment.video = videoDetail;
+                fragment.video = video;
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_container, fragment)
                         .addToBackStack(null).commit();
@@ -179,7 +182,7 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
 
                 ShareVideoFragment fragment = new ShareVideoFragment();
                 fragment.videoPath = videoPath;
-                fragment.VideoId = videoDetail.getId();
+                fragment.VideoId = video.getId();
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.main_container, fragment)
                         .addToBackStack(null).commit();
@@ -234,7 +237,7 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
         builderSingle.setTitle("Select Language");
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.select_dialog_singlechoice,video.getLanguage());
+                android.R.layout.select_dialog_singlechoice,new ArrayList<>()/*video.getLanguage()*/);
 
         builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -247,25 +250,25 @@ public class VideoDetailFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String language = arrayAdapter.getItem(which);
-                all selected_video = null;
+                Video selected_video = null;
 
-                for (int i=0;i<video.getAll().size();i++){
+               /* for (int i=0;i<video.getAll().size();i++){
                     if ((videoDetail.getTopic().equals(video.getAll().get(i).getTopic()))
                             && (video.getAll().get(i).getLanguage().equals(language))){
                       selected_video = video.getAll().get(i);
                         break;
                     }
-                }
+                }*/
 
                 if (selected_video!=null){
                     VideoDetailFragment fragment = new VideoDetailFragment();
-                    fragment.videoDetail = selected_video;
+                    fragment.video = selected_video;
                     fragment.video = video;
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ft.detach(fragment).attach(fragment).commit();
                 }else {
                     AlertDialog.Builder builderInner = new AlertDialog.Builder(getContext());
-                    builderInner.setMessage("Not found "+videoDetail.getTopic()+" in "+language);
+                    builderInner.setMessage("Not found "+video.getTopic()+" in "+language);
                     builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog,int which) {

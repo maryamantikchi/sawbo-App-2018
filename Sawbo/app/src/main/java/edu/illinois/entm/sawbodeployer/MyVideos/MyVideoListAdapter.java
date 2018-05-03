@@ -30,6 +30,7 @@ import java.util.List;
 
 import edu.illinois.entm.sawbodeployer.MyVideoDetail.MyVideoDetailFragment;
 import edu.illinois.entm.sawbodeployer.R;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 
 /**
@@ -37,12 +38,12 @@ import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
  */
 
 public class MyVideoListAdapter extends RecyclerView.Adapter<MyVideoListAdapter.viewHolder>  {
-    List<all> object = new ArrayList<all>();
+    List<Video> object = new ArrayList<>();
     Context context;
 
     boolean isSelectedAll = false;
 
-    List<all> selectedVideo;
+    List<Video> selectedVideo;
 
     public class viewHolder extends RecyclerView.ViewHolder {
 
@@ -65,7 +66,7 @@ public class MyVideoListAdapter extends RecyclerView.Adapter<MyVideoListAdapter.
     }
 
 
-    public MyVideoListAdapter(List<all> object, Context context) {
+    public MyVideoListAdapter(List<Video> object, Context context) {
         this.object = object;
         this.context = context;
         selectedVideo = new ArrayList<>();
@@ -82,18 +83,18 @@ public class MyVideoListAdapter extends RecyclerView.Adapter<MyVideoListAdapter.
 
     @Override
     public void onBindViewHolder(final MyVideoListAdapter.viewHolder holder, int position) {
-        final all video = object.get(position);
+        final Video video = object.get(position);
 
         holder.videoTitle.setText(video.getTitle());
       //  holder.videoImage.setImageBitmap(readImage(video));
 
         String path = null;
-        if (!video.getLite_file().contains("Bluetooth") && !video.getGp_file().contains("Bluetooth")) {
+        if (!video.getLiteFile().contains("Bluetooth") && !video.getGpFile().contains("Bluetooth")) {
 
-            if (video.getGp_file().length() == 0)
-                path = context.getFilesDir() + "/" + video.getVideolight();
-            else path = context.getFilesDir() + "/" + video.getGp_file();
-        } else path = video.getVideolight();
+            if (video.getGpFile().length() == 0)
+                path = context.getFilesDir() + "/" + video.getLiteFile();
+            else path = context.getFilesDir() + "/" + video.getGpFile();
+        } else path = video.getLiteFile();
 
         Glide.with(context)
                 .load(path) // or URI/path
@@ -184,7 +185,7 @@ public class MyVideoListAdapter extends RecyclerView.Adapter<MyVideoListAdapter.
         notifyDataSetChanged();
     }
 
-    public List<all> getSelectedVideo(){
+    public List<Video> getSelectedVideo(){
 
         return selectedVideo;
     }

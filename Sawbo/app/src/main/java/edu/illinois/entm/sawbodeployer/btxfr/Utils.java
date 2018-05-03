@@ -6,7 +6,7 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 
 class Utils {
-    private final static String TAG = "android-btxfr/Utils";
+    private final static String TAG = "btxfr/Utils";
 
     public static byte[] intToByteArray(int a) {
         byte[] ret = new byte[4];

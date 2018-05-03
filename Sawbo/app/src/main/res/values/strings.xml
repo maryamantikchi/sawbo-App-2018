@@ -55,6 +55,7 @@
 
     <!--video library-->
     <string name="topics">TOPICS</string>
+    <string name="category">CATEGORY</string>
     <string name="video_url">http://www.sawbo-illinois.org/mobile_app/sources_test/</string>
     <string name="thumbnail_url">http://sawbo-illinois.org/images/videoThumbnails/</string>
 

@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 
 /**
@@ -34,15 +35,15 @@ public class MyVideoDataSource  {
 
     }
 
-    public all createVideo(all video) {
+    public Video createVideo(Video video) {
         ContentValues values = new ContentValues();
         values.put(MyVideoTable.COLUMN_ID, video.getId());
         values.put(MyVideoTable.COLUMN_COUNTRY, video.getCountry());
         values.put(MyVideoTable.COLUMN_LANGUAGE, video.getLanguage());
         values.put(MyVideoTable.COLUMN_TOPIC, video.getTopic());
         values.put(MyVideoTable.COLUMN_TITLE, video.getTitle());
-        values.put(MyVideoTable.COLUMN_VIDEO, video.getGp_file());
-        values.put(MyVideoTable.COLUMN_VIDEO_LIGHT, video.getVideolight());
+        values.put(MyVideoTable.COLUMN_VIDEO, video.getGpFile());
+        values.put(MyVideoTable.COLUMN_VIDEO_LIGHT, video.getLiteFile());
         values.put(MyVideoTable.COLUMN_DESCRIPTION, video.getDescription());
         values.put(MyVideoTable.COLUMN_IMAGE, video.getImage());
         database.insert(MyVideoTable.TABLE_NAME, null, values);
@@ -50,14 +51,14 @@ public class MyVideoDataSource  {
         return video;
     }
 
-    public void deleteVideoLight(all video) {
-        String videoFile = video.getVideolight();
+    public void deleteVideoLight(Video video) {
+        String videoFile = video.getLiteFile();
         database.delete(MyVideoTable.TABLE_NAME, MyVideoTable.COLUMN_VIDEO_LIGHT
                 + " = '" + videoFile +"'", null);
     }
 
-    public void deleteVideoStandard(all video) {
-        String videoFile = video.getGp_file();
+    public void deleteVideoStandard(Video video) {
+        String videoFile = video.getGpFile();
         database.delete(MyVideoTable.TABLE_NAME, MyVideoTable.COLUMN_VIDEO
                 + " = '" + videoFile+"'", null);
     }
@@ -82,26 +83,26 @@ public class MyVideoDataSource  {
 
     private all cursorToVideo(Cursor cursor) {
         all video = new all();
-        video.setId(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_ID)));
-        video.setCountry(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_COUNTRY)));
-        video.setLanguage(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_LANGUAGE)));
-        video.setTopic(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_TOPIC)));
-        video.setTitle(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_TITLE)));
-        video.setGp_file(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_VIDEO)));
-        video.setVideolight(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_VIDEO_LIGHT)));
-        video.setDescription(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_DESCRIPTION)));
-        video.setImage(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_IMAGE)));
+//        video.setId(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_ID)));
+//        video.setCountry(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_COUNTRY)));
+//        video.setLanguage(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_LANGUAGE)));
+//        video.setTopic(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_TOPIC)));
+//        video.setTitle(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_TITLE)));
+//        video.setGp_file(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_VIDEO)));
+//        video.setVideolight(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_VIDEO_LIGHT)));
+//        video.setDescription(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_DESCRIPTION)));
+//        video.setImage(cursor.getString(cursor.getColumnIndex(MyVideoTable.COLUMN_IMAGE)));
         return video;
     }
 
 
-    public List<all> findDownloadVideos(String selected) {
+    public List<Video> findDownloadVideos(String selected) {
         Cursor c = database.rawQuery("SELECT distinct * FROM tbl_my_video WHERE Video Like '" + selected + "' OR Videolight Like '" + selected+"' GROUP BY id", null);
-        List<all> videos = new ArrayList<>();
+        List<Video> videos = new ArrayList<>();
         c.moveToFirst();
         while (!c.isAfterLast()) {
-            all video = cursorToVideo(c);
-            videos.add(video);
+            //Video video = cursorToVideo(c);
+            //videos.add(video);
             c.moveToNext();
         }
         c.close();

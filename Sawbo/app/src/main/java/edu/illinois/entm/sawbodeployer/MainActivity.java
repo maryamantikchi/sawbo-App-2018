@@ -67,9 +67,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     public void initialize(){
 
-
-
-
         home = (ImageButton)findViewById(R.id.btn_home);
         home.setOnClickListener(this);
         video_library = (ImageButton)findViewById(R.id.btn_video_library);

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 
 public class ServerThread extends Thread {
-    private final String TAG = "android-btxfr/ServerThread";
+    private final String TAG = "btxfr/SrvrThrd";
     private final BluetoothServerSocket serverSocket;
     private Handler handler;
     BluetoothSocket socket;

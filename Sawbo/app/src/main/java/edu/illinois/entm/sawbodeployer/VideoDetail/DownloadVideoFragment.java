@@ -58,6 +58,7 @@ import edu.illinois.entm.sawbodeployer.UserActivity.UserActivities;
 import edu.illinois.entm.sawbodeployer.UserActivityDB.GPS;
 import edu.illinois.entm.sawbodeployer.UserActivityDB.UserActivityDataSource;
 import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import retrofit.Call;
 import retrofit.Callback;
@@ -73,7 +74,7 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
 
     private MyVideoDataSource dataSource;
     Button liteFile,standardFile;
-    public all video;
+    public Video video;
     View view;
 
 
@@ -144,8 +145,8 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                 "fonts/BentonSans Medium.otf");
         liteFile.setTypeface(title_video_font);
         standardFile.setTypeface(title_video_font);
-        checkFileExist(video.getGp_file(),standardFile,false);
-        checkFileExist(video.getVideolight(),liteFile,true);
+        checkFileExist(video.getGpFile(),standardFile,false);
+        checkFileExist(video.getLiteFile(),liteFile,true);
 
 //        liteFile.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -205,12 +206,12 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
     private void addDataBase(Boolean isLight){
         dataSource = new MyVideoDataSource(getContext());
         dataSource.open();
-        all newVideo = new all();
+        Video newVideo = new Video();
         newVideo = video;
         if (isLight){
-            newVideo.setGp_file("");
+            newVideo.setGpFile("");
         }
-        else newVideo.setVideolight("");
+        else newVideo.setLiteFile("");
 
         dataSource.createVideo(newVideo);
         dataSource.close();
@@ -397,8 +398,8 @@ public class DownloadVideoFragment extends android.support.v4.app.Fragment{
                     MyVideoDetailFragment fragment = new MyVideoDetailFragment();
                     fragment.videoDetail = video;
                     if (isLight)
-                    fragment.videoDetail.setGp_file("");
-                    else fragment.videoDetail.setLite_file("");
+                    fragment.videoDetail.setGpFile("");
+                    else fragment.videoDetail.setLiteFile("");
 
                     MyVideoDetailFragment myVideoFragment = new MyVideoDetailFragment();
 

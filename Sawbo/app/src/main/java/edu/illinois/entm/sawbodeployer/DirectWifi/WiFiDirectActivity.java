@@ -49,6 +49,7 @@ import edu.illinois.entm.sawbodeployer.RxWifi.adapter.mapper.WifiP2pSingleDevice
 import edu.illinois.entm.sawbodeployer.RxWifi.domain.discovery.model.DeviceModel;
 import edu.illinois.entm.sawbodeployer.RxWifi.framework.discovery.data.DeviceListAdapter;
 import edu.illinois.entm.sawbodeployer.RxWifi.framework.discovery.view.DiscoveryActivity;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 import rx.Single;
 import rx.Subscriber;
@@ -344,9 +345,9 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     Button scan,toggle_wifi;
 
     String video_url;
-    public all videoFile = new all();
+    public Video videoFile = new Video();
 
-    public void setVideoFile(all videoFile) {
+    public void setVideoFile(Video videoFile) {
         this.videoFile = videoFile;
     }
 
@@ -365,7 +366,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 
         Bundle extras = getIntent().getExtras();
         video_url= extras.getString("url");
-        videoFile = (all) extras.getSerializable("video");
+        videoFile = (Video) extras.getSerializable("video");
 
 
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);

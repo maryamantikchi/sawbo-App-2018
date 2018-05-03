@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import edu.illinois.entm.sawbodeployer.R;
 import edu.illinois.entm.sawbodeployer.VideoDetail.VideoDetailFragment;
 
@@ -25,7 +28,7 @@ import edu.illinois.entm.sawbodeployer.VideoDetail.VideoDetailFragment;
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.viewHolder> {
 
     private FragmentManager manager;
-    Video object = new Video();
+    ArrayList<Video> object = new ArrayList<>();
     Context context;
     VideoLibraryFragment fragment;
     public class viewHolder extends RecyclerView.ViewHolder {
@@ -44,8 +47,10 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.view
     }
 
 
-    public VideoListAdapter(Video object, Context context, FragmentManager manager, VideoLibraryFragment fragment) {
+    public VideoListAdapter(ArrayList<Video> object, Context context, FragmentManager manager, VideoLibraryFragment fragment) {
         this.object = object;
+
+
         this.context = context;
         this.manager = manager;
         this.fragment = fragment;
@@ -61,14 +66,14 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.view
 
     @Override
     public void onBindViewHolder(final viewHolder holder, int position) {
-        final all video = object.getAll().get(position);
+        final Video video = object.get(position);
         holder.videoTitle.setText(video.getTitle());
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 VideoDetailFragment newfragment = new VideoDetailFragment();
-                newfragment.videoDetail = video;
-                newfragment.video = object;
+               // newfragment.videoDetail = video;
+                newfragment.video = video;
 
                 manager.beginTransaction().hide(fragment)
                         .add(R.id.main_container, newfragment)
@@ -88,7 +93,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.view
 
     @Override
     public int getItemCount() {
-        return object.getAll().size();
+        return object.size();
     }
 
     public static boolean isOnline(Context context) {

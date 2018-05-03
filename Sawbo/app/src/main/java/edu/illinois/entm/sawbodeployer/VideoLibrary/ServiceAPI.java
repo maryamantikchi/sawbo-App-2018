@@ -1,7 +1,10 @@
 package edu.illinois.entm.sawbodeployer.VideoLibrary;
 
+import java.util.ArrayList;
+
 import retrofit.Call;
 import retrofit.http.GET;
+import retrofit.http.Query;
 
 /**
  * Created by navneet on 4/6/16.
@@ -9,6 +12,8 @@ import retrofit.http.GET;
 public interface ServiceAPI {
 
 
-    @GET("prod/factors/")
-    Call<Video> getVideoDetails();
+    @GET("/prod/topic")
+    Call<ArrayList<topic>> getVideoTopics();
+    @GET("prod/video/getvideobylanguage")
+    Call<ArrayList<Video>> getVideoByLanguages(@Query("language") String language);
 }

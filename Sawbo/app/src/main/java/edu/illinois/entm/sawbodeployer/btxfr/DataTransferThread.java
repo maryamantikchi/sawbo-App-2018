@@ -13,7 +13,7 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 
 class DataTransferThread extends Thread {
-    private final String TAG = "android-btxfr/DataTransferThread";
+    private final String TAG = "btxfr/DataTrnsfrThrd";
     private final BluetoothSocket socket;
     private Handler handler;
 

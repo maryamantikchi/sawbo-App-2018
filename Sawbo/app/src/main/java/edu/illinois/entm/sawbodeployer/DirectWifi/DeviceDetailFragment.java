@@ -46,6 +46,7 @@ import org.apache.commons.io.FileUtils;
 
 import edu.illinois.entm.sawbodeployer.R;
 import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 
 /**
@@ -749,18 +750,18 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
 	}
 
-	private void addDataBase(all video) {
+	private void addDataBase(Video video) {
 		MyVideoDataSource dataSource = new MyVideoDataSource(GlobalApplication.getGlobalAppContext());
 		dataSource.open();
-		all newVideo = new all();
+		Video newVideo = new Video();
 		newVideo = video;
 		Boolean isLight = true;
-		if (video.getVideolight().isEmpty() || video.getVideolight() == null) {
+		if (video.getLiteFile().isEmpty() || video.getLiteFile() == null) {
 			isLight = false;
 		}
 		if (isLight)
-			newVideo.setGp_file("");
-		else newVideo.setVideolight("");
+			newVideo.setGpFile("");
+		else newVideo.setLiteFile("");
 
 		dataSource.createVideo(newVideo);
 		dataSource.close();
@@ -831,7 +832,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 					//read file
 
 
-					all newVideo = readFile(newFile);
+					Video newVideo = readFile(newFile);
 					//add to db
 					addDataBase(newVideo);
 
@@ -898,17 +899,17 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 		}
 	}
 
-	private all readFile(File file){
+	private Video readFile(File file){
 
 
 		ObjectInputStream input;
 		//String filename = "testFilemost.srl";
 
-		all myPersonObject = new all();
+		Video myPersonObject = new Video();
 
 		try {
 			input = new ObjectInputStream(new FileInputStream(file/*new File(new File(getFilesDir(),"")+File.separator+filename)*/));
-			myPersonObject = (all) input.readObject();
+			myPersonObject = (Video) input.readObject();
 			input.close();
 		} catch (StreamCorruptedException e) {
 			e.printStackTrace();

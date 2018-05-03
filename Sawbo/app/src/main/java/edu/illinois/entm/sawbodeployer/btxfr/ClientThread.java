@@ -163,7 +163,7 @@ public class ClientThread extends Thread {
                 socket.close();
             }
         } catch (Exception e) {
-            Log.e(TAG + "Cancel exception: ", e.toString());
+            Log.e(TAG + "Cancel: ", e.toString());
         }
     }
 }

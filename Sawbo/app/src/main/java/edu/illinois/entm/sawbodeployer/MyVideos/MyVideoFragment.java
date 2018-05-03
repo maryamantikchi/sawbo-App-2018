@@ -35,6 +35,7 @@ import edu.illinois.entm.sawbodeployer.LogFileDB.LogVideoSource;
 import edu.illinois.entm.sawbodeployer.R;
 import edu.illinois.entm.sawbodeployer.VideoDB.MyVideoDataSource;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.DividerItemDecoration;
+import edu.illinois.entm.sawbodeployer.VideoLibrary.Video;
 import edu.illinois.entm.sawbodeployer.VideoLibrary.all;
 
 import com.crashlytics.android.Crashlytics;
@@ -83,7 +84,7 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
 
 
 
-    ArrayList<all> videos;
+    ArrayList<Video> videos;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -149,8 +150,8 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface d, int id) {
-                                List<all> removeVideoList = adapter.getSelectedVideo();
-                                for (all video:removeVideoList) {
+                                List<Video> removeVideoList = adapter.getSelectedVideo();
+                                for (Video video:removeVideoList) {
                                    deleteVideo(video);
                                 }
                                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -221,10 +222,10 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    private List<all> gettVideos(){
+    private ArrayList<Video> gettVideos(){
         dataSource = new MyVideoDataSource(getContext());
         dataSource.open();
-        videos = new ArrayList<all>();
+        videos = new ArrayList<>();
 
         File dirFiles = getContext().getFilesDir();
 
@@ -277,7 +278,7 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
                                 File f= new File(bluetoothFile,strFile);
                                 videosdb.get(i).setGp_file(String.valueOf(Uri.fromFile(f)));
                                 videosdb.get(i).setLite_file(String.valueOf(Uri.fromFile(f)));
-                                videos.add(videosdb.get(i));
+                               // videos.add(videosdb.get(i));
 
                             }
                         }
@@ -295,19 +296,19 @@ public class MyVideoFragment extends android.support.v4.app.Fragment {
 
 
 
-    private void deleteVideo(all video){
+    private void deleteVideo(Video video){
         dataSource = new MyVideoDataSource(getContext());
         dataSource.open();
 
         boolean isLight = false;
 
         String filename = "";
-        if (video.getGp_file() == null || video.getGp_file().equals("")){
+        if (video.getGpFile() == null || video.getGpFile().equals("")){
             isLight = true;
-            filename = video.getVideolight();
-        }else if(video.getVideolight() == null || video.getVideolight().equals("")){
+            filename = video.getLiteFile();
+        }else if(video.getLiteFile() == null || video.getLiteFile().equals("")){
             isLight = false;
-            filename = video.getGp_file();
+            filename = video.getGpFile();
         }
 
         File file = new File(getActivity().getFilesDir() + "/" + filename);

@@ -43,22 +43,53 @@
 
         </RelativeLayout>
 
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
-            android:textSize="10.2pt"
-            android:text="@string/topics"
-            android:layout_margin="9dp"
-            android:textColor="@color/colorPrimary"
-            android:background="@color/blue_dark"
-            android:layout_height="70dp"
-            android:enabled="false"
-            android:id="@+id/btn_video_library_topic"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:layout_weight="0.1"
+                android:layout_width="wrap_content"
+                android:textSize="9pt"
+                android:text="@string/category"
+                android:textColor="@color/colorPrimary"
+                android:background="@color/blue_dark"
+                android:layout_height="60dp"
+                android:enabled="false"
+                android:id="@+id/btn_video_library_category"
+                android:layout_margin="4dp"/>
+            <Button
+                android:layout_weight="0.1"
+                android:layout_width="wrap_content"
+                android:textSize="9pt"
+                android:text="@string/language"
+                android:layout_margin="4dp"
+                android:textColor="@color/colorPrimary"
+                android:background="@color/blue"
+                android:layout_height="60dp"
+                android:enabled="false"
+                android:id="@+id/btn_video_library_language"/>
+            <Button
+                android:layout_weight="0.1"
+                android:layout_width="wrap_content"
+                android:textSize="9pt"
+                android:text="@string/country"
+                android:layout_margin="4dp"
+                android:textColor="@color/colorPrimary"
+                android:background="@color/blue_light"
+                android:layout_height="60dp"
+                android:enabled="false"
+                android:id="@+id/btn_video_library_country"/>
+
+        </LinearLayout>
+
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="9dp"
-            android:text="AGRICULTURE"
+            android:text="Latest Releases"
             android:id="@+id/title_agriculture"
             android:textSize="8.3pt"/>
 
